@@ -1,15 +1,6 @@
 import type { Horaire, Jour, Maison } from "@/types/maison";
 import type { Service } from "@/types/reservation";
-
-const JOURS: readonly Jour[] = [
-  "dimanche",
-  "lundi",
-  "mardi",
-  "mercredi",
-  "jeudi",
-  "vendredi",
-  "samedi",
-] as const;
+import { isIsoDateInPastParis, jourFromIsoParis } from "./date-paris";
 
 const SLOT_STEP_MIN = 30;
 const MIN_DINING_MIN = 60;
@@ -56,28 +47,25 @@ function buildSlots(range: string | null, service: Service): Slot[] {
 }
 
 export function getJourFromIsoDate(isoDate: string): Jour | null {
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(isoDate);
-  if (!match) return null;
-  const y = match[1];
-  const mo = match[2];
-  const d = match[3];
-  if (!y || !mo || !d) return null;
-  const date = new Date(Date.UTC(Number(y), Number(mo) - 1, Number(d)));
-  if (Number.isNaN(date.getTime())) return null;
-  const jour = JOURS[date.getUTCDay()];
-  return jour ?? null;
+  return jourFromIsoParis(isoDate);
+}
+
+export function isMaisonClosedOn(maison: Maison, isoDate: string): boolean {
+  return maison.fermeturesExceptionnelles?.includes(isoDate) ?? false;
 }
 
 export function getHoraireForDate(
   maison: Maison,
   isoDate: string,
 ): Horaire | null {
+  if (isMaisonClosedOn(maison, isoDate)) return null;
   const jour = getJourFromIsoDate(isoDate);
   if (!jour) return null;
   return maison.horaires.find((h) => h.jour === jour) ?? null;
 }
 
 export function getSlotsForDate(maison: Maison, isoDate: string): Slot[] {
+  if (isIsoDateInPastParis(isoDate)) return [];
   const horaire = getHoraireForDate(maison, isoDate);
   if (!horaire) return [];
   return [

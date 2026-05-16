@@ -56,6 +56,9 @@ export const maisonSchema = z.object({
   fourchettePrix: z.enum(["€", "€€", "€€€", "€€€€"]),
   cuisines: z.array(z.string()).min(1),
   fermetureHebdo: z.array(jourSchema),
+  fermeturesExceptionnelles: z
+    .array(z.string().regex(/^\d{4}-\d{2}-\d{2}$/))
+    .optional(),
   photoHero: z.string(),
   photos: z.array(z.string()),
   accent: z.string().regex(/^#[0-9A-Fa-f]{6}$/),

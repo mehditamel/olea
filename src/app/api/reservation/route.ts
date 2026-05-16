@@ -1,11 +1,23 @@
 import { NextResponse } from "next/server";
 import { reservationSchema } from "@/types/reservation";
 import { getMaisonBySlug } from "@/data/maisons";
-import { getServiceForSlot } from "@/lib/reservation-slots";
-import { sendContactEmail } from "@/lib/email";
+import {
+  getServiceForSlot,
+  isMaisonClosedOn,
+} from "@/lib/reservation-slots";
+import { isIsoDateInPastParis } from "@/lib/date-paris";
+import {
+  sendContactEmail,
+  sendReservationConfirmation,
+} from "@/lib/email";
+import { buildReservationIcs } from "@/lib/ics";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { logger } from "@/lib/logger";
 
 export const runtime = "nodejs";
+
+const RATE_LIMIT = { limit: 5, windowMs: 60 * 60 * 1000 };
+const RESERVATION_DURATION_MIN = 90;
 
 function escapeHtml(input: string): string {
   return input
@@ -25,7 +37,31 @@ const OCCASION_LABELS: Record<string, string> = {
   autre: "Autre",
 };
 
+function clientIp(request: Request): string {
+  const xff = request.headers.get("x-forwarded-for");
+  if (xff) {
+    const first = xff.split(",")[0]?.trim();
+    if (first) return first;
+  }
+  return request.headers.get("x-real-ip")?.trim() || "unknown";
+}
+
 export async function POST(request: Request) {
+  const ip = clientIp(request);
+  const rate = checkRateLimit(`reservation:${ip}`, RATE_LIMIT);
+  if (!rate.ok) {
+    logger.warn({ ip }, "Reservation rate-limited");
+    return NextResponse.json(
+      { error: "Trop de tentatives. Réessayez plus tard." },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": Math.ceil(rate.retryAfterMs / 1000).toString(),
+        },
+      },
+    );
+  }
+
   let payload: unknown;
   try {
     payload = await request.json();
@@ -44,6 +80,14 @@ export async function POST(request: Request) {
     );
   }
   const data = parsed.data;
+
+  // Honeypot : un bot a rempli le champ caché. On répond OK sans rien faire
+  // pour ne pas signaler la détection.
+  if (data.siteWeb && data.siteWeb.length > 0) {
+    logger.warn({ ip }, "Reservation honeypot triggered");
+    return NextResponse.json({ ok: true, mode: "log" });
+  }
+
   const maison = getMaisonBySlug(data.maison);
   if (!maison) {
     return NextResponse.json({ error: "Maison inconnue." }, { status: 400 });
@@ -51,6 +95,19 @@ export async function POST(request: Request) {
   if (!maison.ouvert) {
     return NextResponse.json(
       { error: "Cette maison n'accepte pas encore de réservations en ligne." },
+      { status: 400 },
+    );
+  }
+
+  if (isIsoDateInPastParis(data.date)) {
+    return NextResponse.json(
+      { error: "La date doit être à venir." },
+      { status: 400 },
+    );
+  }
+  if (isMaisonClosedOn(maison, data.date)) {
+    return NextResponse.json(
+      { error: "La maison est fermée ce jour-là." },
       { status: 400 },
     );
   }
@@ -84,7 +141,7 @@ export async function POST(request: Request) {
   const serviceLabel = data.service === "dejeuner" ? "Déjeuner" : "Dîner";
   const heureLisible = data.heure.replace(":", "h");
 
-  const html = `
+  const teamHtml = `
     <h2>Nouvelle réservation · ${escapeHtml(maison.nom)}</h2>
     <ul>
       <li><strong>Nom :</strong> ${escapeHtml(data.nom)}</li>
@@ -105,18 +162,60 @@ export async function POST(request: Request) {
     }
   `;
 
-  const result = await sendContactEmail({
+  const teamResult = await sendContactEmail({
     subject: `Réservation — ${maison.nom} · ${data.date} ${heureLisible} · ${data.convives} pers.`,
-    html,
+    html: teamHtml,
     replyTo: data.email,
   });
 
-  if (!result.ok) {
+  if (!teamResult.ok) {
     return NextResponse.json(
       { error: "Échec de l'envoi. Veuillez réessayer dans un instant." },
       { status: 502 },
     );
   }
 
-  return NextResponse.json({ ok: true, mode: result.mode });
+  const ics = buildReservationIcs({
+    uid: `${data.date.replace(/-/g, "")}-${data.heure.replace(":", "")}-${data.maison}-${data.email}@olea-restaurant.fr`,
+    summary: `Réservation Maison Oléa · ${maison.nom}`,
+    description: `Réservation pour ${data.convives} personne(s).${
+      data.demandesParticulieres ? ` ${data.demandesParticulieres}` : ""
+    }`,
+    location: `${maison.nom}, ${maison.adresse}, ${maison.codePostal} ${maison.ville}`,
+    startIso: data.date,
+    heure: data.heure,
+    durationMinutes: RESERVATION_DURATION_MIN,
+    organizerEmail: process.env.CONTACT_EMAIL ?? "contact@olea-restaurant.fr",
+    attendeeEmail: data.email,
+  });
+
+  const clientResult = await sendReservationConfirmation({
+    to: data.email,
+    nom: data.nom,
+    maisonNom: maison.nom,
+    adresse: maison.adresse,
+    ville: maison.ville,
+    telephoneAffichage: maison.telephoneAffichage,
+    date: data.date,
+    heure: data.heure,
+    service: data.service,
+    convives: data.convives,
+    demandesParticulieres: data.demandesParticulieres,
+    attachment: {
+      filename: ics.filename,
+      content: ics.contentBase64,
+      contentType: "text/calendar",
+    },
+  });
+
+  if (!clientResult.ok) {
+    // L'équipe a bien reçu la demande : on ne fait pas échouer toute la
+    // requête, on log et on signale juste un succès partiel.
+    logger.warn(
+      { err: clientResult.error },
+      "Reservation: client confirmation email failed",
+    );
+  }
+
+  return NextResponse.json({ ok: true, mode: teamResult.mode });
 }
