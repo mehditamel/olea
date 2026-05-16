@@ -55,6 +55,10 @@ export const metadata: Metadata = {
   },
   alternates: { canonical: SITE_URL },
   formatDetection: { telephone: true },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/images/brand/logo.png",
+  },
 };
 
 export default function RootLayout({
