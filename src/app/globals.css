@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand palette — inspirée du BAT signalétique (olive dominant) */
+  --color-brand-cream: #f4ecdd;
+  --color-brand-cream-soft: #efe5d2;
+  --color-brand-ink: #1f2218;
+  --color-brand-ink-soft: #2a2e20;
+  --color-brand-gold: #d4af6e;
+  --color-brand-gold-deep: #8b6f3a;
+  --color-brand-gold-light: #e8d5a8;
+  --color-brand-olive: #4a5530;
+  --color-brand-olive-deep: #2e3a1e;
+  --color-brand-olive-soft: #6b7a4a;
+  --color-brand-text-muted: #6b5d4a;
+  --color-brand-text-soft: #c8b79a;
+
+  /* Typo */
+  --font-serif: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  --font-sans: var(--font-inter), "Inter", system-ui, -apple-system, sans-serif;
+}
+
+:root {
+  --background: #f4ecdd;
+  --foreground: #1f2218;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+}
+
+/* Focus visible (a11y) */
+:focus-visible {
+  outline: 2px solid var(--color-brand-olive);
+  outline-offset: 3px;
+}
+
+/* Typography helpers */
+.serif {
+  font-family: var(--font-serif);
+}
+
+/* Section eyebrow style */
+.eyebrow {
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+@media (min-width: 768px) {
+  .eyebrow {
+    font-size: 12px;
+  }
+}
