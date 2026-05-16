@@ -33,13 +33,24 @@ export function PrivatReservSection() {
           id="reserver"
           className="bg-brand-ink text-brand-cream p-8 md:p-11"
         >
-          <p className="eyebrow text-brand-gold mb-2">Réserver maintenant</p>
-          <ul className="flex flex-col gap-5 mt-6">
+          <p className="eyebrow text-brand-gold mb-2">Réserver une table</p>
+          <p className="font-serif text-[22px] leading-snug mt-3 mb-6 max-w-[280px]">
+            Choisissez votre maison, date et créneau en quelques clics.
+          </p>
+          <Link
+            href="/reserver"
+            className="inline-block bg-brand-cream text-brand-ink px-7 py-3 text-[11px] uppercase tracking-[0.2em] hover:bg-brand-gold transition-colors"
+          >
+            Réserver en ligne
+          </Link>
+
+          <p className="eyebrow text-brand-gold mt-9 mb-2">Ou par téléphone</p>
+          <ul className="flex flex-col gap-5 mt-5">
             {maisons.map((maison, idx) => {
               const last = idx === maisons.length - 1;
               const content = (
                 <>
-                  <span className="font-serif text-[22px]">{maison.nom}</span>
+                  <span className="font-serif text-[20px]">{maison.nom}</span>
                   <span
                     className={`text-[11px] uppercase tracking-[0.18em] ${
                       maison.ouvert ? "opacity-70" : "text-brand-gold"

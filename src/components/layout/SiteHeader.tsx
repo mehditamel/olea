@@ -71,7 +71,7 @@ export function SiteHeader() {
 
         <div className="hidden md:block">
           <Link
-            href="/#reserver"
+            href="/reserver"
             className={cn(
               "px-7 py-3 text-[11px] uppercase tracking-[0.2em] font-medium transition-colors",
               transparent

@@ -14,6 +14,7 @@ import {
 const NAV = [
   { href: "/maisons", label: "Maisons" },
   { href: "/carte", label: "Carte" },
+  { href: "/reserver", label: "Réserver" },
   { href: "/privatisation", label: "Privatisation" },
   { href: "/contact", label: "Contact" },
 ];
