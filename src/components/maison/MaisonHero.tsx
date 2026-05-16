@@ -1,20 +1,34 @@
+import Image from "next/image";
 import { OliveBranch } from "@/components/brand/OliveBranch";
 import type { Maison } from "@/types/maison";
 
 export function MaisonHero({ maison }: { maison: Maison }) {
   const featured = Boolean(maison.badgeOuverture);
+  const hasPhoto = maison.photoHero.length > 0;
   return (
     <section
       className="relative h-[68vh] min-h-[480px] overflow-hidden"
       aria-label={`Maison Oléa ${maison.nom}`}
     >
+      {hasPhoto && (
+        <Image
+          src={maison.photoHero}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+      )}
       <div
         className="absolute inset-0"
         style={{
-          background: `
-            linear-gradient(to bottom, rgba(31,34,24,0.2) 0%, rgba(31,34,24,0.7) 100%),
-            radial-gradient(ellipse at 50% 40%, ${maison.accent} 0%, rgba(31,34,24,0.5) 60%, #1F2218 100%)
-          `,
+          background: hasPhoto
+            ? "linear-gradient(to bottom, rgba(31,34,24,0.15) 0%, rgba(31,34,24,0.75) 100%)"
+            : `
+              linear-gradient(to bottom, rgba(31,34,24,0.2) 0%, rgba(31,34,24,0.7) 100%),
+              radial-gradient(ellipse at 50% 40%, ${maison.accent} 0%, rgba(31,34,24,0.5) 60%, #1F2218 100%)
+            `,
         }}
       />
       <OliveBranch

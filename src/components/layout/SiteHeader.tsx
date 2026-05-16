@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
@@ -39,9 +40,21 @@ export function SiteHeader() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 md:px-12 md:py-7">
         <Link
           href="/"
-          className="font-serif italic text-2xl md:text-[26px] tracking-[0.5px] hover:opacity-80 transition-opacity"
+          className="block hover:opacity-80 transition-opacity"
+          aria-label="Maison Oléa — accueil"
         >
-          Oléa
+          <Image
+            src="/images/brand/logo.png"
+            alt="Maison Oléa"
+            width={800}
+            height={600}
+            priority
+            sizes="(max-width: 768px) 56px, 72px"
+            className={cn(
+              "h-12 md:h-14 w-auto transition-[filter] duration-300",
+              transparent ? "" : "brightness-0",
+            )}
+          />
         </Link>
 
         <nav className="hidden md:flex items-center gap-9 text-[11px] uppercase tracking-[0.22em]">

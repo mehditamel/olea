@@ -1,8 +1,9 @@
+import Image from "next/image";
 import Link from "next/link";
 import { maisons } from "@/data/maisons";
 import type { Maison } from "@/types/maison";
 
-function maisonMediaStyle(accent: string): React.CSSProperties {
+function maisonGradientStyle(accent: string): React.CSSProperties {
   return {
     background: `
       linear-gradient(to bottom, rgba(31,34,24,0.1) 0%, rgba(31,34,24,0.85) 100%),
@@ -11,18 +12,37 @@ function maisonMediaStyle(accent: string): React.CSSProperties {
   };
 }
 
+const PHOTO_OVERLAY: React.CSSProperties = {
+  background:
+    "linear-gradient(to bottom, rgba(31,34,24,0.05) 0%, rgba(31,34,24,0.85) 100%)",
+};
+
 function MaisonCard({ maison }: { maison: Maison }) {
   const featured = Boolean(maison.badgeOuverture);
+  const hasPhoto = maison.photoHero.length > 0;
   return (
     <article
       className={`bg-brand-ink-soft flex flex-col ${featured ? "ring-1 ring-brand-gold" : ""}`}
     >
-      <div
-        className="relative h-[260px] md:h-[300px]"
-        style={maisonMediaStyle(maison.accent)}
-        role="img"
-        aria-label={`Visuel évocateur de la maison ${maison.nom}`}
-      >
+      <div className="relative h-[260px] md:h-[300px] overflow-hidden">
+        {hasPhoto ? (
+          <>
+            <Image
+              src={maison.photoHero}
+              alt={`Maison Oléa ${maison.nom}`}
+              fill
+              sizes="(max-width: 768px) 100vw, 33vw"
+              className="object-cover"
+            />
+            <div className="absolute inset-0" style={PHOTO_OVERLAY} />
+          </>
+        ) : (
+          <div
+            className="absolute inset-0"
+            style={maisonGradientStyle(maison.accent)}
+            role="presentation"
+          />
+        )}
         {featured && (
           <span className="absolute top-5 right-5 bg-brand-gold text-brand-ink text-[10px] tracking-[0.18em] uppercase px-3 py-1.5 font-semibold">
             {maison.badgeOuverture}

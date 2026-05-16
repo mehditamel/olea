@@ -47,7 +47,7 @@ export function RestaurantJsonLd({ maison }: { maison: Maison }) {
     description: maison.description,
     url: absoluteUrl(`/maisons/${maison.slug}`),
     telephone: maison.telephone,
-    image: [absoluteUrl(maison.photoHero)],
+    ...(maison.photoHero ? { image: [absoluteUrl(maison.photoHero)] } : {}),
     priceRange: maison.fourchettePrix,
     servesCuisine: maison.cuisines,
     address: {
