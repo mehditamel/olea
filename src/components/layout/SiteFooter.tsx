@@ -1,27 +1,48 @@
 import Link from "next/link";
+import { Phone, Mail } from "lucide-react";
 import { maisons } from "@/data/maisons";
 import { OliveBranch } from "@/components/brand/OliveBranch";
+
+const QUICK_LINKS = [
+  { href: "/maisons", label: "Nos maisons" },
+  { href: "/carte", label: "La carte" },
+  { href: "/privatisation", label: "Privatisation" },
+  { href: "/contact", label: "Contact" },
+];
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-brand-ink text-brand-cream pt-20 pb-8 px-6 md:px-12 relative overflow-hidden">
+    <footer className="bg-brand-ink text-brand-cream pt-16 md:pt-20 pb-10 px-6 md:px-12 relative overflow-hidden">
       <OliveBranch
-        className="absolute -bottom-8 -left-10 w-48 h-56 text-brand-olive-soft opacity-15 pointer-events-none"
+        className="absolute -bottom-8 -left-10 w-44 h-52 md:w-48 md:h-56 text-brand-olive-soft opacity-15 pointer-events-none"
         color="currentColor"
       />
-      <div className="mx-auto max-w-7xl">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-12 mb-12">
+      <div className="relative mx-auto max-w-7xl">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[1.3fr_repeat(3,1fr)] gap-10 md:gap-12 mb-12">
           <div>
             <p className="font-serif italic text-3xl md:text-[32px] mb-4">
               Oléa
             </p>
-            <p className="text-sm leading-relaxed text-brand-text-soft max-w-[240px]">
+            <p className="text-sm leading-relaxed text-brand-text-soft max-w-[260px] mb-6">
               Une cuisine méditerranéenne authentique en Provence et Côte
               d&apos;Azur.
             </p>
+            <ul className="flex flex-col gap-2 text-sm">
+              {QUICK_LINKS.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-brand-text-soft hover:text-brand-gold transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </div>
+
           {maisons.map((maison) => (
             <div key={maison.slug}>
               <p className="text-[11px] uppercase tracking-[0.22em] text-brand-gold mb-4">
@@ -31,18 +52,20 @@ export function SiteFooter() {
                 {maison.adresse}
                 <br />
                 {maison.codePostal} {maison.ville}
-                <br />
+              </address>
+              <div className="mt-3">
                 {maison.ouvert ? (
                   <a
                     href={`tel:${maison.telephone}`}
-                    className="hover:text-brand-gold transition-colors"
+                    className="inline-flex items-center gap-1.5 text-sm text-brand-text-soft hover:text-brand-gold transition-colors"
                   >
+                    <Phone className="h-3.5 w-3.5" aria-hidden />
                     {maison.telephoneAffichage}
                   </a>
                 ) : (
-                  <span className="text-brand-gold">Ouverture prochaine</span>
+                  <span className="text-sm text-brand-gold">Ouverture prochaine</span>
                 )}
-              </address>
+              </div>
               <Link
                 href={`/maisons/${maison.slug}`}
                 className="mt-4 inline-block text-[11px] uppercase tracking-[0.18em] border-b border-brand-gold-deep pb-1 hover:text-brand-gold transition-colors"
@@ -53,11 +76,12 @@ export function SiteFooter() {
           ))}
         </div>
 
-        <div className="pt-7 border-t border-brand-cream/12 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-[11px] text-brand-gold-deep">
+        <div className="pt-7 border-t border-brand-cream/12 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-[11px] text-brand-gold-deep">
           <a
             href="mailto:contact@olea-restaurant.fr"
-            className="hover:text-brand-gold transition-colors"
+            className="inline-flex items-center gap-1.5 hover:text-brand-gold transition-colors"
           >
+            <Mail className="h-3.5 w-3.5" aria-hidden />
             contact@olea-restaurant.fr
           </a>
           <div className="flex items-center gap-6">
