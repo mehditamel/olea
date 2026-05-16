@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Phone } from "lucide-react";
 import { maisons } from "@/data/maisons";
 
 export function PrivatReservSection() {
@@ -7,12 +8,12 @@ export function PrivatReservSection() {
       id="privatisation"
       className="bg-brand-cream px-6 md:px-12 pb-20 md:pb-24"
     >
-      <div className="mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-[1.15fr_1fr] gap-0 md:gap-0 items-stretch pt-16 md:pt-20 border-t border-brand-ink/15">
-        <div className="md:pr-14 pb-12 md:pb-0">
+      <div className="mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-[1.15fr_1fr] gap-10 md:gap-0 items-stretch pt-16 md:pt-20 border-t border-brand-ink/15">
+        <div className="md:pr-14">
           <p className="eyebrow text-brand-olive mb-5">
             Privatisation & événements
           </p>
-          <h2 className="font-serif font-normal text-4xl md:text-[42px] leading-[1.1] tracking-[-0.5px] mb-6 text-brand-ink">
+          <h2 className="font-serif font-normal text-[clamp(32px,4vw,44px)] leading-[1.1] tracking-[-0.5px] mb-6 text-brand-ink">
             Vos célébrations,{" "}
             <span className="italic">à notre table.</span>
           </h2>
@@ -23,7 +24,7 @@ export function PrivatReservSection() {
           </p>
           <Link
             href="/privatisation"
-            className="inline-block bg-brand-ink text-brand-cream px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] hover:bg-brand-olive transition-colors"
+            className="inline-flex items-center justify-center bg-brand-ink text-brand-cream px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] hover:bg-brand-olive transition-colors"
           >
             Demander un devis
           </Link>
@@ -31,46 +32,53 @@ export function PrivatReservSection() {
 
         <div
           id="reserver"
-          className="bg-brand-ink text-brand-cream p-8 md:p-11"
+          className="bg-brand-ink text-brand-cream p-7 sm:p-9 md:p-11 scroll-mt-28"
         >
           <p className="eyebrow text-brand-gold mb-2">Réserver maintenant</p>
-          <ul className="flex flex-col gap-5 mt-6">
-            {maisons.map((maison, idx) => {
-              const last = idx === maisons.length - 1;
-              const content = (
+          <p className="font-serif italic text-brand-cream/80 mt-1 mb-6">
+            Une table vous attend, à un coup de fil.
+          </p>
+          <ul className="flex flex-col gap-4">
+            {maisons.map((maison) => {
+              const inner = (
                 <>
-                  <span className="font-serif text-[22px]">{maison.nom}</span>
-                  <span
-                    className={`text-[11px] uppercase tracking-[0.18em] ${
-                      maison.ouvert ? "opacity-70" : "text-brand-gold"
-                    }`}
-                  >
-                    {maison.ouvert
-                      ? `${maison.telephoneAffichage} →`
-                      : "Bientôt →"}
-                  </span>
+                  <div className="flex flex-col">
+                    <span className="font-serif text-[22px] leading-tight">
+                      {maison.nom}
+                    </span>
+                    <span className="text-[11px] tracking-[0.2em] uppercase text-brand-text-soft mt-1">
+                      {maison.label}
+                    </span>
+                  </div>
+                  {maison.ouvert ? (
+                    <span className="inline-flex items-center gap-2 text-[12px] tracking-[0.16em] uppercase text-brand-gold">
+                      <Phone className="h-3.5 w-3.5" aria-hidden />
+                      <span className="hidden sm:inline">{maison.telephoneAffichage}</span>
+                      <span className="sm:hidden">Appeler</span>
+                    </span>
+                  ) : (
+                    <span className="text-[11px] tracking-[0.18em] uppercase text-brand-gold">
+                      Bientôt
+                    </span>
+                  )}
                 </>
               );
 
               return (
                 <li
                   key={maison.slug}
-                  className={
-                    last
-                      ? ""
-                      : "border-b border-brand-cream/15 pb-5"
-                  }
+                  className="border-b border-brand-cream/12 last:border-0 pb-4 last:pb-0"
                 >
                   {maison.ouvert ? (
                     <a
                       href={`tel:${maison.telephone}`}
-                      className="flex items-center justify-between hover:opacity-80 transition-opacity"
+                      className="flex items-center justify-between gap-4 -mx-2 px-2 py-1.5 rounded hover:bg-brand-cream/5 transition-colors"
                     >
-                      {content}
+                      {inner}
                     </a>
                   ) : (
-                    <div className="flex items-center justify-between">
-                      {content}
+                    <div className="flex items-center justify-between gap-4 px-2 py-1.5 opacity-80">
+                      {inner}
                     </div>
                   )}
                 </li>
