@@ -1,26 +1,13 @@
 import { MapPin } from "lucide-react";
+import { Reveal } from "@/components/ui/Reveal";
+import { MaisonStatusPill } from "./MaisonStatusPill";
+import { JOUR_LABEL } from "@/lib/horaires";
+import { googleMapsUrl } from "@/lib/maps";
 import type { Maison, Horaire, Jour } from "@/types/maison";
-
-const JOUR_LABEL: Record<Jour, string> = {
-  lundi: "Lundi",
-  mardi: "Mardi",
-  mercredi: "Mercredi",
-  jeudi: "Jeudi",
-  vendredi: "Vendredi",
-  samedi: "Samedi",
-  dimanche: "Dimanche",
-};
 
 function formatRange(range: string | null): string {
   if (!range) return "—";
   return range.replace("-", " – ");
-}
-
-function mapsUrl(maison: Maison): string {
-  const q = encodeURIComponent(
-    `Maison Oléa ${maison.nom}, ${maison.adresse}, ${maison.codePostal} ${maison.ville}`,
-  );
-  return `https://www.google.com/maps/search/?api=1&query=${q}`;
 }
 
 const ALL_JOURS: readonly Jour[] = [
@@ -76,8 +63,11 @@ export function MaisonInfos({ maison }: { maison: Maison }) {
   return (
     <section className="bg-brand-cream px-6 md:px-12 py-14 md:py-20">
       <div className="mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
-        <div>
-          <p className="eyebrow text-brand-olive mb-5">Nous trouver</p>
+        <Reveal>
+          <div className="flex items-center gap-3 mb-5">
+            <p className="eyebrow text-brand-olive">Nous trouver</p>
+            <MaisonStatusPill maison={maison} variant="light" />
+          </div>
           <h2 className="font-serif text-3xl md:text-4xl mb-6 text-brand-ink">
             {maison.label}
           </h2>
@@ -87,7 +77,7 @@ export function MaisonInfos({ maison }: { maison: Maison }) {
             {maison.codePostal} {maison.ville}
           </address>
           <a
-            href={mapsUrl(maison)}
+            href={googleMapsUrl(maison)}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-brand-olive border-b border-brand-olive pb-1 hover:text-brand-olive-deep transition-colors mb-8"
@@ -115,9 +105,9 @@ export function MaisonInfos({ maison }: { maison: Maison }) {
           <p className="mt-8 text-xs uppercase tracking-[0.2em] text-brand-gold-deep">
             {maison.cuisines.join(" · ")} · {maison.fourchettePrix}
           </p>
-        </div>
+        </Reveal>
 
-        <div>
+        <Reveal delay={120}>
           <p className="eyebrow text-brand-olive mb-5">Horaires</p>
           {hasHoraires ? (
             <table className="w-full">
@@ -148,7 +138,7 @@ export function MaisonInfos({ maison }: { maison: Maison }) {
               Horaires communiqués à l&apos;ouverture.
             </p>
           )}
-        </div>
+        </Reveal>
       </div>
     </section>
   );

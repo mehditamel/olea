@@ -4,6 +4,8 @@ import Link from "next/link";
 import { Phone, MapPin } from "lucide-react";
 import { maisons } from "@/data/maisons";
 import { absoluteUrl } from "@/lib/utils";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
+import { MaisonStatusPill } from "@/components/maison/MaisonStatusPill";
 
 export const metadata: Metadata = {
   title: "Nos trois maisons",
@@ -17,6 +19,14 @@ export default function MaisonsIndexPage() {
     <>
       <section className="bg-brand-ink text-brand-cream px-6 md:px-12 pt-32 pb-12 md:pt-40 md:pb-20">
         <div className="mx-auto max-w-7xl">
+          <Breadcrumbs
+            variant="light"
+            className="mb-6"
+            items={[
+              { href: "/", label: "Accueil" },
+              { href: "/maisons", label: "Maisons" },
+            ]}
+          />
           <p className="eyebrow text-brand-gold mb-5">Nos trois maisons</p>
           <h1 className="font-serif font-normal text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[-1px] max-w-3xl">
             De la Provence à la{" "}
@@ -71,11 +81,14 @@ export default function MaisonsIndexPage() {
                       aria-hidden
                     />
                   )}
-                  {maison.badgeOuverture && (
-                    <span className="absolute top-5 right-5 bg-brand-gold text-brand-ink text-[10px] tracking-[0.18em] uppercase px-3 py-1.5 font-semibold">
-                      {maison.badgeOuverture}
-                    </span>
-                  )}
+                  <div className="absolute top-5 right-5 flex flex-col items-end gap-2">
+                    {maison.badgeOuverture && (
+                      <span className="bg-brand-gold text-brand-ink text-[10px] tracking-[0.18em] uppercase px-3 py-1.5 font-semibold">
+                        {maison.badgeOuverture}
+                      </span>
+                    )}
+                    <MaisonStatusPill maison={maison} variant="dark" />
+                  </div>
                   <div className="absolute bottom-6 left-6 right-6">
                     <p className="text-[11px] tracking-[0.25em] uppercase text-brand-gold mb-2">
                       {maison.label}

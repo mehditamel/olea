@@ -1,14 +1,9 @@
 import Image from "next/image";
 import { Phone, MapPin } from "lucide-react";
 import { OliveBranch } from "@/components/brand/OliveBranch";
+import { MaisonStatusPill } from "./MaisonStatusPill";
+import { googleMapsUrl } from "@/lib/maps";
 import type { Maison } from "@/types/maison";
-
-function mapsUrl(maison: Maison): string {
-  const q = encodeURIComponent(
-    `Maison Oléa ${maison.nom}, ${maison.adresse}, ${maison.codePostal} ${maison.ville}`,
-  );
-  return `https://www.google.com/maps/search/?api=1&query=${q}`;
-}
 
 export function MaisonHero({ maison }: { maison: Maison }) {
   const featured = Boolean(maison.badgeOuverture);
@@ -43,9 +38,12 @@ export function MaisonHero({ maison }: { maison: Maison }) {
         className="absolute right-[4%] bottom-[8%] w-[140px] md:w-[220px] h-auto text-brand-cream opacity-20"
       />
       <div className="relative h-full mx-auto max-w-7xl flex flex-col justify-end px-6 pb-10 md:px-12 md:pb-16 text-brand-cream pt-28 md:pt-32">
-        <p className="olea-fade-up text-[11px] tracking-[0.25em] uppercase text-brand-gold mb-4">
-          {maison.label}
-        </p>
+        <div className="olea-fade-up flex items-center gap-3 mb-4">
+          <p className="text-[11px] tracking-[0.25em] uppercase text-brand-gold">
+            {maison.label}
+          </p>
+          <MaisonStatusPill maison={maison} variant="dark" />
+        </div>
         <h1 className="olea-fade-up font-serif font-normal text-[clamp(40px,6.5vw,72px)] leading-[1.02] tracking-[-1px] mb-5">
           {maison.nom}
         </h1>
@@ -57,17 +55,17 @@ export function MaisonHero({ maison }: { maison: Maison }) {
           {maison.ouvert ? (
             <a
               href={`tel:${maison.telephone}`}
-              className="inline-flex items-center gap-2 bg-brand-cream text-brand-ink px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-medium hover:bg-brand-gold transition-colors"
+              className="inline-flex items-center gap-2 bg-brand-cream text-brand-ink px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-medium hover:bg-brand-gold active:scale-[0.98] transition-[background-color,transform]"
             >
               <Phone className="h-3.5 w-3.5" aria-hidden />
               {maison.telephoneAffichage}
             </a>
           ) : null}
           <a
-            href={mapsUrl(maison)}
+            href={googleMapsUrl(maison)}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 border border-brand-cream/70 text-brand-cream px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-medium hover:bg-brand-cream hover:text-brand-ink transition-colors"
+            className="inline-flex items-center gap-2 border border-brand-cream/70 text-brand-cream px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-medium hover:bg-brand-cream hover:text-brand-ink active:scale-[0.98] transition-[background-color,color,transform]"
           >
             <MapPin className="h-3.5 w-3.5" aria-hidden />
             Itinéraire
