@@ -1,5 +1,6 @@
 import { MapPin } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
+import { InstagramIcon } from "@/components/brand/InstagramIcon";
 import { MaisonStatusPill } from "./MaisonStatusPill";
 import { JOUR_LABEL } from "@/lib/horaires";
 import { googleMapsUrl } from "@/lib/maps";
@@ -102,6 +103,23 @@ export function MaisonInfos({ maison }: { maison: Maison }) {
               Ouverture prochaine
             </p>
           )}
+          {maison.instagram?.url ? (
+            <a
+              href={maison.instagram.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-5 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-brand-olive border-b border-brand-olive pb-1 hover:text-brand-olive-deep transition-colors"
+              aria-label={`Instagram @${maison.instagram.handle}`}
+            >
+              <InstagramIcon className="h-3.5 w-3.5" />
+              @{maison.instagram.handle}
+            </a>
+          ) : maison.instagram ? (
+            <p className="mt-5 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-brand-gold-deep">
+              <InstagramIcon className="h-3.5 w-3.5" />
+              @{maison.instagram.handle} · bientôt
+            </p>
+          ) : null}
           <p className="mt-8 text-xs uppercase tracking-[0.2em] text-brand-gold-deep">
             {maison.cuisines.join(" · ")} · {maison.fourchettePrix}
           </p>

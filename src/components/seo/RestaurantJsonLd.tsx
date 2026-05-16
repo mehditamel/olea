@@ -39,6 +39,8 @@ export function RestaurantJsonLd({ maison }: { maison: Maison }) {
     return items;
   });
 
+  const sameAs = maison.instagram?.url ? [maison.instagram.url] : undefined;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Restaurant",
@@ -63,6 +65,7 @@ export function RestaurantJsonLd({ maison }: { maison: Maison }) {
       longitude: maison.coordonnees.lng,
     },
     ...(openingHoursSpecification.length > 0 ? { openingHoursSpecification } : {}),
+    ...(sameAs ? { sameAs } : {}),
   };
 
   return (

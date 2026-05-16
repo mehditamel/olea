@@ -4,6 +4,7 @@ import { MaisonHero } from "./MaisonHero";
 import { MaisonInfos } from "./MaisonInfos";
 import { MaisonMap } from "./MaisonMap";
 import { MaisonGallery } from "./MaisonGallery";
+import { MaisonInstagram } from "./MaisonInstagram";
 import { MaisonReservation } from "./MaisonReservation";
 import { RestaurantJsonLd } from "@/components/seo/RestaurantJsonLd";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
@@ -32,6 +33,7 @@ export function MaisonPage({ slug }: { slug: MaisonSlug }) {
       <MaisonInfos maison={maison} />
       <MaisonMap maison={maison} />
       <MaisonGallery maison={maison} />
+      <MaisonInstagram maison={maison} />
       <MaisonReservation maison={maison} />
     </>
   );

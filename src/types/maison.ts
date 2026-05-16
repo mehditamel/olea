@@ -37,6 +37,16 @@ export const horaireSchema = z.object({
 });
 export type Horaire = z.infer<typeof horaireSchema>;
 
+/**
+ * Profil Instagram d'une maison.
+ * `url` absent → compte « bientôt » (handle réservé, pas encore actif).
+ */
+export const instagramProfileSchema = z.object({
+  handle: z.string().regex(/^[a-z0-9._]+$/),
+  url: z.string().url().optional(),
+});
+export type InstagramProfile = z.infer<typeof instagramProfileSchema>;
+
 export const maisonSchema = z.object({
   slug: maisonSlugSchema,
   nom: z.string().min(1),
@@ -63,5 +73,6 @@ export const maisonSchema = z.object({
   photos: z.array(z.string()),
   accent: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
   reservationUrl: z.string().url().or(z.literal("")),
+  instagram: instagramProfileSchema.optional(),
 });
 export type Maison = z.infer<typeof maisonSchema>;
