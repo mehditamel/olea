@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { absoluteUrl } from "@/lib/utils";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 
 export const metadata: Metadata = {
   title: "Carte",
@@ -37,6 +38,14 @@ export default function CartePage() {
     <>
       <section className="bg-brand-ink text-brand-cream px-6 md:px-12 pt-32 pb-12 md:pt-40 md:pb-16">
         <div className="mx-auto max-w-7xl">
+          <Breadcrumbs
+            variant="light"
+            className="mb-6"
+            items={[
+              { href: "/", label: "Accueil" },
+              { href: "/carte", label: "Carte" },
+            ]}
+          />
           <p className="eyebrow text-brand-gold mb-5">La carte</p>
           <h1 className="font-serif font-normal text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[-1px] max-w-3xl">
             Une cuisine née du{" "}

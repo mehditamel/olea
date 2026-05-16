@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Phone, Mail, MapPin } from "lucide-react";
 import { maisons } from "@/data/maisons";
 import { absoluteUrl } from "@/lib/utils";
-import type { Maison } from "@/types/maison";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
+import { googleMapsUrl } from "@/lib/maps";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -11,18 +12,19 @@ export const metadata: Metadata = {
   alternates: { canonical: absoluteUrl("/contact") },
 };
 
-function mapsUrl(maison: Maison): string {
-  const q = encodeURIComponent(
-    `Maison Oléa ${maison.nom}, ${maison.adresse}, ${maison.codePostal} ${maison.ville}`,
-  );
-  return `https://www.google.com/maps/search/?api=1&query=${q}`;
-}
-
 export default function ContactPage() {
   return (
     <>
       <section className="bg-brand-ink text-brand-cream px-6 md:px-12 pt-32 pb-12 md:pt-40 md:pb-20">
         <div className="mx-auto max-w-7xl">
+          <Breadcrumbs
+            variant="light"
+            className="mb-6"
+            items={[
+              { href: "/", label: "Accueil" },
+              { href: "/contact", label: "Contact" },
+            ]}
+          />
           <p className="eyebrow text-brand-gold mb-5">Contact</p>
           <h1 className="font-serif font-normal text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[-1px] max-w-3xl">
             Écrivez-nous,{" "}
@@ -48,7 +50,7 @@ export default function ContactPage() {
               </h2>
               <address className="not-italic text-brand-ink text-[15px] leading-[1.75] mb-4">
                 <a
-                  href={mapsUrl(maison)}
+                  href={googleMapsUrl(maison)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-start gap-2 hover:text-brand-olive transition-colors"
