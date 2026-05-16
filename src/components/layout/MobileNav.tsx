@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Menu } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Menu, Phone } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { maisons } from "@/data/maisons";
 import {
   Sheet,
   SheetClose,
@@ -12,54 +15,94 @@ import {
 } from "@/components/ui/Sheet";
 
 const NAV = [
-  { href: "/maisons", label: "Maisons" },
-  { href: "/carte", label: "Carte" },
+  { href: "/", label: "Accueil" },
+  { href: "/maisons", label: "Nos maisons" },
+  { href: "/carte", label: "La carte" },
   { href: "/reserver", label: "Réserver" },
   { href: "/privatisation", label: "Privatisation" },
   { href: "/contact", label: "Contact" },
 ];
 
 type MobileNavProps = {
-  triggerClassName?: string;
+  transparent?: boolean;
 };
 
-export function MobileNav({ triggerClassName }: MobileNavProps) {
+export function MobileNav({ transparent }: MobileNavProps) {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger
         aria-label="Ouvrir le menu"
-        className={triggerClassName ?? "p-2 -mr-2"}
+        className={cn(
+          "p-2.5 -mr-1 rounded-full transition-colors",
+          transparent
+            ? "text-brand-cream hover:bg-brand-cream/10"
+            : "text-brand-ink hover:bg-brand-ink/8",
+        )}
       >
         <Menu className="h-6 w-6" aria-hidden />
       </SheetTrigger>
-      <SheetContent side="right">
-        <SheetTitle className="font-serif italic text-3xl text-brand-cream mb-12">
+      <SheetContent side="right" className="flex flex-col">
+        <SheetTitle className="font-serif italic text-3xl text-brand-cream mb-10">
           Oléa
         </SheetTitle>
-        <nav className="flex flex-col gap-7">
-          {NAV.map((item) => (
-            <SheetClose asChild key={item.href}>
-              <Link
-                href={item.href}
-                className="font-serif text-2xl text-brand-cream hover:text-brand-gold transition-colors"
-              >
-                {item.label}
-              </Link>
-            </SheetClose>
-          ))}
+
+        <nav aria-label="Navigation mobile" className="flex flex-col">
+          {NAV.map((item) => {
+            const active =
+              pathname === item.href ||
+              (item.href !== "/" && pathname?.startsWith(`${item.href}/`));
+            return (
+              <SheetClose asChild key={item.href}>
+                <Link
+                  href={item.href}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "font-serif text-[26px] leading-tight py-3 border-b border-brand-cream/10 transition-colors",
+                    active
+                      ? "text-brand-gold"
+                      : "text-brand-cream hover:text-brand-gold",
+                  )}
+                >
+                  {item.label}
+                </Link>
+              </SheetClose>
+            );
+          })}
         </nav>
-        <div className="absolute bottom-8 left-8 right-8 pt-6 border-t border-brand-cream/15">
-          <p className="text-[11px] tracking-[0.2em] uppercase text-brand-gold mb-3">
-            Réserver
+
+        <div className="mt-auto pt-8">
+          <p className="text-[11px] tracking-[0.22em] uppercase text-brand-gold mb-4">
+            Réserver par téléphone
           </p>
-          <a
-            href="tel:+33625151333"
-            className="font-serif text-xl text-brand-cream hover:text-brand-gold transition-colors"
-          >
-            06 25 15 13 33
-          </a>
+          <ul className="space-y-3">
+            {maisons.map((maison) => (
+              <li key={maison.slug}>
+                {maison.ouvert ? (
+                  <a
+                    href={`tel:${maison.telephone}`}
+                    className="flex items-center justify-between gap-3 text-brand-cream hover:text-brand-gold transition-colors"
+                    onClick={() => setOpen(false)}
+                  >
+                    <span className="font-serif text-lg">{maison.nom}</span>
+                    <span className="inline-flex items-center gap-2 text-[12px] tracking-[0.14em] uppercase text-brand-text-soft">
+                      <Phone className="h-3.5 w-3.5" aria-hidden />
+                      {maison.telephoneAffichage}
+                    </span>
+                  </a>
+                ) : (
+                  <div className="flex items-center justify-between gap-3 text-brand-cream/60">
+                    <span className="font-serif text-lg">{maison.nom}</span>
+                    <span className="text-[11px] tracking-[0.18em] uppercase text-brand-gold">
+                      Bientôt
+                    </span>
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
         </div>
       </SheetContent>
     </Sheet>
