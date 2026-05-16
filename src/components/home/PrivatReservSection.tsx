@@ -36,10 +36,18 @@ export function PrivatReservSection() {
           id="reserver"
           className="bg-brand-ink text-brand-cream p-7 sm:p-9 md:p-11 scroll-mt-28"
         >
-          <p className="eyebrow text-brand-gold mb-2">Réserver maintenant</p>
-          <p className="font-serif italic text-brand-cream/80 mt-1 mb-6">
-            Une table vous attend, à un coup de fil.
+          <p className="eyebrow text-brand-gold mb-2">Réserver une table</p>
+          <p className="font-serif text-[22px] leading-snug mt-3 mb-6 max-w-[280px]">
+            Choisissez votre maison, date et créneau en quelques clics.
           </p>
+          <Link
+            href="/reserver"
+            className="inline-flex items-center justify-center bg-brand-cream text-brand-ink px-7 py-3 text-[11px] uppercase tracking-[0.2em] hover:bg-brand-gold transition-colors"
+          >
+            Réserver en ligne
+          </Link>
+
+          <p className="eyebrow text-brand-gold mt-9 mb-4">Ou par téléphone</p>
           <ul className="flex flex-col gap-4">
             {maisons.map((maison) => {
               const inner = (

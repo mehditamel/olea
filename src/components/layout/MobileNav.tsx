@@ -18,6 +18,7 @@ const NAV = [
   { href: "/", label: "Accueil" },
   { href: "/maisons", label: "Nos maisons" },
   { href: "/carte", label: "La carte" },
+  { href: "/reserver", label: "Réserver" },
   { href: "/privatisation", label: "Privatisation" },
   { href: "/contact", label: "Contact" },
 ];

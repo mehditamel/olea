@@ -104,7 +104,7 @@ export function SiteHeader() {
             <Phone className="h-5 w-5" aria-hidden />
           </a>
           <Link
-            href="/#reserver"
+            href="/reserver"
             className={cn(
               "hidden md:inline-block px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-medium transition-colors",
               transparent

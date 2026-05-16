@@ -43,7 +43,14 @@ export function MaisonReservation({ maison }: { maison: Maison }) {
               Réserver en ligne
               <ExternalLink className="h-3.5 w-3.5" aria-hidden />
             </a>
-          ) : null}
+          ) : (
+            <Link
+              href={`/reserver?maison=${maison.slug}`}
+              className="bg-brand-ink text-brand-cream px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] hover:bg-brand-olive transition-colors"
+            >
+              Réserver en ligne
+            </Link>
+          )}
           <a
             href={`tel:${maison.telephone}`}
             className="inline-flex items-center justify-center gap-2 border border-brand-ink text-brand-ink px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] hover:bg-brand-ink hover:text-brand-cream transition-colors"
