@@ -1,5 +1,6 @@
 import { Leaf, ChefHat, Users } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
+import { Reveal } from "@/components/ui/Reveal";
 
 type Pillar = {
   Icon: ComponentType<SVGProps<SVGSVGElement>>;
@@ -30,8 +31,10 @@ export function Pillars() {
     <section className="bg-brand-cream px-6 md:px-12 py-14 md:py-20">
       <ul className="mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-3 md:divide-x divide-brand-ink/10">
         {PILLARS.map(({ Icon, title, text }, idx) => (
-          <li
+          <Reveal
+            as="li"
             key={title}
+            delay={idx * 120}
             className={
               idx === 1
                 ? "py-8 md:py-0 md:px-9 border-y md:border-y-0 border-brand-ink/10 text-center"
@@ -50,7 +53,7 @@ export function Pillars() {
             <p className="text-sm leading-relaxed text-brand-text-muted max-w-[280px] mx-auto">
               {text}
             </p>
-          </li>
+          </Reveal>
         ))}
       </ul>
     </section>

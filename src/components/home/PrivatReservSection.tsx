@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Phone } from "lucide-react";
 import { maisons } from "@/data/maisons";
+import { Reveal } from "@/components/ui/Reveal";
 
 export function PrivatReservSection() {
   return (
@@ -9,7 +10,7 @@ export function PrivatReservSection() {
       className="bg-brand-cream px-6 md:px-12 pb-20 md:pb-24"
     >
       <div className="mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-[1.15fr_1fr] gap-10 md:gap-0 items-stretch pt-16 md:pt-20 border-t border-brand-ink/15">
-        <div className="md:pr-14">
+        <Reveal className="md:pr-14">
           <p className="eyebrow text-brand-olive mb-5">
             Privatisation & événements
           </p>
@@ -28,9 +29,10 @@ export function PrivatReservSection() {
           >
             Demander un devis
           </Link>
-        </div>
+        </Reveal>
 
-        <div
+        <Reveal
+          delay={120}
           id="reserver"
           className="bg-brand-ink text-brand-cream p-7 sm:p-9 md:p-11 scroll-mt-28"
         >
@@ -85,7 +87,7 @@ export function PrivatReservSection() {
               );
             })}
           </ul>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

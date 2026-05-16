@@ -33,6 +33,7 @@ export function DevisForm() {
     register,
     handleSubmit,
     reset,
+    setFocus,
     formState: { errors },
   } = useForm<DevisInput>({
     resolver: zodResolver(devisSchema),
@@ -43,7 +44,8 @@ export function DevisForm() {
     },
   });
 
-  const onSubmit = handleSubmit(async (values) => {
+  const onSubmit = handleSubmit(
+    async (values) => {
     setStatus({ state: "submitting" });
     try {
       const res = await fetch("/api/devis", {
@@ -64,7 +66,12 @@ export function DevisForm() {
         err instanceof Error ? err.message : "Une erreur est survenue.";
       setStatus({ state: "error", message });
     }
-  });
+  },
+    (errs) => {
+      const first = Object.keys(errs)[0] as keyof DevisInput | undefined;
+      if (first) setFocus(first);
+    },
+  );
 
   if (status.state === "success") {
     return (
@@ -187,15 +194,17 @@ export function DevisForm() {
         </div>
       </fieldset>
 
-      {status.state === "error" && (
-        <div
-          role="alert"
-          className="flex items-start gap-3 border border-red-300 bg-red-50 text-red-800 px-4 py-3 text-sm"
-        >
-          <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" aria-hidden />
-          <p>{status.message}</p>
-        </div>
-      )}
+      <div aria-live="polite" className="contents">
+        {status.state === "error" && (
+          <div
+            role="alert"
+            className="flex items-start gap-3 border border-red-300 bg-red-50 text-red-800 px-4 py-3 text-sm"
+          >
+            <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" aria-hidden />
+            <p>{status.message}</p>
+          </div>
+        )}
+      </div>
 
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:justify-between border-t border-brand-ink/15 pt-7">
         <p className="text-xs text-brand-text-muted max-w-sm">
@@ -205,7 +214,7 @@ export function DevisForm() {
         <button
           type="submit"
           disabled={status.state === "submitting"}
-          className="inline-flex items-center justify-center bg-brand-ink text-brand-cream px-8 h-12 text-[11px] uppercase tracking-[0.2em] hover:bg-brand-olive transition-colors disabled:opacity-60 disabled:cursor-not-allowed min-w-[220px]"
+          className="inline-flex items-center justify-center bg-brand-ink text-brand-cream px-8 h-12 text-[11px] uppercase tracking-[0.2em] hover:bg-brand-olive active:scale-[0.98] transition-[background-color,transform] disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100 min-w-[220px]"
         >
           {status.state === "submitting"
             ? "Envoi en cours…"

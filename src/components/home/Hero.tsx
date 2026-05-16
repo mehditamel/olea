@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ChevronDown } from "lucide-react";
-import { OliveBranch } from "@/components/brand/OliveBranch";
+import { HeroBackdrop } from "./HeroBackdrop";
 
 export function Hero() {
   return (
@@ -18,17 +18,8 @@ export function Hero() {
           `,
         }}
       />
-      <div
-        className="absolute left-[10%] top-[22%] w-[260px] h-[260px] md:w-[320px] md:h-[320px] rounded-full opacity-40 blur-[3px]"
-        style={{
-          background:
-            "radial-gradient(circle, #E8D5A8 0%, #8B6F3A 60%, #3D2F18 100%)",
-        }}
-      />
 
-      <OliveBranch
-        className="absolute right-[4%] bottom-[18%] md:bottom-[12%] w-[160px] md:w-[240px] h-auto text-brand-cream opacity-25"
-      />
+      <HeroBackdrop />
 
       {/* Vignette */}
       <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(31,34,24,0.30)_0%,transparent_35%,rgba(31,34,24,0.55)_100%)]" />
@@ -53,13 +44,13 @@ export function Hero() {
         <div className="olea-fade-up flex flex-col sm:flex-row gap-3 sm:gap-4">
           <Link
             href="#reserver"
-            className="inline-flex items-center justify-center bg-brand-cream text-brand-ink px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-medium hover:bg-brand-gold transition-colors"
+            className="inline-flex items-center justify-center bg-brand-cream text-brand-ink px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-medium hover:bg-brand-gold active:scale-[0.98] transition-[background-color,transform]"
           >
             Réserver une table
           </Link>
           <Link
             href="/maisons"
-            className="inline-flex items-center justify-center border border-brand-cream/70 text-brand-cream px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-medium hover:bg-brand-cream hover:text-brand-ink transition-colors"
+            className="inline-flex items-center justify-center border border-brand-cream/70 text-brand-cream px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-medium hover:bg-brand-cream hover:text-brand-ink active:scale-[0.98] transition-[background-color,color,transform]"
           >
             Découvrir les maisons
           </Link>
@@ -70,7 +61,6 @@ export function Hero() {
         </p>
       </div>
 
-      {/* Indicateur de scroll */}
       <a
         href="#maisons"
         aria-label="Faire défiler"

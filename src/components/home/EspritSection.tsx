@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { OliveBranch } from "@/components/brand/OliveBranch";
+import { Reveal } from "@/components/ui/Reveal";
 
 export function EspritSection() {
   return (
     <section className="bg-brand-cream px-6 md:px-12 py-16 md:py-28">
       <div className="mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-[1fr_1.1fr] gap-10 md:gap-16 items-center">
-        <div>
+        <Reveal>
           <p className="eyebrow text-brand-olive mb-5">L&apos;esprit Oléa</p>
           <h2 className="font-serif font-normal text-[clamp(32px,4.5vw,52px)] leading-[1.05] tracking-[-0.8px] mb-6 md:mb-7 text-brand-ink">
             Une cuisine née du{" "}
@@ -30,8 +31,9 @@ export function EspritSection() {
             Découvrir la carte
             <ArrowUpRight className="h-4 w-4" aria-hidden />
           </Link>
-        </div>
-        <div
+        </Reveal>
+        <Reveal
+          delay={120}
           className="relative h-[280px] md:h-[420px] overflow-hidden order-first md:order-none"
           style={{
             background:
@@ -53,7 +55,7 @@ export function EspritSection() {
           <p className="absolute bottom-5 left-5 md:bottom-6 md:left-6 font-serif italic text-xs text-brand-ink opacity-70">
             Huile d&apos;olive vierge extra · Récolte 2025
           </p>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
