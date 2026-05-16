@@ -17,6 +17,14 @@ export const metadata: Metadata = {
     url: absoluteUrl(`/maisons/${SLUG}`),
     type: "website",
     locale: "fr_FR",
+    images: maison.photoHero
+      ? [
+          {
+            url: absoluteUrl(maison.photoHero),
+            alt: `Maison Oléa ${maison.nom}`,
+          },
+        ]
+      : undefined,
   },
 };
 

@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+import { Phone, Mail, MapPin } from "lucide-react";
 import { maisons } from "@/data/maisons";
 import { absoluteUrl } from "@/lib/utils";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
+import { googleMapsUrl } from "@/lib/maps";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -12,8 +15,16 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <>
-      <section className="bg-brand-ink text-brand-cream px-6 md:px-12 pt-40 pb-16 md:pt-48 md:pb-20">
+      <section className="bg-brand-ink text-brand-cream px-6 md:px-12 pt-32 pb-12 md:pt-40 md:pb-20">
         <div className="mx-auto max-w-7xl">
+          <Breadcrumbs
+            variant="light"
+            className="mb-6"
+            items={[
+              { href: "/", label: "Accueil" },
+              { href: "/contact", label: "Contact" },
+            ]}
+          />
           <p className="eyebrow text-brand-gold mb-5">Contact</p>
           <h1 className="font-serif font-normal text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[-1px] max-w-3xl">
             Écrivez-nous,{" "}
@@ -24,33 +35,48 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <section className="bg-brand-cream px-6 md:px-12 py-16 md:py-20">
-        <div className="mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 mb-16">
+      <section className="bg-brand-cream px-6 md:px-12 py-12 md:py-20">
+        <div className="mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 mb-12 md:mb-16">
           {maisons.map((maison) => (
-            <div key={maison.slug}>
-              <p className="text-[11px] uppercase tracking-[0.22em] text-brand-olive mb-4">
-                {maison.nom}
+            <article
+              key={maison.slug}
+              className="border-t border-brand-ink/15 pt-6 md:pt-7"
+            >
+              <p className="text-[11px] uppercase tracking-[0.22em] text-brand-olive mb-3">
+                {maison.label}
               </p>
-              <address className="not-italic text-brand-ink text-[15px] leading-[1.85]">
-                {maison.adresse}
-                <br />
-                {maison.codePostal} {maison.ville}
-              </address>
-              <div className="mt-4">
-                {maison.ouvert ? (
-                  <a
-                    href={`tel:${maison.telephone}`}
-                    className="font-serif text-xl text-brand-ink border-b border-brand-olive pb-1 hover:text-brand-olive transition-colors"
-                  >
-                    {maison.telephoneAffichage}
-                  </a>
-                ) : (
-                  <span className="font-serif italic text-lg text-brand-olive">
-                    Ouverture prochaine
+              <h2 className="font-serif text-2xl md:text-3xl text-brand-ink mb-4">
+                {maison.nom}
+              </h2>
+              <address className="not-italic text-brand-ink text-[15px] leading-[1.75] mb-4">
+                <a
+                  href={googleMapsUrl(maison)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-start gap-2 hover:text-brand-olive transition-colors"
+                >
+                  <MapPin className="h-4 w-4 mt-1 flex-shrink-0 text-brand-olive" aria-hidden />
+                  <span>
+                    {maison.adresse}
+                    <br />
+                    {maison.codePostal} {maison.ville}
                   </span>
-                )}
-              </div>
-            </div>
+                </a>
+              </address>
+              {maison.ouvert ? (
+                <a
+                  href={`tel:${maison.telephone}`}
+                  className="inline-flex items-center gap-2 font-serif text-xl text-brand-ink border-b border-brand-olive pb-1 hover:text-brand-olive transition-colors"
+                >
+                  <Phone className="h-4 w-4" aria-hidden />
+                  {maison.telephoneAffichage}
+                </a>
+              ) : (
+                <span className="font-serif italic text-lg text-brand-olive">
+                  Ouverture prochaine
+                </span>
+              )}
+            </article>
           ))}
         </div>
 
@@ -58,9 +84,10 @@ export default function ContactPage() {
           <p className="eyebrow text-brand-olive mb-4">Une question générale ?</p>
           <a
             href="mailto:contact@olea-restaurant.fr"
-            className="font-serif text-3xl md:text-4xl text-brand-ink border-b border-brand-olive pb-2 hover:text-brand-olive transition-colors"
+            className="inline-flex items-center gap-3 font-serif text-2xl md:text-4xl text-brand-ink border-b border-brand-olive pb-2 hover:text-brand-olive transition-colors break-all md:break-normal"
           >
-            contact@olea-restaurant.fr
+            <Mail className="h-6 w-6 md:h-7 md:w-7 flex-shrink-0" aria-hidden />
+            <span>contact@olea-restaurant.fr</span>
           </a>
         </div>
       </section>
