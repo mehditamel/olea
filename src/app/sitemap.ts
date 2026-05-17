@@ -22,5 +22,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.85,
   }));
 
-  return [...staticPages, ...maisonsPages];
+  const cartesPages: MetadataRoute.Sitemap = maisons
+    .filter((m) => m.slug !== "villeneuve-loubet")
+    .map((m) => ({
+      url: absoluteUrl(`/carte/${m.slug}`),
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.75,
+    }));
+
+  return [...staticPages, ...maisonsPages, ...cartesPages];
 }
