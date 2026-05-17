@@ -42,6 +42,10 @@ export const maisons: readonly Maison[] = [
     ],
     accent: "#4A5530",
     reservationUrl: "",
+    instagram: {
+      handle: "olea.marseille",
+      url: "https://www.instagram.com/olea.marseille/",
+    },
   },
   {
     slug: "cassis",
@@ -72,6 +76,10 @@ export const maisons: readonly Maison[] = [
     photos: [],
     accent: "#5C8170",
     reservationUrl: "",
+    instagram: {
+      handle: "olea.cassis",
+      url: "https://www.instagram.com/olea.cassis/",
+    },
   },
   {
     slug: "villeneuve-loubet",
@@ -96,6 +104,10 @@ export const maisons: readonly Maison[] = [
     photos: [],
     accent: "#C49960",
     reservationUrl: "",
+    instagram: {
+      // Compte bientôt actif — handle réservé.
+      handle: "olea.villeneuve",
+    },
   },
 ] as const;
 

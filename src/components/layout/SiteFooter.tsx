@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Phone, Mail } from "lucide-react";
 import { maisons } from "@/data/maisons";
 import { OliveBranch } from "@/components/brand/OliveBranch";
+import { InstagramIcon } from "@/components/brand/InstagramIcon";
 
 const QUICK_LINKS = [
   { href: "/maisons", label: "Nos maisons" },
@@ -66,6 +67,23 @@ export function SiteFooter() {
                   <span className="text-sm text-brand-gold">Ouverture prochaine</span>
                 )}
               </div>
+              {maison.instagram?.url ? (
+                <a
+                  href={maison.instagram.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 inline-flex items-center gap-1.5 text-sm text-brand-text-soft hover:text-brand-gold transition-colors"
+                  aria-label={`Instagram Maison Oléa ${maison.nom} — @${maison.instagram.handle}`}
+                >
+                  <InstagramIcon className="h-3.5 w-3.5" />
+                  @{maison.instagram.handle}
+                </a>
+              ) : maison.instagram ? (
+                <span className="mt-2 inline-flex items-center gap-1.5 text-sm text-brand-gold-deep">
+                  <InstagramIcon className="h-3.5 w-3.5" />
+                  @{maison.instagram.handle} · bientôt
+                </span>
+              ) : null}
               <Link
                 href={`/maisons/${maison.slug}`}
                 className="mt-4 inline-block text-[11px] uppercase tracking-[0.18em] border-b border-brand-gold-deep pb-1 hover:text-brand-gold transition-colors"

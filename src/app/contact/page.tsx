@@ -3,6 +3,7 @@ import { Phone, Mail, MapPin } from "lucide-react";
 import { maisons } from "@/data/maisons";
 import { absoluteUrl } from "@/lib/utils";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
+import { InstagramIcon } from "@/components/brand/InstagramIcon";
 import { googleMapsUrl } from "@/lib/maps";
 
 export const metadata: Metadata = {
@@ -76,6 +77,23 @@ export default function ContactPage() {
                   Ouverture prochaine
                 </span>
               )}
+              {maison.instagram?.url ? (
+                <a
+                  href={maison.instagram.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-brand-olive hover:text-brand-olive-deep transition-colors"
+                  aria-label={`Instagram @${maison.instagram.handle}`}
+                >
+                  <InstagramIcon className="h-3.5 w-3.5" />
+                  @{maison.instagram.handle}
+                </a>
+              ) : maison.instagram ? (
+                <p className="mt-4 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-brand-gold-deep">
+                  <InstagramIcon className="h-3.5 w-3.5" />
+                  @{maison.instagram.handle} · bientôt
+                </p>
+              ) : null}
             </article>
           ))}
         </div>
