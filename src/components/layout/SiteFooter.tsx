@@ -112,6 +112,9 @@ export function SiteFooter() {
             <Link href="/mentions-legales" className="hover:text-brand-gold transition-colors">
               Mentions légales
             </Link>
+            <Link href="/cgu" className="hover:text-brand-gold transition-colors">
+              CGU
+            </Link>
             <span>© {year} Maison Oléa</span>
           </div>
         </div>
