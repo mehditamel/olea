@@ -1,6 +1,7 @@
 import { Leaf, ChefHat, Users } from "lucide-react";
 import type { ComponentType, SVGProps } from "react";
 import { Reveal } from "@/components/ui/Reveal";
+import type { Dictionary } from "@/i18n/dictionaries";
 
 type Pillar = {
   Icon: ComponentType<SVGProps<SVGSVGElement>>;
@@ -8,25 +9,25 @@ type Pillar = {
   text: string;
 };
 
-const PILLARS: readonly Pillar[] = [
-  {
-    Icon: Leaf,
-    title: "Produits frais & locaux",
-    text: "Le savoir-faire des producteurs régionaux à chaque assiette.",
-  },
-  {
-    Icon: ChefHat,
-    title: "Fait maison",
-    text: "Des plats préparés sur place, dans la tradition méditerranéenne.",
-  },
-  {
-    Icon: Users,
-    title: "Partage & convivialité",
-    text: "Une table pensée pour les moments à plusieurs, en famille ou entre amis.",
-  },
-];
+export function Pillars({ dict }: { dict: Dictionary }) {
+  const PILLARS: readonly Pillar[] = [
+    {
+      Icon: Leaf,
+      title: dict.pillars.produits.titre,
+      text: dict.pillars.produits.texte,
+    },
+    {
+      Icon: ChefHat,
+      title: dict.pillars.faitMaison.titre,
+      text: dict.pillars.faitMaison.texte,
+    },
+    {
+      Icon: Users,
+      title: dict.pillars.partage.titre,
+      text: dict.pillars.partage.texte,
+    },
+  ];
 
-export function Pillars() {
   return (
     <section className="bg-brand-cream px-6 md:px-12 py-14 md:py-20">
       <ul className="mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-3 md:divide-x divide-brand-ink/10">

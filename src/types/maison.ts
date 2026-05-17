@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { LOCALES, type Locale } from "@/i18n/config";
 
 export const maisonSlugSchema = z.enum([
   "marseille",
@@ -37,20 +38,28 @@ export const horaireSchema = z.object({
 });
 export type Horaire = z.infer<typeof horaireSchema>;
 
-/**
- * Profil Instagram d'une maison.
- * `url` absent → compte « bientôt » (handle réservé, pas encore actif).
- */
 export const instagramProfileSchema = z.object({
   handle: z.string().regex(/^[a-z0-9._]+$/),
   url: z.string().url().optional(),
 });
 export type InstagramProfile = z.infer<typeof instagramProfileSchema>;
 
+const localizedStringShape = Object.fromEntries(
+  LOCALES.map((l) => [l, z.string().min(1)]),
+) as Record<Locale, z.ZodString>;
+export const localizedStringSchema = z.object(localizedStringShape);
+export type LocalizedString = z.infer<typeof localizedStringSchema>;
+
+const localizedStringArrayShape = Object.fromEntries(
+  LOCALES.map((l) => [l, z.array(z.string().min(1)).min(1)]),
+) as Record<Locale, z.ZodArray<z.ZodString>>;
+export const localizedStringArraySchema = z.object(localizedStringArrayShape);
+export type LocalizedStringArray = z.infer<typeof localizedStringArraySchema>;
+
 export const maisonSchema = z.object({
   slug: maisonSlugSchema,
   nom: z.string().min(1),
-  label: z.string().min(1),
+  label: localizedStringSchema,
   adresse: z.string().min(1),
   codePostal: z.string().regex(/^\d{5}$/),
   ville: z.string().min(1),
@@ -58,13 +67,13 @@ export const maisonSchema = z.object({
   telephone: z.string().regex(/^\+\d{6,15}$/),
   telephoneAffichage: z.string().min(1),
   coordonnees: coordonneesSchema,
-  description: z.string().min(1),
+  description: localizedStringSchema,
   ouvert: z.boolean(),
   dateOuverture: z.string().optional(),
-  badgeOuverture: z.string().optional(),
+  badgeOuverture: localizedStringSchema.optional(),
   horaires: z.array(horaireSchema),
   fourchettePrix: z.enum(["€", "€€", "€€€", "€€€€"]),
-  cuisines: z.array(z.string()).min(1),
+  cuisines: localizedStringArraySchema,
   fermetureHebdo: z.array(jourSchema),
   fermeturesExceptionnelles: z
     .array(z.string().regex(/^\d{4}-\d{2}-\d{2}$/))

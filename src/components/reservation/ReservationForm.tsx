@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,12 +22,18 @@ import { Label } from "@/components/ui/Label";
 import { Select } from "@/components/ui/Select";
 import { StepIndicator } from "./StepIndicator";
 import { SlotPicker } from "./SlotPicker";
+import { LocaleLink } from "@/i18n/LocaleLink";
+import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@/i18n/dictionaries";
+import { interpolate } from "@/i18n/format";
+
+type ReservationErrorCode = keyof Dictionary["reservationForm"]["errors"];
 
 type Status =
   | { state: "idle" }
   | { state: "submitting" }
   | { state: "success" }
-  | { state: "error"; message: string };
+  | { state: "error"; code: ReservationErrorCode };
 
 const MAISONS_OUVERTES = maisons.filter((m) => m.ouvert);
 const PRIVATISATION_THRESHOLD = 11;
@@ -39,9 +44,15 @@ function isMaisonSlug(value: string): value is MaisonSlug {
 
 type ReservationFormProps = {
   defaultMaison?: string;
+  lang: Locale;
+  dict: Dictionary;
 };
 
-export function ReservationForm({ defaultMaison }: ReservationFormProps) {
+export function ReservationForm({
+  defaultMaison,
+  dict,
+}: ReservationFormProps) {
+  const f = dict.reservationForm;
   const initialMaison: MaisonSlug =
     defaultMaison && isMaisonSlug(defaultMaison)
       ? defaultMaison
@@ -105,15 +116,12 @@ export function ReservationForm({ defaultMaison }: ReservationFormProps) {
   const onSubmit = handleSubmit(async (values) => {
     const maison = getMaisonBySlug(values.maison);
     if (!maison) {
-      setStatus({ state: "error", message: "Maison inconnue." });
+      setStatus({ state: "error", code: "maison_unknown" });
       return;
     }
     const service = getServiceForSlot(maison, values.date, values.heure);
     if (!service) {
-      setStatus({
-        state: "error",
-        message: "Veuillez choisir un horaire valide.",
-      });
+      setStatus({ state: "error", code: "invalidSlot" });
       setStep(1);
       return;
     }
@@ -128,7 +136,9 @@ export function ReservationForm({ defaultMaison }: ReservationFormProps) {
         const data = (await res.json().catch(() => null)) as
           | { error?: string }
           | null;
-        throw new Error(data?.error ?? "Une erreur est survenue.");
+        const raw = (data?.error ?? "generic") as string;
+        const code = (raw in f.errors ? raw : "generic") as ReservationErrorCode;
+        throw new Error(code);
       }
       setStatus({ state: "success" });
       reset({
@@ -147,30 +157,24 @@ export function ReservationForm({ defaultMaison }: ReservationFormProps) {
       });
       setStep(1);
     } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Une erreur est survenue.";
-      setStatus({ state: "error", message });
+      const msg = err instanceof Error ? err.message : "generic";
+      const code = (msg in f.errors ? msg : "generic") as ReservationErrorCode;
+      setStatus({ state: "error", code });
     }
   });
 
   if (status.state === "success") {
     return (
       <div className="bg-brand-ink text-brand-cream px-8 py-12 text-center">
-        <p className="eyebrow text-brand-gold mb-4">Demande envoyée</p>
-        <p className="font-serif text-2xl md:text-3xl mb-4">
-          Nous confirmons votre table très vite.
-        </p>
-        <p className="text-sm opacity-80 max-w-md mx-auto">
-          Un email de récap (avec invitation calendrier) vient de vous être
-          envoyé. Notre équipe vous recontacte sous quelques heures pour
-          confirmer le créneau.
-        </p>
+        <p className="eyebrow text-brand-gold mb-4">{f.successEyebrow}</p>
+        <p className="font-serif text-2xl md:text-3xl mb-4">{f.successTitre}</p>
+        <p className="text-sm opacity-80 max-w-md mx-auto">{f.successTexte}</p>
         <button
           type="button"
           onClick={() => setStatus({ state: "idle" })}
           className="mt-8 border border-brand-cream/40 text-brand-cream px-7 py-3 text-[11px] uppercase tracking-[0.2em] hover:bg-brand-cream hover:text-brand-ink transition-colors"
         >
-          Nouvelle réservation
+          {f.successCta}
         </button>
       </div>
     );
@@ -184,13 +188,14 @@ export function ReservationForm({ defaultMaison }: ReservationFormProps) {
     <form onSubmit={onSubmit} noValidate>
       <StepIndicator
         current={step}
-        labels={["Votre table", "Vos coordonnées"]}
+        labels={[f.etapeTable, f.etapeCoordonnees]}
+        ariaLabel={f.progression}
       />
 
       <div className={step === 1 ? "block" : "hidden"}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <Field
-            label="Maison"
+            label={f.maison}
             error={errors.maison?.message}
             className="md:col-span-2"
           >
@@ -209,7 +214,7 @@ export function ReservationForm({ defaultMaison }: ReservationFormProps) {
             </Select>
           </Field>
 
-          <Field label="Date" error={errors.date?.message}>
+          <Field label={f.date} error={errors.date?.message}>
             <Input
               type="date"
               min={todayIsoParis()}
@@ -222,14 +227,14 @@ export function ReservationForm({ defaultMaison }: ReservationFormProps) {
             />
           </Field>
 
-          <Field label="Nombre de convives" error={errors.convives?.message}>
+          <Field label={f.convives} error={errors.convives?.message}>
             <Select
               {...register("convives", { valueAsNumber: true })}
               required
             >
               {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => (
                 <option key={n} value={n}>
-                  {n} {n === 1 ? "personne" : "personnes"}
+                  {n} {n === 1 ? f.personne : f.personnes}
                 </option>
               ))}
             </Select>
@@ -238,29 +243,28 @@ export function ReservationForm({ defaultMaison }: ReservationFormProps) {
           {showPrivatisationCallout && (
             <div className="md:col-span-2 border border-brand-gold bg-brand-cream-soft px-5 py-4 text-sm">
               <p className="font-medium text-brand-ink mb-1">
-                Pour {selectedConvives} convives, optez pour une privatisation.
+                {interpolate(f.privatisationTitre, { n: selectedConvives })}
               </p>
               <p className="text-brand-text-muted">
-                Au-delà de 10 convives, nous vous proposons un menu sur-mesure
-                et la salle privatisée.{" "}
-                <Link
+                {f.privatisationTexte}{" "}
+                <LocaleLink
                   href="/privatisation"
                   className="underline decoration-brand-olive underline-offset-4 hover:text-brand-ink"
                 >
-                  Demander un devis privatisation
-                </Link>
+                  {f.privatisationCta}
+                </LocaleLink>
               </p>
             </div>
           )}
 
           <Field
-            label="Heure"
+            label={f.heure}
             error={errors.heure?.message}
             hint={
               !selectedDate
-                ? "Choisissez d'abord une date"
+                ? f.choisirDate
                 : noSlots
-                  ? "Fermé ce jour — choisissez une autre date"
+                  ? f.fermeCeJour
                   : undefined
             }
             className="md:col-span-2"
@@ -272,17 +276,21 @@ export function ReservationForm({ defaultMaison }: ReservationFormProps) {
               value={selectedHeure ?? ""}
               onSelect={handleSlotSelect}
               disabled={noSlots}
+              labels={{
+                dejeuner: f.services.dejeuner,
+                diner: f.services.diner,
+              }}
             />
           </Field>
 
-          <Field label="Occasion (facultatif)" className="md:col-span-2">
+          <Field label={f.occasion} className="md:col-span-2">
             <Select {...register("occasion")}>
-              <option value="aucune">Aucune en particulier</option>
-              <option value="anniversaire">Anniversaire</option>
-              <option value="romantique">Dîner romantique</option>
-              <option value="famille">Repas de famille</option>
-              <option value="professionnel">Repas professionnel</option>
-              <option value="autre">Autre</option>
+              <option value="aucune">{f.occasions.aucune}</option>
+              <option value="anniversaire">{f.occasions.anniversaire}</option>
+              <option value="romantique">{f.occasions.romantique}</option>
+              <option value="famille">{f.occasions.famille}</option>
+              <option value="professionnel">{f.occasions.professionnel}</option>
+              <option value="autre">{f.occasions.autre}</option>
             </Select>
           </Field>
         </div>
@@ -294,26 +302,25 @@ export function ReservationForm({ defaultMaison }: ReservationFormProps) {
             disabled={noSlots || !selectedHeure}
             className="bg-brand-ink text-brand-cream px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] hover:bg-brand-olive transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            Continuer
+            {f.continuer}
           </button>
           <p className="text-xs text-brand-text-muted">
-            Plus de 10 convives ?{" "}
-            <Link
+            <LocaleLink
               href="/privatisation"
               className="underline decoration-brand-olive underline-offset-4 hover:text-brand-ink"
             >
-              Devis privatisation
-            </Link>
+              {f.privatisationLink}
+            </LocaleLink>
           </p>
         </div>
       </div>
 
       <div className={step === 2 ? "block" : "hidden"}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <Field label="Nom complet" error={errors.nom?.message}>
+          <Field label={f.nom} error={errors.nom?.message}>
             <Input {...register("nom")} autoComplete="name" required />
           </Field>
-          <Field label="Email" error={errors.email?.message}>
+          <Field label={f.email} error={errors.email?.message}>
             <Input
               type="email"
               {...register("email")}
@@ -322,9 +329,9 @@ export function ReservationForm({ defaultMaison }: ReservationFormProps) {
             />
           </Field>
           <Field
-            label="Téléphone"
+            label={f.telephone}
             error={errors.telephone?.message}
-            hint="Format français — ex. 06 25 15 13 33"
+            hint={f.telephoneHint}
             className="md:col-span-2"
           >
             <Input
@@ -337,19 +344,18 @@ export function ReservationForm({ defaultMaison }: ReservationFormProps) {
           </Field>
 
           <Field
-            label="Demandes particulières (facultatif)"
+            label={f.demandes}
             error={errors.demandesParticulieres?.message}
-            hint="Allergies, intolérances, fauteuil roulant, table calme, poussette…"
+            hint={f.demandesHint}
             className="md:col-span-2"
           >
             <Textarea
               {...register("demandesParticulieres")}
               rows={4}
-              placeholder="Précisez vos contraintes ou souhaits."
+              placeholder={f.demandesHint}
             />
           </Field>
 
-          {/* Honeypot anti-spam : champ caché aux humains, visible aux bots. */}
           <div aria-hidden className="hidden" tabIndex={-1}>
             <label>
               Site web
@@ -371,16 +377,11 @@ export function ReservationForm({ defaultMaison }: ReservationFormProps) {
                 required
               />
               <span className="text-sm text-brand-ink leading-snug">
-                J&apos;accepte que mes coordonnées soient utilisées par Maison
-                Oléa pour traiter cette demande de réservation. Aucune
-                communication marketing sans consentement explicite.
+                {f.rgpd}
               </span>
             </label>
             {errors.consentement?.message && (
-              <p
-                className="mt-1.5 text-xs text-red-700 ml-7"
-                role="alert"
-              >
+              <p className="mt-1.5 text-xs text-red-700 ms-7" role="alert">
                 {errors.consentement.message}
               </p>
             )}
@@ -393,20 +394,18 @@ export function ReservationForm({ defaultMaison }: ReservationFormProps) {
             onClick={() => setStep(1)}
             className="border border-brand-ink text-brand-ink px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] hover:bg-brand-ink hover:text-brand-cream transition-colors"
           >
-            ← Retour
+            {f.retour}
           </button>
           <button
             type="submit"
             disabled={status.state === "submitting"}
             className="bg-brand-ink text-brand-cream px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] hover:bg-brand-olive transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {status.state === "submitting"
-              ? "Envoi en cours..."
-              : "Demander la réservation"}
+            {status.state === "submitting" ? f.envoiEnCours : f.envoyer}
           </button>
           {status.state === "error" && (
             <p className="text-sm text-red-700" role="alert">
-              {status.message}
+              {f.errors[status.code]}
             </p>
           )}
         </div>

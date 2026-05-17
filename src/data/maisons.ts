@@ -2,13 +2,22 @@ import type { Maison } from "@/types/maison";
 
 /**
  * Source unique de vérité pour les 3 maisons Oléa.
- * Toute information d'adresse, horaire ou téléphone affichée sur le site provient d'ici.
+ * Les champs `label`, `description`, `cuisines` et `badgeOuverture` sont
+ * traduits dans les 7 langues du site.
  */
 export const maisons: readonly Maison[] = [
   {
     slug: "marseille",
     nom: "Marseille",
-    label: "Maison-mère",
+    label: {
+      fr: "Maison-mère",
+      en: "Original house",
+      it: "Casa madre",
+      es: "Casa madre",
+      pt: "Casa-mãe",
+      ru: "Главный дом",
+      ar: "البيت الأم",
+    },
     adresse: "8 Rue Euthymènes",
     codePostal: "13001",
     ville: "Marseille",
@@ -16,8 +25,15 @@ export const maisons: readonly Maison[] = [
     telephone: "+33625151333",
     telephoneAffichage: "06 25 15 13 33",
     coordonnees: { lat: 43.2951, lng: 5.3735 },
-    description:
-      "Une terrasse bordée d'oliviers face au Vieux-Port, l'écrin originel d'Oléa.",
+    description: {
+      fr: "Une terrasse bordée d'oliviers face au Vieux-Port, l'écrin originel d'Oléa.",
+      en: "A terrace lined with olive trees overlooking the Vieux-Port, the original home of Oléa.",
+      it: "Una terrazza orlata di ulivi di fronte al Vieux-Port, lo scrigno originario di Oléa.",
+      es: "Una terraza bordeada de olivos frente al Vieux-Port, el escenario original de Oléa.",
+      pt: "Um terraço bordejado de oliveiras de frente para o Vieux-Port, o berço original de Oléa.",
+      ru: "Терраса в окружении оливковых деревьев напротив Старого порта — родной дом Oléa.",
+      ar: "شُرفة تحفّ بها أشجار الزيتون قبالة الميناء القديم، البيت الأصلي لـ Oléa.",
+    },
     ouvert: true,
     dateOuverture: "2019-01-01",
     horaires: [
@@ -29,7 +45,15 @@ export const maisons: readonly Maison[] = [
       { jour: "dimanche", dejeuner: "12:00-15:00", diner: null },
     ],
     fourchettePrix: "€€",
-    cuisines: ["Méditerranéenne", "Provençale", "Française"],
+    cuisines: {
+      fr: ["Méditerranéenne", "Provençale", "Française"],
+      en: ["Mediterranean", "Provençal", "French"],
+      it: ["Mediterranea", "Provenzale", "Francese"],
+      es: ["Mediterránea", "Provenzal", "Francesa"],
+      pt: ["Mediterrânica", "Provençal", "Francesa"],
+      ru: ["Средиземноморская", "Провансальская", "Французская"],
+      ar: ["متوسّطية", "بروفنسالية", "فرنسية"],
+    },
     fermetureHebdo: ["lundi"],
     photoHero: "/images/maisons/marseille/hero.jpg",
     photos: [
@@ -50,7 +74,15 @@ export const maisons: readonly Maison[] = [
   {
     slug: "cassis",
     nom: "Cassis",
-    label: "Sur le port",
+    label: {
+      fr: "Sur le port",
+      en: "By the harbour",
+      it: "Sul porto",
+      es: "En el puerto",
+      pt: "No porto",
+      ru: "У порта",
+      ar: "على المرفأ",
+    },
     adresse: "15 Quai Jean Jacques Barthélémy",
     codePostal: "13260",
     ville: "Cassis",
@@ -58,8 +90,15 @@ export const maisons: readonly Maison[] = [
     telephone: "+33625151333",
     telephoneAffichage: "06 25 15 13 33",
     coordonnees: { lat: 43.2147, lng: 5.5391 },
-    description:
-      "Face aux pointus et à la falaise des Calanques, les pieds dans la Méditerranée.",
+    description: {
+      fr: "Face aux pointus et à la falaise des Calanques, les pieds dans la Méditerranée.",
+      en: "Facing traditional fishing boats and the Calanques cliffs, with the Mediterranean at our feet.",
+      it: "Di fronte ai pointus e alla scogliera delle Calanques, con i piedi nel Mediterraneo.",
+      es: "Frente a los barcos tradicionales y al acantilado de las Calanques, con los pies en el Mediterráneo.",
+      pt: "Em frente aos barcos tradicionais e às falésias das Calanques, com os pés no Mediterrâneo.",
+      ru: "Напротив традиционных рыбацких лодок и скал Каланк, у самой кромки Средиземного моря.",
+      ar: "قبالة قوارب الصيد التقليدية وجرف الكالانك، والقدمان في البحر المتوسط.",
+    },
     ouvert: true,
     horaires: [
       { jour: "mardi", dejeuner: "12:00-14:30", diner: "19:00-22:30" },
@@ -70,7 +109,15 @@ export const maisons: readonly Maison[] = [
       { jour: "dimanche", dejeuner: "12:00-15:00", diner: "19:00-22:00" },
     ],
     fourchettePrix: "€€",
-    cuisines: ["Méditerranéenne", "Provençale", "Poissons & fruits de mer"],
+    cuisines: {
+      fr: ["Méditerranéenne", "Provençale", "Poissons & fruits de mer"],
+      en: ["Mediterranean", "Provençal", "Fish & seafood"],
+      it: ["Mediterranea", "Provenzale", "Pesce e frutti di mare"],
+      es: ["Mediterránea", "Provenzal", "Pescados y mariscos"],
+      pt: ["Mediterrânica", "Provençal", "Peixes e marisco"],
+      ru: ["Средиземноморская", "Провансальская", "Рыба и морепродукты"],
+      ar: ["متوسّطية", "بروفنسالية", "أسماك ومأكولات بحرية"],
+    },
     fermetureHebdo: ["lundi"],
     photoHero: "",
     photos: [],
@@ -84,7 +131,15 @@ export const maisons: readonly Maison[] = [
   {
     slug: "villeneuve-loubet",
     nom: "Villeneuve-Loubet",
-    label: "Côte d'Azur",
+    label: {
+      fr: "Côte d'Azur",
+      en: "French Riviera",
+      it: "Costa Azzurra",
+      es: "Costa Azul",
+      pt: "Costa Azul",
+      ru: "Лазурный Берег",
+      ar: "الكوت دازور",
+    },
     adresse: "1220 RN 7",
     codePostal: "06270",
     ville: "Villeneuve-Loubet",
@@ -92,20 +147,42 @@ export const maisons: readonly Maison[] = [
     telephone: "+33625151333",
     telephoneAffichage: "06 25 15 13 33",
     coordonnees: { lat: 43.6358, lng: 7.1422 },
-    description:
-      "Notre nouvelle maison azuréenne, entre mer et arrière-pays niçois.",
+    description: {
+      fr: "Notre nouvelle maison azuréenne, entre mer et arrière-pays niçois.",
+      en: "Our new Riviera house, between the sea and the Niçois hinterland.",
+      it: "La nostra nuova casa azzurra, tra mare ed entroterra nizzardo.",
+      es: "Nuestra nueva casa azulada, entre el mar y el interior nizardo.",
+      pt: "A nossa nova casa da Riviera, entre o mar e o interior nizardo.",
+      ru: "Наш новый дом на Лазурном Берегу, между морем и предгорьями Ниццы.",
+      ar: "بيتنا الجديد على الريفييرا، بين البحر والمناطق الداخلية لنيس.",
+    },
     ouvert: false,
-    badgeOuverture: "Nouveau",
+    badgeOuverture: {
+      fr: "Nouveau",
+      en: "New",
+      it: "Nuovo",
+      es: "Nuevo",
+      pt: "Novo",
+      ru: "Новый",
+      ar: "جديد",
+    },
     horaires: [],
     fourchettePrix: "€€",
-    cuisines: ["Méditerranéenne", "Provençale", "Niçoise"],
+    cuisines: {
+      fr: ["Méditerranéenne", "Provençale", "Niçoise"],
+      en: ["Mediterranean", "Provençal", "Niçoise"],
+      it: ["Mediterranea", "Provenzale", "Nizzarda"],
+      es: ["Mediterránea", "Provenzal", "Nizarda"],
+      pt: ["Mediterrânica", "Provençal", "Nizarda"],
+      ru: ["Средиземноморская", "Провансальская", "Ниццкая"],
+      ar: ["متوسّطية", "بروفنسالية", "نيسية"],
+    },
     fermetureHebdo: [],
     photoHero: "",
     photos: [],
     accent: "#C49960",
     reservationUrl: "",
     instagram: {
-      // Compte bientôt actif — handle réservé.
       handle: "olea.villeneuve",
     },
   },

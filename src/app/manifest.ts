@@ -7,7 +7,7 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "Oléa",
     description:
       "Cuisine méditerranéenne en Provence et Côte d'Azur — Marseille, Cassis, Villeneuve-Loubet.",
-    start_url: "/",
+    start_url: "/fr",
     scope: "/",
     display: "standalone",
     orientation: "portrait",
@@ -46,19 +46,19 @@ export default function manifest(): MetadataRoute.Manifest {
         name: "Réserver une table",
         short_name: "Réserver",
         description: "Réservez en quelques secondes dans une de nos maisons",
-        url: "/reserver",
+        url: "/fr/reserver",
       },
       {
         name: "Voir la carte",
         short_name: "La carte",
         description: "Découvrez la carte du moment",
-        url: "/carte",
+        url: "/fr/carte",
       },
       {
         name: "Demande de privatisation",
         short_name: "Privatisation",
         description: "Devis sur-mesure pour votre événement",
-        url: "/privatisation",
+        url: "/fr/privatisation",
       },
     ],
   };

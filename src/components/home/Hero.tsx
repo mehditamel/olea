@@ -1,14 +1,14 @@
-import Link from "next/link";
 import { ChevronDown } from "lucide-react";
 import { HeroBackdrop } from "./HeroBackdrop";
+import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@/i18n/dictionaries";
+import { withLocale } from "@/i18n/locale-href";
 
-export function Hero() {
+export function Hero({ lang, dict }: { lang: Locale; dict: Dictionary }) {
   return (
     <section className="relative min-h-[100svh] md:min-h-[680px] md:h-[92vh] overflow-hidden">
-      {/* Dégradé chaud */}
       <div className="absolute inset-0 bg-[linear-gradient(135deg,#5C4828_0%,#2E3A1E_100%)]" />
 
-      {/* Lueurs / soleil */}
       <div
         className="absolute inset-0"
         style={{
@@ -21,49 +21,48 @@ export function Hero() {
 
       <HeroBackdrop />
 
-      {/* Vignette */}
       <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(31,34,24,0.30)_0%,transparent_35%,rgba(31,34,24,0.55)_100%)]" />
 
-      {/* Contenu */}
       <div className="relative h-full mx-auto max-w-7xl flex flex-col justify-end px-6 pb-24 md:px-12 md:pb-24 text-brand-cream pt-32">
         <p className="olea-fade-up text-[11px] md:text-xs uppercase tracking-[0.25em] mb-5 md:mb-6 opacity-90">
           <span className="inline-block border-b border-brand-gold-light/60 pb-1">
-            Cuisine méditerranéenne · Depuis 2019
+            {dict.hero.eyebrow}
           </span>
         </p>
         <h1 className="olea-fade-up font-serif font-normal leading-[1.02] mb-6 md:mb-7 text-[clamp(44px,8vw,92px)] tracking-[-1.5px]">
-          La Méditerranée,
+          {dict.hero.titre1}
           <br />
-          <span className="italic text-brand-gold-light">à votre table.</span>
+          <span className="italic text-brand-gold-light">
+            {dict.hero.titre2Italic}
+          </span>
         </h1>
         <p className="olea-fade-up font-serif italic text-lg md:text-xl leading-snug max-w-[520px] opacity-90 mb-8 md:mb-10">
-          Trois maisons, un même geste : célébrer la lumière du Sud à travers
-          une cuisine sincère et le partage.
+          {dict.hero.sousTitre}
         </p>
 
         <div className="olea-fade-up flex flex-col sm:flex-row gap-3 sm:gap-4">
-          <Link
-            href="#reserver"
+          <a
+            href={withLocale(lang, "/reserver")}
             className="inline-flex items-center justify-center bg-brand-cream text-brand-ink px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-medium hover:bg-brand-gold active:scale-[0.98] transition-[background-color,transform]"
           >
-            Réserver une table
-          </Link>
-          <Link
-            href="/maisons"
+            {dict.hero.ctaReserver}
+          </a>
+          <a
+            href={withLocale(lang, "/maisons")}
             className="inline-flex items-center justify-center border border-brand-cream/70 text-brand-cream px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-medium hover:bg-brand-cream hover:text-brand-ink active:scale-[0.98] transition-[background-color,color,transform]"
           >
-            Découvrir les maisons
-          </Link>
+            {dict.hero.ctaDecouvrir}
+          </a>
         </div>
 
-        <p className="mt-10 md:mt-0 md:absolute md:bottom-6 md:right-12 text-[10px] md:text-[11px] tracking-[0.25em] uppercase text-brand-cream/70">
-          Marseille · Cassis · Villeneuve-Loubet
+        <p className="mt-10 md:mt-0 md:absolute md:bottom-6 md:end-12 text-[10px] md:text-[11px] tracking-[0.25em] uppercase text-brand-cream/70">
+          {dict.hero.villes}
         </p>
       </div>
 
       <a
         href="#maisons"
-        aria-label="Faire défiler"
+        aria-label={dict.hero.scrollHint}
         className="hidden md:flex absolute bottom-6 left-1/2 -translate-x-1/2 items-center justify-center w-10 h-10 rounded-full border border-brand-cream/40 text-brand-cream/80 hover:text-brand-cream hover:border-brand-cream transition-colors"
       >
         <ChevronDown className="h-5 w-5 olea-scroll-hint" aria-hidden />

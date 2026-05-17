@@ -52,7 +52,7 @@ export async function POST(request: Request) {
   if (!rate.ok) {
     logger.warn({ ip }, "Reservation rate-limited");
     return NextResponse.json(
-      { error: "Trop de tentatives. Réessayez plus tard." },
+      { error: "rate_limited" },
       {
         status: 429,
         headers: {
@@ -66,23 +66,18 @@ export async function POST(request: Request) {
   try {
     payload = await request.json();
   } catch {
-    return NextResponse.json(
-      { error: "Corps de requête invalide (JSON attendu)." },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "bad_json" }, { status: 400 });
   }
 
   const parsed = reservationSchema.safeParse(payload);
   if (!parsed.success) {
     return NextResponse.json(
-      { error: "Données invalides.", issues: parsed.error.flatten() },
+      { error: "invalid_data", issues: parsed.error.flatten() },
       { status: 400 },
     );
   }
   const data = parsed.data;
 
-  // Honeypot : un bot a rempli le champ caché. On répond OK sans rien faire
-  // pour ne pas signaler la détection.
   if (data.siteWeb && data.siteWeb.length > 0) {
     logger.warn({ ip }, "Reservation honeypot triggered");
     return NextResponse.json({ ok: true, mode: "log" });
@@ -90,40 +85,28 @@ export async function POST(request: Request) {
 
   const maison = getMaisonBySlug(data.maison);
   if (!maison) {
-    return NextResponse.json({ error: "Maison inconnue." }, { status: 400 });
+    return NextResponse.json({ error: "maison_unknown" }, { status: 400 });
   }
   if (!maison.ouvert) {
     return NextResponse.json(
-      { error: "Cette maison n'accepte pas encore de réservations en ligne." },
+      { error: "maison_closed_online" },
       { status: 400 },
     );
   }
 
   if (isIsoDateInPastParis(data.date)) {
-    return NextResponse.json(
-      { error: "La date doit être à venir." },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "past_date" }, { status: 400 });
   }
   if (isMaisonClosedOn(maison, data.date)) {
-    return NextResponse.json(
-      { error: "La maison est fermée ce jour-là." },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "closed_on_date" }, { status: 400 });
   }
 
   const expectedService = getServiceForSlot(maison, data.date, data.heure);
   if (!expectedService) {
-    return NextResponse.json(
-      { error: "Créneau indisponible pour cette date." },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "invalid_slot" }, { status: 400 });
   }
   if (expectedService !== data.service) {
-    return NextResponse.json(
-      { error: "Service incohérent avec l'horaire choisi." },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "service_mismatch" }, { status: 400 });
   }
 
   logger.info(
@@ -169,10 +152,7 @@ export async function POST(request: Request) {
   });
 
   if (!teamResult.ok) {
-    return NextResponse.json(
-      { error: "Échec de l'envoi. Veuillez réessayer dans un instant." },
-      { status: 502 },
-    );
+    return NextResponse.json({ error: "send_failed" }, { status: 502 });
   }
 
   const ics = buildReservationIcs({
@@ -209,8 +189,6 @@ export async function POST(request: Request) {
   });
 
   if (!clientResult.ok) {
-    // L'équipe a bien reçu la demande : on ne fait pas échouer toute la
-    // requête, on log et on signale juste un succès partiel.
     logger.warn(
       { err: clientResult.error },
       "Reservation: client confirmation email failed",

@@ -3,13 +3,14 @@ import { cn } from "@/lib/utils";
 type StepIndicatorProps = {
   current: 1 | 2;
   labels: [string, string];
+  ariaLabel: string;
 };
 
-export function StepIndicator({ current, labels }: StepIndicatorProps) {
+export function StepIndicator({ current, labels, ariaLabel }: StepIndicatorProps) {
   return (
     <ol
       className="flex items-center gap-3 text-[11px] uppercase tracking-[0.18em] mb-8"
-      aria-label="Progression du formulaire"
+      aria-label={ariaLabel}
     >
       {labels.map((label, idx) => {
         const step = (idx + 1) as 1 | 2;
@@ -39,7 +40,7 @@ export function StepIndicator({ current, labels }: StepIndicatorProps) {
               <span
                 aria-hidden
                 className={cn(
-                  "ml-1 h-px w-8 md:w-12",
+                  "ms-1 h-px w-8 md:w-12",
                   done ? "bg-brand-olive" : "bg-brand-ink/20",
                 )}
               />

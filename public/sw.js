@@ -1,10 +1,12 @@
 // Maison Oléa — Service Worker minimaliste.
-// Stratégie : network-first sur HTML (fallback offline), cache-first sur assets statiques.
-// Bump CACHE_VERSION à chaque déploiement qui modifie le SW ou l'app shell.
+// Stratégie : network-first sur HTML (fallback offline localisé), cache-first sur assets statiques.
 
-const CACHE_VERSION = "olea-v1";
+const CACHE_VERSION = "olea-v2";
+const LOCALES = ["fr", "en", "it", "es", "pt", "ru", "ar"];
+const DEFAULT_LOCALE = "fr";
+const OFFLINE_PAGES = LOCALES.map((l) => `/${l}/offline`);
 const APP_SHELL = [
-  "/offline",
+  ...OFFLINE_PAGES,
   "/icons/icon-192.png",
   "/icons/icon-512.png",
   "/icons/apple-touch-icon.png",
@@ -34,6 +36,17 @@ self.addEventListener("activate", (event) => {
   );
 });
 
+function offlineUrlForRequest(request) {
+  try {
+    const url = new URL(request.url);
+    const first = url.pathname.split("/")[1] || "";
+    if (LOCALES.includes(first)) return `/${first}/offline`;
+  } catch {
+    /* noop */
+  }
+  return `/${DEFAULT_LOCALE}/offline`;
+}
+
 self.addEventListener("fetch", (event) => {
   const { request } = event;
 
@@ -42,15 +55,16 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
   const sameOrigin = url.origin === self.location.origin;
 
-  // 1. Navigations HTML → network-first, fallback offline depuis le cache.
   if (request.mode === "navigate") {
     event.respondWith(
       fetch(request).catch(async () => {
         const cache = await caches.open(CACHE_VERSION);
-        const offline = await cache.match("/offline");
+        const target = offlineUrlForRequest(request);
+        const offline = (await cache.match(target)) ??
+          (await cache.match(`/${DEFAULT_LOCALE}/offline`));
         return (
           offline ??
-          new Response("Hors connexion", {
+          new Response("Offline", {
             status: 503,
             headers: { "Content-Type": "text/plain; charset=utf-8" },
           })
@@ -60,8 +74,11 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // 2. Assets statiques same-origin → cache-first puis réseau + mise en cache.
-  if (sameOrigin && (url.pathname.startsWith("/_next/static/") || url.pathname.startsWith("/icons/"))) {
+  if (
+    sameOrigin &&
+    (url.pathname.startsWith("/_next/static/") ||
+      url.pathname.startsWith("/icons/"))
+  ) {
     event.respondWith(
       caches.match(request).then((cached) => {
         if (cached) return cached;
@@ -76,6 +93,4 @@ self.addEventListener("fetch", (event) => {
     );
     return;
   }
-
-  // 3. Tout le reste : passthrough réseau (pas de cache).
 });

@@ -1,20 +1,62 @@
+import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { Phone, MapPin } from "lucide-react";
 import { maisons } from "@/data/maisons";
 import { absoluteUrl } from "@/lib/utils";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { MaisonStatusPill } from "@/components/maison/MaisonStatusPill";
+import {
+  LOCALES,
+  type Locale,
+  localeHtmlLang,
+  localeOgCode,
+} from "@/i18n/config";
+import { getDictionary, hasLocale } from "@/i18n/dictionaries";
+import { withLocale } from "@/i18n/locale-href";
+import { localizeMaison } from "@/i18n/localized-maison";
+import { interpolate } from "@/i18n/format";
 
-export const metadata: Metadata = {
-  title: "Nos trois maisons",
-  description:
-    "Maison Oléa à Marseille, Cassis et Villeneuve-Loubet : trois adresses méditerranéennes, une même cuisine sincère inspirée du Sud.",
-  alternates: { canonical: absoluteUrl("/maisons") },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}): Promise<Metadata> {
+  const { lang } = await params;
+  if (!hasLocale(lang)) return {};
+  const dict = await getDictionary(lang);
+  const path = "/maisons";
+  const canonical = absoluteUrl(withLocale(lang, path));
+  const alternates = Object.fromEntries(
+    LOCALES.map((l) => [localeHtmlLang(l), absoluteUrl(withLocale(l, path))]),
+  );
+  alternates["x-default"] = absoluteUrl(withLocale("fr", path));
+  return {
+    title: dict.maisonsIndex.metaTitle,
+    description: dict.maisonsIndex.metaDescription,
+    alternates: { canonical, languages: alternates },
+    openGraph: {
+      title: dict.maisonsIndex.metaTitle,
+      description: dict.maisonsIndex.metaDescription,
+      url: canonical,
+      type: "website",
+      locale: localeOgCode(lang),
+      alternateLocale: LOCALES.filter((l) => l !== lang).map((l) =>
+        localeOgCode(l),
+      ),
+    },
+  };
+}
 
-export default function MaisonsIndexPage() {
+export default async function MaisonsIndexPage({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}) {
+  const { lang } = await params;
+  if (!hasLocale(lang)) notFound();
+  const dict = await getDictionary(lang);
+
   return (
     <>
       <section className="bg-brand-ink text-brand-cream px-6 md:px-12 pt-32 pb-12 md:pt-40 md:pb-20">
@@ -22,41 +64,54 @@ export default function MaisonsIndexPage() {
           <Breadcrumbs
             variant="light"
             className="mb-6"
+            ariaLabel={dict.breadcrumbs.aria}
             items={[
-              { href: "/", label: "Accueil" },
-              { href: "/maisons", label: "Maisons" },
+              { href: withLocale(lang, "/"), label: dict.maisonPage.accueil },
+              {
+                href: withLocale(lang, "/maisons"),
+                label: dict.maisonPage.maisons,
+              },
             ]}
           />
-          <p className="eyebrow text-brand-gold mb-5">Nos trois maisons</p>
+          <p className="eyebrow text-brand-gold mb-5">
+            {dict.maisonsIndex.eyebrow}
+          </p>
           <h1 className="font-serif font-normal text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[-1px] max-w-3xl">
-            De la Provence à la{" "}
-            <span className="italic text-brand-gold-light">Côte d&apos;Azur</span>
+            {dict.maisonsIndex.titre}{" "}
+            <span className="italic text-brand-gold-light">
+              {dict.maisonsIndex.titreItalic}
+            </span>
           </h1>
           <p className="mt-6 font-serif italic text-lg md:text-xl opacity-90 max-w-2xl">
-            Trois adresses, un même goût pour la lumière du Sud et le partage.
+            {dict.maisonsIndex.sousTitre}
           </p>
         </div>
       </section>
 
       <section className="bg-brand-cream px-6 md:px-12 py-12 md:py-20">
         <div className="mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-          {maisons.map((maison) => {
+          {maisons.map((raw) => {
+            const maison = localizeMaison(raw, lang as Locale);
             const hasPhoto = maison.photoHero.length > 0;
             return (
               <article
                 key={maison.slug}
                 className="group flex flex-col bg-white border border-brand-ink/8 hover:border-brand-olive transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-20px_rgba(31,34,24,0.25)]"
               >
-                <Link
-                  href={`/maisons/${maison.slug}`}
+                <a
+                  href={withLocale(lang as Locale, `/maisons/${maison.slug}`)}
                   className="relative block h-[260px] overflow-hidden"
-                  aria-label={`Découvrir Maison Oléa ${maison.nom}`}
+                  aria-label={interpolate(dict.maisons.ariaDecouvrir, {
+                    nom: maison.nom,
+                  })}
                 >
                   {hasPhoto ? (
                     <>
                       <Image
                         src={maison.photoHero}
-                        alt={`Maison Oléa ${maison.nom}`}
+                        alt={interpolate(dict.maisons.altMaison, {
+                          nom: maison.nom,
+                        })}
                         fill
                         sizes="(max-width: 768px) 100vw, 33vw"
                         className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -81,15 +136,20 @@ export default function MaisonsIndexPage() {
                       aria-hidden
                     />
                   )}
-                  <div className="absolute top-5 right-5 flex flex-col items-end gap-2">
+                  <div className="absolute top-5 end-5 flex flex-col items-end gap-2">
                     {maison.badgeOuverture && (
                       <span className="bg-brand-gold text-brand-ink text-[10px] tracking-[0.18em] uppercase px-3 py-1.5 font-semibold">
                         {maison.badgeOuverture}
                       </span>
                     )}
-                    <MaisonStatusPill maison={maison} variant="dark" />
+                    <MaisonStatusPill
+                      maison={raw}
+                      variant="dark"
+                      lang={lang as Locale}
+                      dict={dict}
+                    />
                   </div>
-                  <div className="absolute bottom-6 left-6 right-6">
+                  <div className="absolute bottom-6 start-6 end-6">
                     <p className="text-[11px] tracking-[0.25em] uppercase text-brand-gold mb-2">
                       {maison.label}
                     </p>
@@ -97,7 +157,7 @@ export default function MaisonsIndexPage() {
                       {maison.nom}
                     </h2>
                   </div>
-                </Link>
+                </a>
                 <div className="p-6 flex flex-col flex-1">
                   <p className="inline-flex items-center gap-1.5 text-xs text-brand-text-muted mb-4">
                     <MapPin className="h-3.5 w-3.5" aria-hidden />
@@ -113,19 +173,22 @@ export default function MaisonsIndexPage() {
                         className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.2em] text-brand-olive hover:text-brand-olive-deep transition-colors"
                       >
                         <Phone className="h-3.5 w-3.5" aria-hidden />
-                        Réserver
+                        {dict.maisons.reserver}
                       </a>
                     ) : (
                       <span className="text-[11px] uppercase tracking-[0.2em] text-brand-gold-deep">
-                        Bientôt
+                        {dict.maisons.bientot}
                       </span>
                     )}
-                    <Link
-                      href={`/maisons/${maison.slug}`}
+                    <a
+                      href={withLocale(
+                        lang as Locale,
+                        `/maisons/${maison.slug}`,
+                      )}
                       className="text-[11px] uppercase tracking-[0.2em] text-brand-ink hover:text-brand-olive transition-colors"
                     >
-                      Découvrir →
-                    </Link>
+                      {dict.maisons.decouvrir} →
+                    </a>
                   </div>
                 </div>
               </article>

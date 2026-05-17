@@ -10,16 +10,6 @@ const JOUR_INDEX: Record<number, Jour> = {
   6: "samedi",
 };
 
-export const JOUR_LABEL: Record<Jour, string> = {
-  lundi: "Lundi",
-  mardi: "Mardi",
-  mercredi: "Mercredi",
-  jeudi: "Jeudi",
-  vendredi: "Vendredi",
-  samedi: "Samedi",
-  dimanche: "Dimanche",
-};
-
 const ORDER: readonly Jour[] = [
   "lundi",
   "mardi",

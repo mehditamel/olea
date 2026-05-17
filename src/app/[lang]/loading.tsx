@@ -12,9 +12,9 @@ export default function Loading() {
         color="currentColor"
       />
       <p className="font-serif italic text-xl text-brand-text-muted">
-        Un instant…
+        Oléa
       </p>
-      <span className="sr-only">Chargement en cours</span>
+      <span className="sr-only">Loading…</span>
     </div>
   );
 }
