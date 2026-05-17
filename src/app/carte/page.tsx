@@ -1,37 +1,28 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { absoluteUrl } from "@/lib/utils";
+import type { ReactNode } from "react";
+import { ArrowUpRight } from "lucide-react";
+import { maisons } from "@/data/maisons";
+import { getMenuBySlug } from "@/data/menu";
+import { absoluteUrl, cn } from "@/lib/utils";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
+import { MarseillePortIllustration } from "@/components/brand/illustrations/MarseillePortIllustration";
+import { CassisPortIllustration } from "@/components/brand/illustrations/CassisPortIllustration";
+import { VilleneuveCoastIllustration } from "@/components/brand/illustrations/VilleneuveCoastIllustration";
+import type { MaisonSlug } from "@/types/maison";
 
 export const metadata: Metadata = {
-  title: "Carte",
+  title: "La carte",
   description:
-    "La carte Maison Oléa : une cuisine méditerranéenne née du soleil et de la terre. Tapenade, poissons grillés, légumes du soleil. Détails à venir.",
+    "Découvrez la carte de chaque Maison Oléa : Marseille face au Vieux-Port, Cassis sur le port, Villeneuve-Loubet (ouverture prochaine).",
   alternates: { canonical: absoluteUrl("/carte") },
 };
 
-const SUGGESTIONS = [
-  {
-    eyebrow: "En entrée",
-    title: "Tapenade & légumes croquants",
-    text: "Olives noires de Nyons, anchois, câpres, huile d'olive AOP, crudités du marché.",
-  },
-  {
-    eyebrow: "Du soleil",
-    title: "Poisson du jour grillé",
-    text: "Selon la pêche locale, fenouil rôti, citron confit, herbes de Provence.",
-  },
-  {
-    eyebrow: "Plat signature",
-    title: "Loup en croûte de sel",
-    text: "Présenté en salle, accompagné d'une émulsion d'huile d'olive et estragon.",
-  },
-  {
-    eyebrow: "Pour finir",
-    title: "Tarte fine au miel & figues",
-    text: "Pâte sablée maison, figues rôties, miel de lavande, glace huile d'olive.",
-  },
-];
+const ILLUSTRATIONS: Record<MaisonSlug, ReactNode> = {
+  marseille: <MarseillePortIllustration className="h-full w-full" />,
+  cassis: <CassisPortIllustration className="h-full w-full" />,
+  "villeneuve-loubet": <VilleneuveCoastIllustration className="h-full w-full" />,
+};
 
 export default function CartePage() {
   return (
@@ -49,34 +40,66 @@ export default function CartePage() {
           <p className="eyebrow text-brand-gold mb-5">La carte</p>
           <h1 className="font-serif font-normal text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[-1px] max-w-3xl">
             Une cuisine née du{" "}
-            <span className="italic text-brand-gold-light">soleil</span> et de la terre.
+            <span className="italic text-brand-gold-light">soleil</span> et de
+            la terre.
           </h1>
           <p className="mt-6 font-serif italic text-lg md:text-xl opacity-90 max-w-2xl">
-            Notre carte complète sera dévoilée ici très prochainement. En attendant,
-            voici quelques suggestions du moment.
+            Chaque Maison Oléa décline la même promesse méditerranéenne, à sa
+            façon. Choisissez la carte que vous souhaitez découvrir.
           </p>
         </div>
       </section>
 
       <section className="bg-brand-cream px-6 md:px-12 py-14 md:py-20">
-        <div className="mx-auto max-w-5xl">
-          <p className="eyebrow text-brand-olive mb-8 text-center">
-            Quelques suggestions
-          </p>
-          <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
-            {SUGGESTIONS.map((dish) => (
-              <li key={dish.title} className="border-b border-brand-ink/10 pb-6">
-                <p className="text-[11px] uppercase tracking-[0.22em] text-brand-gold-deep mb-2">
-                  {dish.eyebrow}
-                </p>
-                <h2 className="font-serif text-2xl md:text-[26px] text-brand-ink mb-2">
-                  {dish.title}
-                </h2>
-                <p className="text-[15px] leading-[1.75] text-brand-text-muted">
-                  {dish.text}
-                </p>
-              </li>
-            ))}
+        <div className="mx-auto max-w-7xl">
+          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
+            {maisons.map((maison) => {
+              const menu = getMenuBySlug(maison.slug);
+              const disponible = menu.statut === "publiee";
+              const href = `/carte/${maison.slug}`;
+              return (
+                <li key={maison.slug}>
+                  <Link
+                    href={href}
+                    className="group block bg-brand-cream-soft border border-brand-ink/10 hover:border-brand-olive/40 transition-colors"
+                  >
+                    <div className="relative aspect-[16/10] overflow-hidden bg-brand-cream">
+                      {ILLUSTRATIONS[maison.slug]}
+                      {!disponible ? (
+                        <span className="absolute top-3 left-3 bg-brand-gold text-brand-ink text-[10px] tracking-[0.2em] uppercase px-2.5 py-1 font-semibold">
+                          Bientôt
+                        </span>
+                      ) : null}
+                    </div>
+                    <div className="p-6 md:p-7">
+                      <p className="eyebrow text-brand-gold-deep mb-2">
+                        {maison.label}
+                      </p>
+                      <h2 className="font-serif text-2xl md:text-[28px] text-brand-ink mb-3">
+                        {maison.nom}
+                      </h2>
+                      <p className="text-[15px] leading-[1.65] text-brand-text-muted mb-5">
+                        {maison.description}
+                      </p>
+                      <span
+                        className={cn(
+                          "inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] font-medium transition-colors",
+                          disponible
+                            ? "text-brand-ink group-hover:text-brand-olive"
+                            : "text-brand-text-muted",
+                        )}
+                      >
+                        {disponible ? "Voir la carte" : "Bientôt disponible"}
+                        <ArrowUpRight
+                          className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                          aria-hidden
+                        />
+                      </span>
+                    </div>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
 
           <div className="mt-14 md:mt-20 text-center border-t border-brand-ink/15 pt-12">
