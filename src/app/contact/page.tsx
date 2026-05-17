@@ -102,9 +102,9 @@ export default function ContactPage() {
           <p className="eyebrow text-brand-olive mb-4">Une question générale ?</p>
           <a
             href="mailto:contact@olea-restaurant.fr"
-            className="inline-flex items-center gap-3 font-serif text-2xl md:text-4xl text-brand-ink border-b border-brand-olive pb-2 hover:text-brand-olive transition-colors break-all md:break-normal"
+            className="inline-flex items-center gap-3 font-serif text-xl sm:text-2xl md:text-4xl text-brand-ink border-b border-brand-olive pb-2 hover:text-brand-olive transition-colors break-all md:break-normal"
           >
-            <Mail className="h-6 w-6 md:h-7 md:w-7 flex-shrink-0" aria-hidden />
+            <Mail className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 flex-shrink-0" aria-hidden />
             <span>contact@olea-restaurant.fr</span>
           </a>
         </div>

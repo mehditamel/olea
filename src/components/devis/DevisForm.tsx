@@ -214,7 +214,7 @@ export function DevisForm() {
         <button
           type="submit"
           disabled={status.state === "submitting"}
-          className="inline-flex items-center justify-center bg-brand-ink text-brand-cream px-8 h-12 text-[11px] uppercase tracking-[0.2em] hover:bg-brand-olive active:scale-[0.98] transition-[background-color,transform] disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100 min-w-[220px]"
+          className="inline-flex items-center justify-center bg-brand-ink text-brand-cream px-8 h-12 text-[11px] uppercase tracking-[0.2em] hover:bg-brand-olive active:scale-[0.98] transition-[background-color,transform] disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100 w-full sm:w-auto sm:min-w-[220px]"
         >
           {status.state === "submitting"
             ? "Envoi en cours…"

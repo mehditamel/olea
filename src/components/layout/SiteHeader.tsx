@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useScrollDirection } from "@/lib/hooks/useScrollDirection";
 import { MobileNav } from "./MobileNav";
 
 const NAV = [
@@ -20,6 +21,7 @@ export function SiteHeader() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
+  const scrollDir = useScrollDirection({ topThreshold: 120, delta: 6 });
 
   useEffect(() => {
     if (!isHome) return;
@@ -30,14 +32,18 @@ export function SiteHeader() {
   }, [isHome]);
 
   const transparent = isHome && !scrolled;
+  // Mobile only : on retire le header au scroll down (hors menu mobile ouvert).
+  // Le drawer Radix bloque le scroll body, donc l'utilisateur n'arrive jamais là.
+  const hidden = scrollDir === "down";
 
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-30 transition-[background-color,border-color,box-shadow] duration-300",
+        "fixed top-0 left-0 right-0 z-30 transition-[background-color,border-color,box-shadow,transform] duration-300",
         transparent
           ? "bg-transparent text-brand-cream"
           : "bg-brand-cream/95 backdrop-blur-md text-brand-ink border-b border-brand-ink/8 shadow-[0_1px_0_rgba(31,34,24,0.04)]",
+        hidden ? "-translate-y-full md:translate-y-0" : "translate-y-0",
       )}
     >
       {/* Voile de lisibilité quand transparent (sur le hero sombre) */}

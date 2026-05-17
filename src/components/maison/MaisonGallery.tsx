@@ -107,7 +107,7 @@ export function MaisonGallery({ maison }: { maison: Maison }) {
                   i === null ? 0 : (i - 1 + photos.length) % photos.length,
                 );
               }}
-              className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 inline-flex items-center justify-center w-11 h-11 rounded-full bg-brand-cream/10 hover:bg-brand-cream/20 text-brand-cream transition-colors"
+              className="absolute left-2 sm:left-3 md:left-6 top-1/2 -translate-y-1/2 inline-flex items-center justify-center w-11 h-11 rounded-full bg-brand-cream/10 hover:bg-brand-cream/20 text-brand-cream transition-colors"
             >
               <ChevronLeft className="h-6 w-6" aria-hidden />
             </button>
@@ -120,7 +120,7 @@ export function MaisonGallery({ maison }: { maison: Maison }) {
                   i === null ? 0 : (i + 1) % photos.length,
                 );
               }}
-              className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 inline-flex items-center justify-center w-11 h-11 rounded-full bg-brand-cream/10 hover:bg-brand-cream/20 text-brand-cream transition-colors"
+              className="absolute right-2 sm:right-3 md:right-6 top-1/2 -translate-y-1/2 inline-flex items-center justify-center w-11 h-11 rounded-full bg-brand-cream/10 hover:bg-brand-cream/20 text-brand-cream transition-colors"
             >
               <ChevronRight className="h-6 w-6" aria-hidden />
             </button>
