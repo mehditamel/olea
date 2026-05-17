@@ -17,6 +17,7 @@ const STATIC_PAGES: readonly Page[] = [
   { path: "/reserver", changeFrequency: "monthly", priority: 0.9 },
   { path: "/privatisation", changeFrequency: "monthly", priority: 0.7 },
   { path: "/contact", changeFrequency: "yearly", priority: 0.5 },
+  { path: "/mentions-legales", changeFrequency: "yearly", priority: 0.2 },
 ];
 
 function alternates(path: string): Record<string, string> {

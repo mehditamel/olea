@@ -49,7 +49,7 @@ export function MaisonPage({
         </div>
       </div>
       <MaisonInfos maison={maison} lang={lang} dict={dict} />
-      <MaisonMap maison={maison} />
+      <MaisonMap maison={maison} dict={dict} />
       <MaisonGallery maison={maison} dict={dict} />
       <MaisonInstagram maison={maison} dict={dict} />
       <MaisonReservation maison={maison} lang={lang} dict={dict} />
