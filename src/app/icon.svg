@@ -1,5 +1,5 @@
 <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Maison Oléa">
-  <rect width="32" height="32" rx="6" fill="#4A5530"/>
-  <ellipse cx="16" cy="17" rx="7.5" ry="9" fill="none" stroke="#f4ecdd" stroke-width="2.25"/>
-  <path d="M 14 6 Q 19 2 24 4 Q 22 8 16 8 Z" fill="#c9b885"/>
+  <rect width="32" height="32" rx="6" fill="#4a5530"/>
+  <ellipse cx="16" cy="16" rx="10" ry="11" fill="#f4ecdd"/>
+  <ellipse cx="16" cy="16" rx="5.2" ry="9.4" fill="#4a5530"/>
 </svg>
