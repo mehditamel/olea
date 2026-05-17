@@ -203,7 +203,7 @@ export function ReservationForm({ defaultMaison }: ReservationFormProps) {
             >
               {MAISONS_OUVERTES.map((m) => (
                 <option key={m.slug} value={m.slug}>
-                  {m.nom} — {m.ville}
+                  Oléa {m.nom}
                 </option>
               ))}
             </Select>
