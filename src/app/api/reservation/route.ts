@@ -13,11 +13,19 @@ import {
 import { buildReservationIcs } from "@/lib/ics";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { logger } from "@/lib/logger";
+import { isSupabaseConfigured } from "@/lib/supabase/admin";
+import { insertReservation } from "@/lib/reservation/repository";
+import { checkCapacite, isCreneauBloque } from "@/lib/reservation/capacity";
+import {
+  requiresGarantie,
+  montantGarantieCents,
+} from "@/lib/reservation/garantie";
 
 export const runtime = "nodejs";
 
 const RATE_LIMIT = { limit: 5, windowMs: 60 * 60 * 1000 };
 const RESERVATION_DURATION_MIN = 90;
+const APP_BASE_URL = process.env.APP_BASE_URL ?? process.env.SITE_URL ?? "https://olea-restaurant.fr";
 
 function escapeHtml(input: string): string {
   return input
@@ -81,8 +89,6 @@ export async function POST(request: Request) {
   }
   const data = parsed.data;
 
-  // Honeypot : un bot a rempli le champ caché. On répond OK sans rien faire
-  // pour ne pas signaler la détection.
   if (data.siteWeb && data.siteWeb.length > 0) {
     logger.warn({ ip }, "Reservation honeypot triggered");
     return NextResponse.json({ ok: true, mode: "log" });
@@ -98,7 +104,6 @@ export async function POST(request: Request) {
       { status: 400 },
     );
   }
-
   if (isIsoDateInPastParis(data.date)) {
     return NextResponse.json(
       { error: "La date doit être à venir." },
@@ -126,16 +131,78 @@ export async function POST(request: Request) {
     );
   }
 
-  logger.info(
-    {
-      maison: data.maison,
-      date: data.date,
-      heure: data.heure,
-      service: data.service,
-      convives: data.convives,
-    },
-    "Reservation received",
-  );
+  const garantie = requiresGarantie(data.date, data.convives);
+  const montantGarantie = garantie ? montantGarantieCents(data.convives) : null;
+
+  let cancellationToken: string | null = null;
+  let reservationId: string | null = null;
+
+  if (isSupabaseConfigured()) {
+    try {
+      if (await isCreneauBloque(data.maison, data.date, data.heure)) {
+        return NextResponse.json(
+          { error: "Ce créneau est bloqué. Choisissez un autre horaire." },
+          { status: 409 },
+        );
+      }
+      const cap = await checkCapacite(
+        data.maison,
+        data.date,
+        data.service,
+        data.convives,
+      );
+      if (!cap.ok) {
+        return NextResponse.json(
+          {
+            error: `Plus que ${cap.reste} couvert(s) disponibles sur ce service. Réduisez le nombre de convives ou choisissez un autre créneau.`,
+          },
+          { status: 409 },
+        );
+      }
+      const row = await insertReservation({
+        maison_slug: data.maison,
+        date: data.date,
+        heure: data.heure,
+        service: data.service,
+        convives: data.convives,
+        nom: data.nom,
+        email: data.email.toLowerCase(),
+        telephone: data.telephone,
+        occasion: data.occasion,
+        demandes: data.demandesParticulieres,
+        statut: garantie ? "pending_card" : "confirmed",
+        requiert_garantie: garantie,
+        montant_garantie_cents: montantGarantie,
+        source: "web",
+      });
+      cancellationToken = row.cancellation_token;
+      reservationId = row.id;
+      logger.info(
+        {
+          reservationId,
+          maison: data.maison,
+          date: data.date,
+          heure: data.heure,
+          service: data.service,
+          convives: data.convives,
+          garantie,
+        },
+        "Reservation persisted",
+      );
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "unknown";
+      logger.error({ err: message }, "Reservation persist failed");
+      return NextResponse.json(
+        { error: "Impossible d'enregistrer la réservation. Réessayez." },
+        { status: 500 },
+      );
+    }
+  } else {
+    logger.warn(
+      { maison: data.maison, date: data.date, heure: data.heure },
+      "Reservation: Supabase not configured, log-only mode",
+    );
+  }
 
   const occasionLabel = OCCASION_LABELS[data.occasion] ?? data.occasion;
   const serviceLabel = data.service === "dejeuner" ? "Déjeuner" : "Dîner";
@@ -152,6 +219,8 @@ export async function POST(request: Request) {
       <li><strong>Heure :</strong> ${escapeHtml(heureLisible)} (${escapeHtml(serviceLabel)})</li>
       <li><strong>Convives :</strong> ${data.convives}</li>
       <li><strong>Occasion :</strong> ${escapeHtml(occasionLabel)}</li>
+      ${garantie ? `<li><strong>Garantie CB :</strong> ${(montantGarantie ?? 0) / 100} € (empreinte requise)</li>` : ""}
+      ${reservationId ? `<li><strong>ID :</strong> ${escapeHtml(reservationId)}</li>` : ""}
     </ul>
     ${
       data.demandesParticulieres
@@ -189,6 +258,10 @@ export async function POST(request: Request) {
     attendeeEmail: data.email,
   });
 
+  const cancellationUrl = cancellationToken
+    ? `${APP_BASE_URL}/reserver/cancel/${cancellationToken}`
+    : undefined;
+
   const clientResult = await sendReservationConfirmation({
     to: data.email,
     nom: data.nom,
@@ -206,16 +279,22 @@ export async function POST(request: Request) {
       content: ics.contentBase64,
       contentType: "text/calendar",
     },
+    cancellationUrl,
+    requiertGarantie: garantie,
+    montantGarantieCents: montantGarantie,
   });
 
   if (!clientResult.ok) {
-    // L'équipe a bien reçu la demande : on ne fait pas échouer toute la
-    // requête, on log et on signale juste un succès partiel.
     logger.warn(
       { err: clientResult.error },
       "Reservation: client confirmation email failed",
     );
   }
 
-  return NextResponse.json({ ok: true, mode: teamResult.mode });
+  return NextResponse.json({
+    ok: true,
+    mode: teamResult.mode,
+    reservationId,
+    requiresCard: garantie,
+  });
 }

@@ -1,0 +1,25 @@
+import "server-only";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+let cached: SupabaseClient | null = null;
+
+export function getSupabaseAdmin(): SupabaseClient {
+  if (!url || !serviceRoleKey) {
+    throw new Error(
+      "Supabase non configuré : NEXT_PUBLIC_SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY requis.",
+    );
+  }
+  if (!cached) {
+    cached = createClient(url, serviceRoleKey, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+  }
+  return cached;
+}
+
+export function isSupabaseConfigured(): boolean {
+  return Boolean(url && serviceRoleKey);
+}

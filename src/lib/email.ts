@@ -89,6 +89,9 @@ type ReservationConfirmationInput = {
   convives: number;
   demandesParticulieres: string;
   attachment: EmailAttachment;
+  cancellationUrl?: string;
+  requiertGarantie?: boolean;
+  montantGarantieCents?: number | null;
 };
 
 /**
@@ -129,6 +132,23 @@ export function sendReservationConfirmation(
         votre agenda. Pour toute modification, contactez-nous au
         <a href="tel:${escapeHtml(input.telephoneAffichage.replace(/\s/g, ""))}" style="color:#4a5530">${escapeHtml(input.telephoneAffichage)}</a>.
       </p>
+      ${
+        input.cancellationUrl
+          ? `<p style="margin:0 0 14px;font-family:Inter,system-ui,sans-serif;font-size:13px">
+              Besoin d'annuler ? <a href="${escapeHtml(input.cancellationUrl)}" style="color:#4a5530;text-decoration:underline">Annuler ma réservation</a>
+              (annulation gratuite jusqu'à 24h avant le service).
+            </p>`
+          : ""
+      }
+      ${
+        input.requiertGarantie && input.montantGarantieCents
+          ? `<div style="margin:18px 0;padding:14px 16px;border:1px solid #c49960;background:#fdf8ee;font-family:Inter,system-ui,sans-serif;font-size:13px">
+              <strong>Garantie de réservation</strong> · Une empreinte de carte bancaire de
+              ${(input.montantGarantieCents / 100).toFixed(0)} € pour cette table sera demandée pour confirmer.
+              Elle n'est débitée qu'en cas d'absence non signalée (no-show).
+            </div>`
+          : ""
+      }
       <p style="margin:24px 0 0;font-style:italic;color:#6b5d4a">
         À très vite,<br>L'équipe Oléa
       </p>
