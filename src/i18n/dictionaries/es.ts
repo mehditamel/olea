@@ -278,8 +278,10 @@ const es = {
     maison: "Casa",
     date: "Fecha",
     convives: "Número de comensales",
-    personne: "persona",
-    personnes: "personas",
+    personnePlurals: {
+      one: "persona",
+      other: "personas",
+    },
     heure: "Hora",
     choisirDate: "Elija primero una fecha",
     fermeCeJour: "Cerrado ese día — elija otra fecha",
@@ -415,6 +417,92 @@ const es = {
   languageSwitcher: {
     aria: "Elegir idioma",
     label: "Idioma",
+    changed: "Idioma: Español",
+  },
+  maisonMap: {
+    eyebrow: "Mapa",
+    titre: "Cómo llegar",
+    ouvrirGoogleMaps: "Abrir en Google Maps",
+    itineraireGoogleMaps: "Cómo llegar con Google Maps",
+    ariaCarte: "Mapa de Maison Oléa {nom}",
+  },
+  emails: {
+    reservation: {
+      subject: "Su mesa en Maison Oléa · {date} {heure}",
+      eyebrow: "Maison Oléa · {nom}",
+      bonjour: "Hola {nom},",
+      corpus:
+        "Hemos recibido su solicitud de reserva. Nuestro equipo se pondrá en contacto con usted en unas horas para confirmarla definitivamente.",
+      labels: {
+        maison: "Casa",
+        date: "Fecha",
+        heure: "Hora",
+        convives: "Comensales",
+        precisions: "Sus notas",
+      },
+      pieceJointe:
+        "Encontrará adjunto un archivo .ics para añadir a su calendario. Para cualquier cambio, llámenos al {telephone}.",
+      signature: "Hasta muy pronto,",
+      signatureLigne2: "El equipo Oléa",
+      services: { dejeuner: "Almuerzo", diner: "Cena" },
+    },
+  },
+  ics: {
+    summary: "Reserva Maison Oléa · {nom}",
+    descriptionPersonnes: "Reserva para {n} comensales.",
+  },
+  mentionsLegales: {
+    metaTitle: "Aviso legal",
+    metaDescription:
+      "Aviso legal e información RGPD del sitio Maison Oléa: editor, hosting, propiedad intelectual, protección de datos personales.",
+    eyebrow: "Aviso legal",
+    titre: "Información",
+    titreItalic: "legal.",
+    sousTitre:
+      "De acuerdo con los artículos 6-III y 19 de la ley francesa sobre la confianza en la economía digital.",
+    derniereMaj: "Última actualización: mayo de 2026",
+    editeur: {
+      titre: "Editor del sitio",
+      raisonSociale: "Razón social: Maison Oléa",
+      forme: "Forma jurídica: por completar",
+      siege: "Domicilio social: por completar",
+      siret: "Número SIRET: por completar",
+      tva: "IVA intracomunitario: por completar",
+      directeur: "Director de publicación: por completar",
+      contact: "Contacto: contact@olea-restaurant.fr",
+    },
+    hebergeur: {
+      titre: "Hosting",
+      nom: "Vercel Inc.",
+      adresse: "440 N Barranca Ave #4133, Covina, CA 91723, Estados Unidos",
+      site: "https://vercel.com",
+    },
+    pi: {
+      titre: "Propiedad intelectual",
+      texte:
+        "Todo el contenido de este sitio (textos, fotografías, ilustraciones, marcas) está protegido por derechos de autor y es propiedad exclusiva de Maison Oléa, salvo indicación contraria. Cualquier reproducción sin consentimiento escrito previo está prohibida.",
+    },
+    donnees: {
+      titre: "Protección de datos personales",
+      intro:
+        "De acuerdo con el Reglamento General de Protección de Datos (RGPD), usted dispone de derechos de acceso, rectificación, supresión, limitación y oposición al tratamiento de sus datos personales.",
+      collecte:
+        "Los datos recogidos a través de los formularios de reserva, presupuesto y contacto se utilizan únicamente para gestionar su solicitud y nunca se ceden a terceros.",
+      conservation:
+        "Las solicitudes de reserva se conservan durante 12 meses tras la fecha de la comida. Las solicitudes de presupuesto se conservan durante 24 meses.",
+      contact:
+        "Para ejercer sus derechos, escriba a contact@olea-restaurant.fr.",
+    },
+    cookies: {
+      titre: "Cookies",
+      texte:
+        "Este sitio no utiliza cookies de medición de audiencia ni publicitarias. Una única cookie técnica (NEXT_LOCALE) recuerda su elección de idioma para las próximas visitas.",
+    },
+    droit: {
+      titre: "Ley aplicable",
+      texte:
+        "Estas menciones legales se rigen por el derecho francés. Cualquier litigio relativo a su interpretación o ejecución es competencia de los tribunales franceses.",
+    },
   },
 } satisfies Dictionary;
 

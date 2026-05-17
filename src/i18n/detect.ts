@@ -24,15 +24,18 @@ function parseEntries(header: string): Entry[] {
     .sort((a, b) => b.q - a.q);
 }
 
+/**
+ * Picks the highest-quality supported locale from an `Accept-Language` header.
+ * Matches BCP-47 sub-tags by their primary language (e.g. `en-US` → `en`,
+ * `pt-BR` → `pt`). Unsupported languages fall through to `fallback`.
+ */
 export function parseAcceptLanguage(header: string, fallback: Locale): Locale {
   if (!header) return fallback;
+  const supported = LOCALES as readonly string[];
   const entries = parseEntries(header);
   for (const entry of entries) {
     const base = entry.tag.split("-")[0];
-    if (base && isLocale(base) && (LOCALES as readonly string[]).includes(base)) {
-      return base as Locale;
-    }
-    if (isLocale(entry.tag)) return entry.tag;
+    if (base && isLocale(base) && supported.includes(base)) return base as Locale;
   }
   return fallback;
 }

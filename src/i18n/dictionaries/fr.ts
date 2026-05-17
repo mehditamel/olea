@@ -1,3 +1,10 @@
+import type { PluralForms } from "../format";
+
+const personnePlurals: PluralForms = {
+  one: "personne",
+  other: "personnes",
+};
+
 const fr = {
   common: {
     skipLink: "Aller au contenu",
@@ -280,8 +287,7 @@ const fr = {
     maison: "Maison",
     date: "Date",
     convives: "Nombre de convives",
-    personne: "personne",
-    personnes: "personnes",
+    personnePlurals,
     heure: "Heure",
     choisirDate: "Choisissez d'abord une date",
     fermeCeJour: "Fermé ce jour — choisissez une autre date",
@@ -416,6 +422,92 @@ const fr = {
   languageSwitcher: {
     aria: "Choisir la langue",
     label: "Langue",
+    changed: "Langue : Français",
+  },
+  maisonMap: {
+    eyebrow: "Carte",
+    titre: "Comment venir",
+    ouvrirGoogleMaps: "Ouvrir dans Google Maps",
+    itineraireGoogleMaps: "Itinéraire Google Maps",
+    ariaCarte: "Carte de Maison Oléa {nom}",
+  },
+  emails: {
+    reservation: {
+      subject: "Votre table chez Maison Oléa · {date} {heure}",
+      eyebrow: "Maison Oléa · {nom}",
+      bonjour: "Bonjour {nom},",
+      corpus:
+        "Nous avons bien reçu votre demande de réservation. Notre équipe vous recontacte sous quelques heures pour la confirmer définitivement.",
+      labels: {
+        maison: "Maison",
+        date: "Date",
+        heure: "Heure",
+        convives: "Convives",
+        precisions: "Vos précisions",
+      },
+      pieceJointe:
+        "Vous trouverez en pièce jointe un fichier .ics à ajouter à votre agenda. Pour toute modification, contactez-nous au {telephone}.",
+      signature: "À très vite,",
+      signatureLigne2: "L'équipe Oléa",
+      services: { dejeuner: "Déjeuner", diner: "Dîner" },
+    },
+  },
+  ics: {
+    summary: "Réservation Maison Oléa · {nom}",
+    descriptionPersonnes: "Réservation pour {n} convives.",
+  },
+  mentionsLegales: {
+    metaTitle: "Mentions légales",
+    metaDescription:
+      "Mentions légales et informations RGPD du site Maison Oléa : éditeur, hébergeur, propriété intellectuelle, protection des données personnelles.",
+    eyebrow: "Mentions légales",
+    titre: "Informations",
+    titreItalic: "légales.",
+    sousTitre:
+      "Conformément aux dispositions des articles 6-III et 19 de la loi pour la confiance dans l'économie numérique.",
+    derniereMaj: "Dernière mise à jour : mai 2026",
+    editeur: {
+      titre: "Éditeur du site",
+      raisonSociale: "Raison sociale : Maison Oléa",
+      forme: "Forme juridique : à compléter",
+      siege: "Siège social : à compléter",
+      siret: "SIRET : à compléter",
+      tva: "TVA intracommunautaire : à compléter",
+      directeur: "Directeur de la publication : à compléter",
+      contact: "Contact : contact@olea-restaurant.fr",
+    },
+    hebergeur: {
+      titre: "Hébergeur",
+      nom: "Vercel Inc.",
+      adresse: "440 N Barranca Ave #4133, Covina, CA 91723, États-Unis",
+      site: "https://vercel.com",
+    },
+    pi: {
+      titre: "Propriété intellectuelle",
+      texte:
+        "L'ensemble des contenus présents sur ce site (textes, photographies, illustrations, marques) est protégé par le droit d'auteur et reste la propriété exclusive de Maison Oléa, sauf mention contraire. Toute reproduction sans autorisation écrite préalable est interdite.",
+    },
+    donnees: {
+      titre: "Protection des données personnelles",
+      intro:
+        "Conformément au Règlement Général sur la Protection des Données (RGPD) et à la loi Informatique et Libertés, vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation et d'opposition sur vos données personnelles.",
+      collecte:
+        "Les données collectées via les formulaires de réservation, de devis et de contact ne sont utilisées que pour traiter votre demande et ne sont jamais cédées à des tiers.",
+      conservation:
+        "Les demandes de réservation sont conservées 12 mois après la date du repas. Les demandes de devis sont conservées 24 mois.",
+      contact:
+        "Pour exercer vos droits, écrivez à contact@olea-restaurant.fr.",
+    },
+    cookies: {
+      titre: "Cookies",
+      texte:
+        "Ce site n'utilise pas de cookies de mesure d'audience ni de cookies publicitaires. Un seul cookie technique (NEXT_LOCALE) mémorise votre choix de langue pour les prochaines visites.",
+    },
+    droit: {
+      titre: "Droit applicable",
+      texte:
+        "Les présentes mentions légales sont soumises au droit français. Tout litige relatif à leur interprétation ou à leur exécution relève de la compétence des tribunaux français.",
+    },
   },
 };
 

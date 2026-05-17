@@ -278,8 +278,10 @@ const en = {
     maison: "House",
     date: "Date",
     convives: "Number of guests",
-    personne: "person",
-    personnes: "people",
+    personnePlurals: {
+      one: "person",
+      other: "people",
+    },
     heure: "Time",
     choisirDate: "Pick a date first",
     fermeCeJour: "Closed that day — pick another date",
@@ -415,6 +417,92 @@ const en = {
   languageSwitcher: {
     aria: "Choose language",
     label: "Language",
+    changed: "Language: English",
+  },
+  maisonMap: {
+    eyebrow: "Map",
+    titre: "How to get there",
+    ouvrirGoogleMaps: "Open in Google Maps",
+    itineraireGoogleMaps: "Get directions",
+    ariaCarte: "Map of Maison Oléa {nom}",
+  },
+  emails: {
+    reservation: {
+      subject: "Your table at Maison Oléa · {date} {heure}",
+      eyebrow: "Maison Oléa · {nom}",
+      bonjour: "Hello {nom},",
+      corpus:
+        "We have received your reservation request. Our team will get back to you within a few hours to confirm it.",
+      labels: {
+        maison: "House",
+        date: "Date",
+        heure: "Time",
+        convives: "Guests",
+        precisions: "Your notes",
+      },
+      pieceJointe:
+        "You will find an .ics file attached to add this to your calendar. For any change, call us at {telephone}.",
+      signature: "See you soon,",
+      signatureLigne2: "The Oléa team",
+      services: { dejeuner: "Lunch", diner: "Dinner" },
+    },
+  },
+  ics: {
+    summary: "Reservation Maison Oléa · {nom}",
+    descriptionPersonnes: "Reservation for {n} guests.",
+  },
+  mentionsLegales: {
+    metaTitle: "Legal notice",
+    metaDescription:
+      "Legal notice and GDPR information for Maison Oléa: publisher, hosting provider, intellectual property, personal data protection.",
+    eyebrow: "Legal notice",
+    titre: "Legal",
+    titreItalic: "information.",
+    sousTitre:
+      "In accordance with French law on confidence in the digital economy (articles 6-III and 19).",
+    derniereMaj: "Last updated: May 2026",
+    editeur: {
+      titre: "Site publisher",
+      raisonSociale: "Company name: Maison Oléa",
+      forme: "Legal form: to be completed",
+      siege: "Registered office: to be completed",
+      siret: "Business ID (SIRET): to be completed",
+      tva: "EU VAT number: to be completed",
+      directeur: "Publication director: to be completed",
+      contact: "Contact: contact@olea-restaurant.fr",
+    },
+    hebergeur: {
+      titre: "Hosting provider",
+      nom: "Vercel Inc.",
+      adresse: "440 N Barranca Ave #4133, Covina, CA 91723, United States",
+      site: "https://vercel.com",
+    },
+    pi: {
+      titre: "Intellectual property",
+      texte:
+        "All content on this site (texts, photographs, illustrations, trademarks) is protected by copyright and remains the exclusive property of Maison Oléa, unless otherwise stated. Any reproduction without prior written consent is forbidden.",
+    },
+    donnees: {
+      titre: "Personal data protection",
+      intro:
+        "In accordance with the General Data Protection Regulation (GDPR), you have the right to access, rectify, erase, restrict or object to the processing of your personal data.",
+      collecte:
+        "Data collected through the reservation, quote and contact forms is only used to handle your request, and is never shared with third parties.",
+      conservation:
+        "Reservation requests are kept for 12 months after the meal date. Quote requests are kept for 24 months.",
+      contact:
+        "To exercise your rights, write to contact@olea-restaurant.fr.",
+    },
+    cookies: {
+      titre: "Cookies",
+      texte:
+        "This site does not use analytics or advertising cookies. A single technical cookie (NEXT_LOCALE) remembers your language choice for future visits.",
+    },
+    droit: {
+      titre: "Applicable law",
+      texte:
+        "These legal notices are governed by French law. Any dispute regarding their interpretation or enforcement falls under the jurisdiction of French courts.",
+    },
   },
 } satisfies Dictionary;
 

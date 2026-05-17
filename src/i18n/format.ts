@@ -1,4 +1,4 @@
-import type { Locale } from "./config";
+import { localeHtmlLang, type Locale } from "./config";
 import type { Jour } from "@/types/maison";
 
 const JOUR_TO_DAY: Record<Jour, number> = {
@@ -52,4 +52,62 @@ export function interpolate(
     const v = vars[key];
     return v === undefined ? `{${key}}` : String(v);
   });
+}
+
+/**
+ * Localized full-date format (e.g. "samedi 17 mai 2026").
+ * Accepts ISO `YYYY-MM-DD`; renders in the locale's default timezone semantics
+ * by anchoring at noon UTC to avoid DST edge dates flipping the day.
+ */
+export function formatDate(
+  isoDate: string,
+  locale: Locale,
+  style: "full" | "long" | "medium" | "short" = "full",
+): string {
+  const parts = isoDate.split("-");
+  const y = parts[0];
+  const m = parts[1];
+  const d = parts[2];
+  if (!y || !m || !d) return isoDate;
+  const date = new Date(
+    Date.UTC(parseInt(y, 10), parseInt(m, 10) - 1, parseInt(d, 10), 12),
+  );
+  return new Intl.DateTimeFormat(localeHtmlLang(locale), {
+    dateStyle: style,
+    timeZone: "UTC",
+  }).format(date);
+}
+
+export function formatDateTime(
+  isoDate: string,
+  hhmm: string,
+  locale: Locale,
+): string {
+  return `${formatDate(isoDate, locale, "full")} · ${formatTime(hhmm, locale)}`;
+}
+
+export type PluralForms = {
+  zero?: string;
+  one?: string;
+  two?: string;
+  few?: string;
+  many?: string;
+  other: string;
+};
+
+/**
+ * Picks the correct plural form for `count` in the target locale using
+ * `Intl.PluralRules`. Falls back to `other` when the locale's category
+ * is not present in `forms` (defensive — runtime safety).
+ */
+export function formatPlural(
+  count: number,
+  locale: Locale,
+  forms: PluralForms,
+): string {
+  const cat = new Intl.PluralRules(localeHtmlLang(locale), {
+    type: "cardinal",
+  }).select(count);
+  const picked = forms[cat as keyof PluralForms];
+  return picked ?? forms.other;
 }

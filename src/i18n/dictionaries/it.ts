@@ -277,8 +277,10 @@ const it = {
     maison: "Casa",
     date: "Data",
     convives: "Numero di ospiti",
-    personne: "persona",
-    personnes: "persone",
+    personnePlurals: {
+      one: "persona",
+      other: "persone",
+    },
     heure: "Ora",
     choisirDate: "Scegli prima una data",
     fermeCeJour: "Chiuso questo giorno — scegli un'altra data",
@@ -414,6 +416,92 @@ const it = {
   languageSwitcher: {
     aria: "Scegli la lingua",
     label: "Lingua",
+    changed: "Lingua: Italiano",
+  },
+  maisonMap: {
+    eyebrow: "Mappa",
+    titre: "Come arrivare",
+    ouvrirGoogleMaps: "Apri in Google Maps",
+    itineraireGoogleMaps: "Indicazioni Google Maps",
+    ariaCarte: "Mappa di Maison Oléa {nom}",
+  },
+  emails: {
+    reservation: {
+      subject: "Il tuo tavolo da Maison Oléa · {date} {heure}",
+      eyebrow: "Maison Oléa · {nom}",
+      bonjour: "Buongiorno {nom},",
+      corpus:
+        "Abbiamo ricevuto la tua richiesta di prenotazione. Il nostro team ti ricontatterà entro poche ore per confermarla definitivamente.",
+      labels: {
+        maison: "Casa",
+        date: "Data",
+        heure: "Ora",
+        convives: "Ospiti",
+        precisions: "Le tue note",
+      },
+      pieceJointe:
+        "Troverai allegato un file .ics da aggiungere al tuo calendario. Per qualsiasi modifica, chiamaci al {telephone}.",
+      signature: "A presto,",
+      signatureLigne2: "Il team Oléa",
+      services: { dejeuner: "Pranzo", diner: "Cena" },
+    },
+  },
+  ics: {
+    summary: "Prenotazione Maison Oléa · {nom}",
+    descriptionPersonnes: "Prenotazione per {n} ospiti.",
+  },
+  mentionsLegales: {
+    metaTitle: "Note legali",
+    metaDescription:
+      "Note legali e informazioni GDPR del sito Maison Oléa: editore, host, proprietà intellettuale, protezione dei dati personali.",
+    eyebrow: "Note legali",
+    titre: "Informazioni",
+    titreItalic: "legali.",
+    sousTitre:
+      "Ai sensi degli articoli 6-III e 19 della legge francese sulla fiducia nell'economia digitale.",
+    derniereMaj: "Ultimo aggiornamento: maggio 2026",
+    editeur: {
+      titre: "Editore del sito",
+      raisonSociale: "Denominazione: Maison Oléa",
+      forme: "Forma giuridica: da completare",
+      siege: "Sede legale: da completare",
+      siret: "Codice SIRET: da completare",
+      tva: "Partita IVA intra-UE: da completare",
+      directeur: "Direttore della pubblicazione: da completare",
+      contact: "Contatto: contact@olea-restaurant.fr",
+    },
+    hebergeur: {
+      titre: "Host",
+      nom: "Vercel Inc.",
+      adresse: "440 N Barranca Ave #4133, Covina, CA 91723, Stati Uniti",
+      site: "https://vercel.com",
+    },
+    pi: {
+      titre: "Proprietà intellettuale",
+      texte:
+        "Tutti i contenuti presenti su questo sito (testi, fotografie, illustrazioni, marchi) sono protetti dal diritto d'autore e restano di proprietà esclusiva di Maison Oléa, salvo diversa indicazione. Ogni riproduzione senza consenso scritto preventivo è vietata.",
+    },
+    donnees: {
+      titre: "Protezione dei dati personali",
+      intro:
+        "Ai sensi del Regolamento Generale sulla Protezione dei Dati (GDPR), hai il diritto di accesso, rettifica, cancellazione, limitazione e opposizione al trattamento dei tuoi dati personali.",
+      collecte:
+        "I dati raccolti tramite i moduli di prenotazione, preventivo e contatto sono utilizzati esclusivamente per gestire la tua richiesta e non vengono mai ceduti a terzi.",
+      conservation:
+        "Le richieste di prenotazione sono conservate per 12 mesi dopo la data del pasto. Le richieste di preventivo sono conservate per 24 mesi.",
+      contact:
+        "Per esercitare i tuoi diritti, scrivi a contact@olea-restaurant.fr.",
+    },
+    cookies: {
+      titre: "Cookie",
+      texte:
+        "Questo sito non utilizza cookie di analisi né cookie pubblicitari. Un solo cookie tecnico (NEXT_LOCALE) memorizza la tua scelta di lingua per le visite future.",
+    },
+    droit: {
+      titre: "Legge applicabile",
+      texte:
+        "Le presenti note legali sono regolate dalla legge francese. Qualsiasi controversia relativa alla loro interpretazione o esecuzione è di competenza dei tribunali francesi.",
+    },
   },
 } satisfies Dictionary;
 
