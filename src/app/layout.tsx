@@ -3,6 +3,8 @@ import { Cormorant_Garamond, Inter } from "next/font/google";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { MobileCtaBar } from "@/components/layout/MobileCtaBar";
+import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
+import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 import { SITE_URL } from "@/lib/utils";
 import "./globals.css";
 
@@ -55,6 +57,14 @@ export const metadata: Metadata = {
   },
   alternates: { canonical: SITE_URL },
   formatDetection: { telephone: true },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Oléa",
+  },
+  icons: {
+    apple: "/icons/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
@@ -75,6 +85,8 @@ export default function RootLayout({
         </main>
         <SiteFooter />
         <MobileCtaBar />
+        <InstallPrompt />
+        <ServiceWorkerRegister />
       </body>
     </html>
   );
