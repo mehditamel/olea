@@ -18,6 +18,7 @@ import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { localizeMaison } from "@/i18n/localized-maison";
+import { BrandWord } from "@/components/brand/BrandWord";
 
 type MobileNavProps = {
   transparent?: boolean;
@@ -53,7 +54,7 @@ export function MobileNav({ transparent, lang, dict }: MobileNavProps) {
       </SheetTrigger>
       <SheetContent side="right" className="flex flex-col">
         <SheetTitle className="font-serif italic text-3xl text-brand-cream mb-10">
-          Oléa
+          <BrandWord />
         </SheetTitle>
 
         <nav aria-label={dict.header.navMobile} className="flex flex-col">
@@ -89,6 +90,7 @@ export function MobileNav({ transparent, lang, dict }: MobileNavProps) {
             dict={dict}
             pathname={withLocale(lang, stripped)}
             variant="transparent"
+            layout="grid"
           />
         </div>
 
@@ -110,7 +112,7 @@ export function MobileNav({ transparent, lang, dict }: MobileNavProps) {
                       <span className="font-serif text-lg">{m.nom}</span>
                       <span className="inline-flex items-center gap-2 text-[12px] tracking-[0.14em] uppercase text-brand-text-soft">
                         <Phone className="h-3.5 w-3.5" aria-hidden />
-                        {m.telephoneAffichage}
+                        <bdi dir="ltr">{m.telephoneAffichage}</bdi>
                       </span>
                     </a>
                   ) : (

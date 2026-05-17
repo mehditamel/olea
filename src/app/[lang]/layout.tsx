@@ -118,6 +118,9 @@ export default async function RootLayout({
           <a href="#contenu" className="skip-link">
             {dict.common.skipLink}
           </a>
+          <div role="status" aria-live="polite" className="sr-only">
+            {dict.languageSwitcher.changed}
+          </div>
           <SiteHeader lang={lang as Locale} dict={dict} />
           <main id="contenu" className="flex-1">
             {children}

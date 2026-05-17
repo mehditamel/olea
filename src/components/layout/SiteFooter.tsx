@@ -2,6 +2,7 @@ import { Phone, Mail } from "lucide-react";
 import { maisons } from "@/data/maisons";
 import { OliveBranch } from "@/components/brand/OliveBranch";
 import { InstagramIcon } from "@/components/brand/InstagramIcon";
+import { BrandWord } from "@/components/brand/BrandWord";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { withLocale } from "@/i18n/locale-href";
@@ -28,7 +29,7 @@ export function SiteFooter({ lang, dict }: Props) {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[1.3fr_repeat(3,1fr)] gap-10 md:gap-12 mb-12">
           <div>
             <p className="font-serif italic text-3xl md:text-[32px] mb-4">
-              Oléa
+              <BrandWord />
             </p>
             <p className="text-sm leading-relaxed text-brand-text-soft max-w-[260px] mb-6">
               {dict.footer.tagline}
@@ -55,9 +56,9 @@ export function SiteFooter({ lang, dict }: Props) {
                   {maison.nom}
                 </p>
                 <address className="not-italic text-sm leading-relaxed text-brand-text-soft">
-                  {maison.adresse}
+                  <bdi>{maison.adresse}</bdi>
                   <br />
-                  {maison.codePostal} {maison.ville}
+                  <bdi>{maison.codePostal} {maison.ville}</bdi>
                 </address>
                 <div className="mt-3">
                   {maison.ouvert ? (
@@ -66,7 +67,7 @@ export function SiteFooter({ lang, dict }: Props) {
                       className="inline-flex items-center gap-1.5 text-sm text-brand-text-soft hover:text-brand-gold transition-colors"
                     >
                       <Phone className="h-3.5 w-3.5" aria-hidden />
-                      {maison.telephoneAffichage}
+                      <bdi dir="ltr">{maison.telephoneAffichage}</bdi>
                     </a>
                   ) : (
                     <span className="text-sm text-brand-gold">
@@ -108,7 +109,7 @@ export function SiteFooter({ lang, dict }: Props) {
             className="inline-flex items-center gap-1.5 hover:text-brand-gold transition-colors"
           >
             <Mail className="h-3.5 w-3.5" aria-hidden />
-            contact@olea-restaurant.fr
+            <bdi dir="ltr">contact@olea-restaurant.fr</bdi>
           </a>
           <div className="flex items-center gap-6">
             <a
