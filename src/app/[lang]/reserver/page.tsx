@@ -107,13 +107,13 @@ export default async function ReserverPage({
                   {maison.nom}
                 </p>
                 <p className="text-sm text-brand-text-muted mb-3">
-                  {maison.adresse} · {maison.ville}
+                  <bdi>{maison.adresse} · {maison.ville}</bdi>
                 </p>
                 <a
                   href={`tel:${maison.telephone}`}
                   className="font-serif text-xl text-brand-ink border-b border-brand-olive pb-1 hover:text-brand-olive transition-colors"
                 >
-                  {maison.telephoneAffichage}
+                  <bdi dir="ltr">{maison.telephoneAffichage}</bdi>
                 </a>
               </li>
             ))}

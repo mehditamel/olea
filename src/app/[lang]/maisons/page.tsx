@@ -161,7 +161,7 @@ export default async function MaisonsIndexPage({
                 <div className="p-6 flex flex-col flex-1">
                   <p className="inline-flex items-center gap-1.5 text-xs text-brand-text-muted mb-4">
                     <MapPin className="h-3.5 w-3.5" aria-hidden />
-                    {maison.adresse}, {maison.codePostal}
+                    <bdi>{maison.adresse}, {maison.codePostal}</bdi>
                   </p>
                   <p className="text-sm leading-relaxed text-brand-ink/80 mb-5 flex-1">
                     {maison.description}

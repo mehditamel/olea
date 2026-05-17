@@ -108,9 +108,9 @@ export default async function ContactPage({
                       aria-hidden
                     />
                     <span>
-                      {maison.adresse}
+                      <bdi>{maison.adresse}</bdi>
                       <br />
-                      {maison.codePostal} {maison.ville}
+                      <bdi>{maison.codePostal} {maison.ville}</bdi>
                     </span>
                   </a>
                 </address>
@@ -120,7 +120,7 @@ export default async function ContactPage({
                     className="inline-flex items-center gap-2 font-serif text-xl text-brand-ink border-b border-brand-olive pb-1 hover:text-brand-olive transition-colors"
                   >
                     <Phone className="h-4 w-4" aria-hidden />
-                    {maison.telephoneAffichage}
+                    <bdi dir="ltr">{maison.telephoneAffichage}</bdi>
                   </a>
                 ) : (
                   <span className="font-serif italic text-lg text-brand-olive">
@@ -163,7 +163,7 @@ export default async function ContactPage({
               className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 flex-shrink-0"
               aria-hidden
             />
-            <span>contact@olea-restaurant.fr</span>
+            <bdi dir="ltr">contact@olea-restaurant.fr</bdi>
           </a>
         </div>
       </section>

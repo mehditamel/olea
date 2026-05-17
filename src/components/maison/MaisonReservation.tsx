@@ -73,7 +73,7 @@ export function MaisonReservation({
             className="inline-flex items-center justify-center gap-2 border border-brand-ink text-brand-ink px-8 py-3.5 text-[11px] uppercase tracking-[0.2em] hover:bg-brand-ink hover:text-brand-cream transition-colors"
           >
             <Phone className="h-3.5 w-3.5" aria-hidden />
-            {maison.telephoneAffichage}
+            <bdi dir="ltr">{maison.telephoneAffichage}</bdi>
           </a>
         </div>
       </div>

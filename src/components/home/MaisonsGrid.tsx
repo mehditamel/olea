@@ -104,7 +104,7 @@ function MaisonCard({
             className="inline-flex items-center gap-1.5 text-xs text-brand-text-soft hover:text-brand-gold transition-colors"
           >
             <MapPin className="h-3.5 w-3.5" aria-hidden />
-            {m.adresse}, {m.codePostal}
+            <bdi>{m.adresse}, {m.codePostal}</bdi>
           </a>
         </div>
 

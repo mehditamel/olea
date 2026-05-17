@@ -99,9 +99,9 @@ export function MaisonInfos({
             {m.label}
           </h2>
           <address className="not-italic text-brand-ink text-[15px] leading-[1.85] mb-6">
-            {m.adresse}
+            <bdi>{m.adresse}</bdi>
             <br />
-            {m.codePostal} {m.ville}
+            <bdi>{m.codePostal} {m.ville}</bdi>
           </address>
           <a
             href={googleMapsUrl(m)}
@@ -121,7 +121,7 @@ export function MaisonInfos({
                 href={`tel:${m.telephone}`}
                 className="inline-block font-serif text-2xl md:text-[28px] text-brand-ink border-b border-brand-olive pb-1 hover:text-brand-olive transition-colors"
               >
-                {m.telephoneAffichage}
+                <bdi dir="ltr">{m.telephoneAffichage}</bdi>
               </a>
             </div>
           ) : (

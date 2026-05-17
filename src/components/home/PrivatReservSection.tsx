@@ -78,7 +78,7 @@ export function PrivatReservSection({
                     <span className="inline-flex items-center gap-2 text-[12px] tracking-[0.16em] uppercase text-brand-gold">
                       <Phone className="h-3.5 w-3.5" aria-hidden />
                       <span className="hidden sm:inline">
-                        {maison.telephoneAffichage}
+                        <bdi dir="ltr">{maison.telephoneAffichage}</bdi>
                       </span>
                       <span className="sm:hidden">
                         {dict.privatReserv.appeler}

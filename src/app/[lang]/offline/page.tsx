@@ -44,7 +44,7 @@ export default async function OfflinePage({
                   className="inline-flex items-center gap-2 text-sm text-brand-gold hover:text-brand-gold-light transition-colors"
                 >
                   <Phone className="h-4 w-4" aria-hidden />
-                  {maison.telephoneAffichage}
+                  <bdi dir="ltr">{maison.telephoneAffichage}</bdi>
                 </a>
               </li>
             ))}

@@ -74,7 +74,7 @@ export function MaisonHero({
               className="inline-flex items-center gap-2 bg-brand-cream text-brand-ink px-6 py-3 text-[11px] uppercase tracking-[0.2em] font-medium hover:bg-brand-gold active:scale-[0.98] transition-[background-color,transform]"
             >
               <Phone className="h-3.5 w-3.5" aria-hidden />
-              {m.telephoneAffichage}
+              <bdi dir="ltr">{m.telephoneAffichage}</bdi>
             </a>
           ) : null}
           <a
