@@ -25,7 +25,7 @@ import { SlotPicker } from "./SlotPicker";
 import { LocaleLink } from "@/i18n/LocaleLink";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
-import { interpolate } from "@/i18n/format";
+import { formatPlural, interpolate } from "@/i18n/format";
 
 type ReservationErrorCode = keyof Dictionary["reservationForm"]["errors"];
 
@@ -50,6 +50,7 @@ type ReservationFormProps = {
 
 export function ReservationForm({
   defaultMaison,
+  lang,
   dict,
 }: ReservationFormProps) {
   const f = dict.reservationForm;
@@ -234,7 +235,7 @@ export function ReservationForm({
             >
               {Array.from({ length: 12 }, (_, i) => i + 1).map((n) => (
                 <option key={n} value={n}>
-                  {n} {n === 1 ? f.personne : f.personnes}
+                  {n} {formatPlural(n, lang, f.personnePlurals)}
                 </option>
               ))}
             </Select>

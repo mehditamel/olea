@@ -1,5 +1,8 @@
 import { Resend } from "resend";
 import { logger } from "./logger";
+import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@/i18n/dictionaries";
+import { formatDate, formatTime, interpolate } from "@/i18n/format";
 
 export type EmailAttachment = {
   filename: string;
@@ -89,54 +92,67 @@ type ReservationConfirmationInput = {
   convives: number;
   demandesParticulieres: string;
   attachment: EmailAttachment;
+  lang: Locale;
+  dict: Dictionary;
 };
 
 /**
- * Envoie un email de récap chaleureux au client avec la pièce jointe .ics.
+ * Envoie un email de récap chaleureux au client (localisé) avec la PJ .ics.
  */
 export function sendReservationConfirmation(
   input: ReservationConfirmationInput,
 ): Promise<SendEmailResult> {
-  const serviceLabel = input.service === "dejeuner" ? "Déjeuner" : "Dîner";
-  const heureLisible = input.heure.replace(":", "h");
+  const { dict, lang } = input;
+  const t = dict.emails.reservation;
+  const dir = lang === "ar" ? "rtl" : "ltr";
+
+  const serviceLabel = t.services[input.service];
+  const dateLisible = formatDate(input.date, lang);
+  const heureLisible = formatTime(input.heure, lang);
+  const subject = interpolate(t.subject, {
+    date: dateLisible,
+    heure: heureLisible,
+  });
+  const phoneClean = input.telephoneAffichage.replace(/\s/g, "");
+  const phoneLink = `<a href="tel:${escapeHtml(phoneClean)}" style="color:#4a5530"><bdi dir="ltr">${escapeHtml(input.telephoneAffichage)}</bdi></a>`;
+  const pieceJointeParts = t.pieceJointe.split("{telephone}");
+  const pieceJointeHtml = pieceJointeParts
+    .map((p) => escapeHtml(p))
+    .join(phoneLink);
+
   const html = `
-    <div style="font-family:Georgia,'Cormorant Garamond',serif;color:#1f2218;line-height:1.6;max-width:560px">
+    <div dir="${dir}" style="font-family:Georgia,'Cormorant Garamond',serif;color:#1f2218;line-height:1.6;max-width:560px">
       <p style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#4a5530;margin:0 0 12px">
-        Maison Oléa · ${escapeHtml(input.maisonNom)}
+        ${escapeHtml(interpolate(t.eyebrow, { nom: input.maisonNom }))}
       </p>
       <h1 style="font-size:28px;font-weight:normal;margin:0 0 16px">
-        Bonjour ${escapeHtml(input.nom)},
+        ${escapeHtml(interpolate(t.bonjour, { nom: input.nom }))}
       </h1>
-      <p style="margin:0 0 14px">
-        Nous avons bien reçu votre demande de réservation. Notre équipe vous
-        recontacte sous quelques heures pour la confirmer définitivement.
-      </p>
+      <p style="margin:0 0 14px">${escapeHtml(t.corpus)}</p>
       <ul style="list-style:none;padding:14px 16px;margin:18px 0;background:#f4ecdd;font-family:Inter,system-ui,sans-serif;font-size:14px">
-        <li><strong>Maison :</strong> ${escapeHtml(input.maisonNom)} — ${escapeHtml(input.adresse)}, ${escapeHtml(input.ville)}</li>
-        <li><strong>Date :</strong> ${escapeHtml(input.date)}</li>
-        <li><strong>Heure :</strong> ${escapeHtml(heureLisible)} (${serviceLabel})</li>
-        <li><strong>Convives :</strong> ${input.convives}</li>
+        <li><strong>${escapeHtml(t.labels.maison)} :</strong> ${escapeHtml(input.maisonNom)} — <bdi>${escapeHtml(input.adresse)}, ${escapeHtml(input.ville)}</bdi></li>
+        <li><strong>${escapeHtml(t.labels.date)} :</strong> ${escapeHtml(dateLisible)}</li>
+        <li><strong>${escapeHtml(t.labels.heure)} :</strong> <bdi dir="ltr">${escapeHtml(heureLisible)}</bdi> (${escapeHtml(serviceLabel)})</li>
+        <li><strong>${escapeHtml(t.labels.convives)} :</strong> ${input.convives}</li>
         ${
           input.demandesParticulieres
-            ? `<li style="margin-top:8px"><strong>Vos précisions :</strong><br>${escapeHtml(
+            ? `<li style="margin-top:8px"><strong>${escapeHtml(t.labels.precisions)} :</strong><br>${escapeHtml(
                 input.demandesParticulieres,
               ).replace(/\n/g, "<br>")}</li>`
             : ""
         }
       </ul>
       <p style="margin:0 0 14px;font-family:Inter,system-ui,sans-serif;font-size:14px">
-        Vous trouverez en pièce jointe un fichier <code>.ics</code> à ajouter à
-        votre agenda. Pour toute modification, contactez-nous au
-        <a href="tel:${escapeHtml(input.telephoneAffichage.replace(/\s/g, ""))}" style="color:#4a5530">${escapeHtml(input.telephoneAffichage)}</a>.
+        ${pieceJointeHtml}
       </p>
       <p style="margin:24px 0 0;font-style:italic;color:#6b5d4a">
-        À très vite,<br>L'équipe Oléa
+        ${escapeHtml(t.signature)}<br>${escapeHtml(t.signatureLigne2)}
       </p>
     </div>
   `;
 
   return sendContactEmail({
-    subject: `Votre table chez Maison Oléa · ${input.date} ${heureLisible}`,
+    subject,
     html,
     to: input.to,
     attachments: [input.attachment],

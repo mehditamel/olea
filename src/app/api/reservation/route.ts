@@ -13,6 +13,10 @@ import {
 import { buildReservationIcs } from "@/lib/ics";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { logger } from "@/lib/logger";
+import { DEFAULT_LOCALE, isLocale, type Locale } from "@/i18n/config";
+import { parseAcceptLanguage } from "@/i18n/detect";
+import { getDictionary } from "@/i18n/dictionaries";
+import { interpolate } from "@/i18n/format";
 
 export const runtime = "nodejs";
 
@@ -44,6 +48,17 @@ function clientIp(request: Request): string {
     if (first) return first;
   }
   return request.headers.get("x-real-ip")?.trim() || "unknown";
+}
+
+function resolveLocale(request: Request): Locale {
+  const cookieHeader = request.headers.get("cookie") ?? "";
+  const match = cookieHeader.match(/(?:^|;\s*)NEXT_LOCALE=([^;]+)/);
+  if (match && match[1]) {
+    const decoded = decodeURIComponent(match[1]);
+    if (isLocale(decoded)) return decoded;
+  }
+  const accept = request.headers.get("accept-language") ?? "";
+  return parseAcceptLanguage(accept, DEFAULT_LOCALE);
 }
 
 export async function POST(request: Request) {
@@ -120,10 +135,14 @@ export async function POST(request: Request) {
     "Reservation received",
   );
 
+  const lang = resolveLocale(request);
+  const dict = await getDictionary(lang);
+
   const occasionLabel = OCCASION_LABELS[data.occasion] ?? data.occasion;
-  const serviceLabel = data.service === "dejeuner" ? "Déjeuner" : "Dîner";
+  const serviceLabelFr = data.service === "dejeuner" ? "Déjeuner" : "Dîner";
   const heureLisible = data.heure.replace(":", "h");
 
+  // Email équipe : reste en FR (audience interne).
   const teamHtml = `
     <h2>Nouvelle réservation · ${escapeHtml(maison.nom)}</h2>
     <ul>
@@ -132,9 +151,10 @@ export async function POST(request: Request) {
       <li><strong>Téléphone :</strong> ${escapeHtml(data.telephone)}</li>
       <li><strong>Maison :</strong> ${escapeHtml(maison.nom)}</li>
       <li><strong>Date :</strong> ${escapeHtml(data.date)}</li>
-      <li><strong>Heure :</strong> ${escapeHtml(heureLisible)} (${escapeHtml(serviceLabel)})</li>
+      <li><strong>Heure :</strong> ${escapeHtml(heureLisible)} (${escapeHtml(serviceLabelFr)})</li>
       <li><strong>Convives :</strong> ${data.convives}</li>
       <li><strong>Occasion :</strong> ${escapeHtml(occasionLabel)}</li>
+      <li><strong>Langue client :</strong> ${escapeHtml(lang)}</li>
     </ul>
     ${
       data.demandesParticulieres
@@ -155,12 +175,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "send_failed" }, { status: 502 });
   }
 
+  const icsSummary = interpolate(dict.ics.summary, { nom: maison.nom });
+  const icsDescriptionBase = interpolate(dict.ics.descriptionPersonnes, {
+    n: data.convives,
+  });
+  const icsDescription = data.demandesParticulieres
+    ? `${icsDescriptionBase} ${data.demandesParticulieres}`
+    : icsDescriptionBase;
+
   const ics = buildReservationIcs({
     uid: `${data.date.replace(/-/g, "")}-${data.heure.replace(":", "")}-${data.maison}-${data.email}@olea-restaurant.fr`,
-    summary: `Réservation Maison Oléa · ${maison.nom}`,
-    description: `Réservation pour ${data.convives} personne(s).${
-      data.demandesParticulieres ? ` ${data.demandesParticulieres}` : ""
-    }`,
+    summary: icsSummary,
+    description: icsDescription,
     location: `${maison.nom}, ${maison.adresse}, ${maison.codePostal} ${maison.ville}`,
     startIso: data.date,
     heure: data.heure,
@@ -181,6 +207,8 @@ export async function POST(request: Request) {
     service: data.service,
     convives: data.convives,
     demandesParticulieres: data.demandesParticulieres,
+    lang,
+    dict,
     attachment: {
       filename: ics.filename,
       content: ics.contentBase64,
