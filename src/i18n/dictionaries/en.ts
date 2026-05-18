@@ -53,6 +53,7 @@ const en = {
     privatisation: "Private events",
     contact: "Contact",
     mentionsLegales: "Legal notice",
+    cgu: "Terms of use",
     decouvrir: "Discover",
     ouvertureProchaine: "Opening soon",
     bientot: "soon",
@@ -143,6 +144,8 @@ const en = {
     suggestionsEyebrow: "A few suggestions",
     saisons: "The menu evolves with the seasons and daily arrivals.",
     ctaContact: "Contact us",
+    voirLaCarte: "View the menu",
+    bientotDisponible: "Coming soon",
     items: [
       {
         eyebrow: "To start",

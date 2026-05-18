@@ -18,7 +18,12 @@ const STATIC_PAGES: readonly Page[] = [
   { path: "/privatisation", changeFrequency: "monthly", priority: 0.7 },
   { path: "/contact", changeFrequency: "yearly", priority: 0.5 },
   { path: "/mentions-legales", changeFrequency: "yearly", priority: 0.2 },
+  { path: "/cgu", changeFrequency: "yearly", priority: 0.2 },
 ];
+
+const CARTE_MAISON_SLUGS = maisons
+  .filter((m) => m.slug !== "villeneuve-loubet")
+  .map((m) => m.slug);
 
 function alternates(path: string): Record<string, string> {
   const map: Record<string, string> = {};
@@ -53,6 +58,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
         lastModified: now,
         changeFrequency: "monthly",
         priority: 0.85,
+        alternates: { languages: alternates(path) },
+      });
+    }
+  }
+
+  for (const slug of CARTE_MAISON_SLUGS) {
+    const path = `/carte/${slug}`;
+    for (const lang of LOCALES) {
+      out.push({
+        url: absoluteUrl(withLocale(lang, path)),
+        lastModified: now,
+        changeFrequency: "monthly",
+        priority: 0.75,
         alternates: { languages: alternates(path) },
       });
     }

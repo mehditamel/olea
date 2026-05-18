@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Phone, Mail } from "lucide-react";
 import { maisons } from "@/data/maisons";
 import { OliveBranch } from "@/components/brand/OliveBranch";
@@ -28,9 +29,14 @@ export function SiteFooter({ lang, dict }: Props) {
       <div className="relative mx-auto max-w-7xl">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[1.3fr_repeat(3,1fr)] gap-10 md:gap-12 mb-12">
           <div>
-            <p className="font-serif italic text-3xl md:text-[32px] mb-4">
-              <BrandWord />
-            </p>
+            <Image
+              src="/images/brand/logo.png"
+              alt="Maison Oléa"
+              width={800}
+              height={600}
+              sizes="(max-width: 768px) 56px, 72px"
+              className="h-14 md:h-16 w-auto mb-4"
+            />
             <p className="text-sm leading-relaxed text-brand-text-soft max-w-[260px] mb-6">
               {dict.footer.tagline}
             </p>
@@ -53,7 +59,7 @@ export function SiteFooter({ lang, dict }: Props) {
             return (
               <div key={maison.slug}>
                 <p className="text-[11px] uppercase tracking-[0.22em] text-brand-gold mb-4">
-                  {maison.nom}
+                  <BrandWord /> {maison.nom}
                 </p>
                 <address className="not-italic text-sm leading-relaxed text-brand-text-soft">
                   <bdi>{maison.adresse}</bdi>
@@ -117,6 +123,12 @@ export function SiteFooter({ lang, dict }: Props) {
               className="hover:text-brand-gold transition-colors"
             >
               {dict.footer.mentionsLegales}
+            </a>
+            <a
+              href={withLocale(lang, "/cgu")}
+              className="hover:text-brand-gold transition-colors"
+            >
+              {dict.footer.cgu}
             </a>
             <span>© {year} {dict.footer.copyright}</span>
           </div>

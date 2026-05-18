@@ -53,6 +53,7 @@ const es = {
     privatisation: "Privatización",
     contact: "Contacto",
     mentionsLegales: "Aviso legal",
+    cgu: "Condiciones de uso",
     decouvrir: "Descubrir",
     ouvertureProchaine: "Apertura próxima",
     bientot: "pronto",
@@ -143,6 +144,8 @@ const es = {
     suggestionsEyebrow: "Algunas sugerencias",
     saisons: "La carta evoluciona al ritmo de las estaciones y las llegadas.",
     ctaContact: "Contáctenos",
+    voirLaCarte: "Ver la carta",
+    bientotDisponible: "Próximamente",
     items: [
       {
         eyebrow: "De entrante",

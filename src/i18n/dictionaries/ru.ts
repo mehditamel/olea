@@ -53,6 +53,7 @@ const ru = {
     privatisation: "Приватизация",
     contact: "Контакты",
     mentionsLegales: "Правовая информация",
+    cgu: "Условия использования",
     decouvrir: "Открыть",
     ouvertureProchaine: "Скоро открытие",
     bientot: "скоро",
@@ -145,6 +146,8 @@ const ru = {
     suggestionsEyebrow: "Несколько предложений",
     saisons: "Меню меняется в ритме сезонов и поставок.",
     ctaContact: "Связаться с нами",
+    voirLaCarte: "Смотреть меню",
+    bientotDisponible: "Скоро",
     items: [
       {
         eyebrow: "Закуска",

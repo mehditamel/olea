@@ -58,6 +58,7 @@ const fr = {
     privatisation: "Privatisation",
     contact: "Contact",
     mentionsLegales: "Mentions légales",
+    cgu: "CGU",
     decouvrir: "Découvrir",
     ouvertureProchaine: "Ouverture prochaine",
     bientot: "bientôt",
@@ -150,6 +151,8 @@ const fr = {
     suggestionsEyebrow: "Quelques suggestions",
     saisons: "La carte évolue au gré des saisons et des arrivages.",
     ctaContact: "Nous contacter",
+    voirLaCarte: "Voir la carte",
+    bientotDisponible: "Bientôt disponible",
     items: [
       {
         eyebrow: "En entrée",

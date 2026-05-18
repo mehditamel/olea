@@ -53,6 +53,7 @@ const it = {
     privatisation: "Privatizzazione",
     contact: "Contatti",
     mentionsLegales: "Note legali",
+    cgu: "Termini d'uso",
     decouvrir: "Scopri",
     ouvertureProchaine: "Apertura prossima",
     bientot: "presto",
@@ -142,6 +143,8 @@ const it = {
     suggestionsEyebrow: "Qualche suggerimento",
     saisons: "Il menù evolve con le stagioni e gli arrivi giornalieri.",
     ctaContact: "Contattaci",
+    voirLaCarte: "Vedi il menù",
+    bientotDisponible: "Prossimamente",
     items: [
       {
         eyebrow: "Antipasto",

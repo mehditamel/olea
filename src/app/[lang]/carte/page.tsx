@@ -1,7 +1,15 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { absoluteUrl } from "@/lib/utils";
+import type { ReactNode } from "react";
+import { ArrowUpRight } from "lucide-react";
+import { maisons } from "@/data/maisons";
+import { getMenuBySlug } from "@/data/menu";
+import { absoluteUrl, cn } from "@/lib/utils";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
+import { MarseillePortIllustration } from "@/components/brand/illustrations/MarseillePortIllustration";
+import { CassisPortIllustration } from "@/components/brand/illustrations/CassisPortIllustration";
+import { VilleneuveCoastIllustration } from "@/components/brand/illustrations/VilleneuveCoastIllustration";
+import type { MaisonSlug } from "@/types/maison";
 import {
   LOCALES,
   type Locale,
@@ -10,6 +18,13 @@ import {
 } from "@/i18n/config";
 import { getDictionary, hasLocale } from "@/i18n/dictionaries";
 import { withLocale } from "@/i18n/locale-href";
+import { localizeMaison } from "@/i18n/localized-maison";
+
+const ILLUSTRATIONS: Record<MaisonSlug, ReactNode> = {
+  marseille: <MarseillePortIllustration className="h-full w-full" />,
+  cassis: <CassisPortIllustration className="h-full w-full" />,
+  "villeneuve-loubet": <VilleneuveCoastIllustration className="h-full w-full" />,
+};
 
 export async function generateMetadata({
   params,
@@ -80,24 +95,58 @@ export default async function CartePage({
       </section>
 
       <section className="bg-brand-cream px-6 md:px-12 py-14 md:py-20">
-        <div className="mx-auto max-w-5xl">
-          <p className="eyebrow text-brand-olive mb-8 text-center">
-            {dict.carte.suggestionsEyebrow}
-          </p>
-          <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
-            {dict.carte.items.map((dish) => (
-              <li key={dish.titre} className="border-b border-brand-ink/10 pb-6">
-                <p className="text-[11px] uppercase tracking-[0.22em] text-brand-gold-deep mb-2">
-                  {dish.eyebrow}
-                </p>
-                <h2 className="font-serif text-2xl md:text-[26px] text-brand-ink mb-2">
-                  {dish.titre}
-                </h2>
-                <p className="text-[15px] leading-[1.75] text-brand-text-muted">
-                  {dish.texte}
-                </p>
-              </li>
-            ))}
+        <div className="mx-auto max-w-7xl">
+          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
+            {maisons.map((raw) => {
+              const maison = localizeMaison(raw, l);
+              const menu = getMenuBySlug(maison.slug);
+              const disponible = menu.statut === "publiee";
+              const href = withLocale(l, `/carte/${maison.slug}`);
+              return (
+                <li key={maison.slug}>
+                  <a
+                    href={href}
+                    className="group block bg-brand-cream-soft border border-brand-ink/10 hover:border-brand-olive/40 transition-colors"
+                  >
+                    <div className="relative aspect-[16/10] overflow-hidden bg-brand-cream">
+                      {ILLUSTRATIONS[maison.slug]}
+                      {!disponible ? (
+                        <span className="absolute top-3 start-3 bg-brand-gold text-brand-ink text-[10px] tracking-[0.2em] uppercase px-2.5 py-1 font-semibold">
+                          {dict.maisons.bientot}
+                        </span>
+                      ) : null}
+                    </div>
+                    <div className="p-6 md:p-7">
+                      <p className="eyebrow text-brand-gold-deep mb-2">
+                        {maison.label}
+                      </p>
+                      <h2 className="font-serif text-2xl md:text-[28px] text-brand-ink mb-3">
+                        {maison.nom}
+                      </h2>
+                      <p className="text-[15px] leading-[1.65] text-brand-text-muted mb-5">
+                        {maison.description}
+                      </p>
+                      <span
+                        className={cn(
+                          "inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] font-medium transition-colors",
+                          disponible
+                            ? "text-brand-ink group-hover:text-brand-olive"
+                            : "text-brand-text-muted",
+                        )}
+                      >
+                        {disponible
+                          ? dict.carte.voirLaCarte
+                          : dict.carte.bientotDisponible}
+                        <ArrowUpRight
+                          className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 rtl:-scale-x-100"
+                          aria-hidden
+                        />
+                      </span>
+                    </div>
+                  </a>
+                </li>
+              );
+            })}
           </ul>
 
           <div className="mt-14 md:mt-20 text-center border-t border-brand-ink/15 pt-12">

@@ -53,6 +53,7 @@ const ar = {
     privatisation: "الاستئجار الخاص",
     contact: "اتصل بنا",
     mentionsLegales: "المعلومات القانونية",
+    cgu: "شروط الاستخدام",
     decouvrir: "اكتشاف",
     ouvertureProchaine: "افتتاح قريب",
     bientot: "قريبًا",
@@ -142,6 +143,8 @@ const ar = {
     suggestionsEyebrow: "بعض الاقتراحات",
     saisons: "تتطوّر القائمة على إيقاع الفصول والوصول اليومي للمنتجات.",
     ctaContact: "تواصل معنا",
+    voirLaCarte: "اطّلع على القائمة",
+    bientotDisponible: "متاحة قريبًا",
     items: [
       {
         eyebrow: "كمقبّل",
