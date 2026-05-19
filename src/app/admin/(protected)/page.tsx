@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { maisons } from "@/data/maisons";
 import { todayIsoParis } from "@/lib/date-paris";
@@ -176,7 +177,12 @@ function ReservationRowView({ r }: { r: ReservationRow }) {
       </Td>
       <Td>{r.convives}</Td>
       <Td>
-        <div className="font-medium">{r.nom}</div>
+        <Link
+          href={`/admin/reservations/${r.id}`}
+          className="font-medium text-brand-ink hover:text-brand-olive hover:underline"
+        >
+          {r.nom}
+        </Link>
         {r.occasion !== "aucune" && (
           <div className="text-xs text-brand-text-muted">{r.occasion}</div>
         )}
