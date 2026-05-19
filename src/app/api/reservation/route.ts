@@ -6,44 +6,31 @@ import {
   isMaisonClosedOn,
 } from "@/lib/reservation-slots";
 import { isIsoDateInPastParis } from "@/lib/date-paris";
-import {
-  sendContactEmail,
-  sendReservationConfirmation,
-} from "@/lib/email";
-import { buildReservationIcs } from "@/lib/ics";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { logger } from "@/lib/logger";
 import { isSupabaseConfigured } from "@/lib/supabase/admin";
-import { insertReservation } from "@/lib/reservation/repository";
+import {
+  insertReservation,
+  attachStripeIds,
+} from "@/lib/reservation/repository";
 import { checkCapacite, isCreneauBloque } from "@/lib/reservation/capacity";
 import {
   requiresGarantie,
   montantGarantieCents,
 } from "@/lib/reservation/garantie";
+import {
+  sendClientConfirmationFromRow,
+  sendTeamReservationEmail,
+} from "@/lib/reservation/notify";
+import {
+  getStripe,
+  isStripeConfigured,
+  getPublishableKey,
+} from "@/lib/stripe/server";
 
 export const runtime = "nodejs";
 
 const RATE_LIMIT = { limit: 5, windowMs: 60 * 60 * 1000 };
-const RESERVATION_DURATION_MIN = 90;
-const APP_BASE_URL = process.env.APP_BASE_URL ?? process.env.SITE_URL ?? "https://olea-restaurant.fr";
-
-function escapeHtml(input: string): string {
-  return input
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
-const OCCASION_LABELS: Record<string, string> = {
-  aucune: "—",
-  anniversaire: "Anniversaire",
-  romantique: "Romantique",
-  famille: "Famille",
-  professionnel: "Repas professionnel",
-  autre: "Autre",
-};
 
 function clientIp(request: Request): string {
   const xff = request.headers.get("x-forwarded-for");
@@ -133,168 +120,132 @@ export async function POST(request: Request) {
 
   const garantie = requiresGarantie(data.date, data.convives);
   const montantGarantie = garantie ? montantGarantieCents(data.convives) : null;
+  const stripeReady = garantie && isStripeConfigured();
+  const stripePk = getPublishableKey();
 
-  let cancellationToken: string | null = null;
-  let reservationId: string | null = null;
-
-  if (isSupabaseConfigured()) {
-    try {
-      if (await isCreneauBloque(data.maison, data.date, data.heure)) {
-        return NextResponse.json(
-          { error: "Ce créneau est bloqué. Choisissez un autre horaire." },
-          { status: 409 },
-        );
-      }
-      const cap = await checkCapacite(
-        data.maison,
-        data.date,
-        data.service,
-        data.convives,
-      );
-      if (!cap.ok) {
-        return NextResponse.json(
-          {
-            error: `Plus que ${cap.reste} couvert(s) disponibles sur ce service. Réduisez le nombre de convives ou choisissez un autre créneau.`,
-          },
-          { status: 409 },
-        );
-      }
-      const row = await insertReservation({
-        maison_slug: data.maison,
-        date: data.date,
-        heure: data.heure,
-        service: data.service,
-        convives: data.convives,
-        nom: data.nom,
-        email: data.email.toLowerCase(),
-        telephone: data.telephone,
-        occasion: data.occasion,
-        demandes: data.demandesParticulieres,
-        statut: garantie ? "pending_card" : "confirmed",
-        requiert_garantie: garantie,
-        montant_garantie_cents: montantGarantie,
-        source: "web",
-      });
-      cancellationToken = row.cancellation_token;
-      reservationId = row.id;
-      logger.info(
-        {
-          reservationId,
-          maison: data.maison,
-          date: data.date,
-          heure: data.heure,
-          service: data.service,
-          convives: data.convives,
-          garantie,
-        },
-        "Reservation persisted",
-      );
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "unknown";
-      logger.error({ err: message }, "Reservation persist failed");
-      return NextResponse.json(
-        { error: "Impossible d'enregistrer la réservation. Réessayez." },
-        { status: 500 },
-      );
-    }
-  } else {
+  if (!isSupabaseConfigured()) {
     logger.warn(
       { maison: data.maison, date: data.date, heure: data.heure },
       "Reservation: Supabase not configured, log-only mode",
     );
+    return NextResponse.json({
+      ok: true,
+      mode: "log",
+      requiresCard: false,
+    });
   }
 
-  const occasionLabel = OCCASION_LABELS[data.occasion] ?? data.occasion;
-  const serviceLabel = data.service === "dejeuner" ? "Déjeuner" : "Dîner";
-  const heureLisible = data.heure.replace(":", "h");
-
-  const teamHtml = `
-    <h2>Nouvelle réservation · ${escapeHtml(maison.nom)}</h2>
-    <ul>
-      <li><strong>Nom :</strong> ${escapeHtml(data.nom)}</li>
-      <li><strong>Email :</strong> ${escapeHtml(data.email)}</li>
-      <li><strong>Téléphone :</strong> ${escapeHtml(data.telephone)}</li>
-      <li><strong>Maison :</strong> ${escapeHtml(maison.nom)}</li>
-      <li><strong>Date :</strong> ${escapeHtml(data.date)}</li>
-      <li><strong>Heure :</strong> ${escapeHtml(heureLisible)} (${escapeHtml(serviceLabel)})</li>
-      <li><strong>Convives :</strong> ${data.convives}</li>
-      <li><strong>Occasion :</strong> ${escapeHtml(occasionLabel)}</li>
-      ${garantie ? `<li><strong>Garantie CB :</strong> ${(montantGarantie ?? 0) / 100} € (empreinte requise)</li>` : ""}
-      ${reservationId ? `<li><strong>ID :</strong> ${escapeHtml(reservationId)}</li>` : ""}
-    </ul>
-    ${
-      data.demandesParticulieres
-        ? `<p><strong>Demandes particulières :</strong><br>${escapeHtml(
-            data.demandesParticulieres,
-          ).replace(/\n/g, "<br>")}</p>`
-        : ""
+  try {
+    if (await isCreneauBloque(data.maison, data.date, data.heure)) {
+      return NextResponse.json(
+        { error: "Ce créneau est bloqué. Choisissez un autre horaire." },
+        { status: 409 },
+      );
     }
-  `;
+    const cap = await checkCapacite(
+      data.maison,
+      data.date,
+      data.service,
+      data.convives,
+    );
+    if (!cap.ok) {
+      return NextResponse.json(
+        {
+          error: `Plus que ${cap.reste} couvert(s) disponibles sur ce service. Réduisez le nombre de convives ou choisissez un autre créneau.`,
+        },
+        { status: 409 },
+      );
+    }
 
-  const teamResult = await sendContactEmail({
-    subject: `Réservation — ${maison.nom} · ${data.date} ${heureLisible} · ${data.convives} pers.`,
-    html: teamHtml,
-    replyTo: data.email,
-  });
+    const row = await insertReservation({
+      maison_slug: data.maison,
+      date: data.date,
+      heure: data.heure,
+      service: data.service,
+      convives: data.convives,
+      nom: data.nom,
+      email: data.email.toLowerCase(),
+      telephone: data.telephone,
+      occasion: data.occasion,
+      demandes: data.demandesParticulieres,
+      statut: stripeReady ? "pending_card" : "confirmed",
+      requiert_garantie: garantie,
+      montant_garantie_cents: montantGarantie,
+      source: "web",
+    });
 
-  if (!teamResult.ok) {
+    if (stripeReady) {
+      const stripe = getStripe();
+      const customer = await stripe.customers.create({
+        email: row.email,
+        name: row.nom,
+        phone: row.telephone,
+        metadata: { reservation_id: row.id, maison: row.maison_slug },
+      });
+      const setupIntent = await stripe.setupIntents.create({
+        customer: customer.id,
+        payment_method_types: ["card"],
+        usage: "off_session",
+        metadata: {
+          reservation_id: row.id,
+          maison: row.maison_slug,
+          date: row.date,
+          heure: row.heure,
+          convives: String(row.convives),
+          montant_garantie_cents: String(montantGarantie ?? 0),
+        },
+      });
+      await attachStripeIds(row.id, {
+        customerId: customer.id,
+        setupIntentId: setupIntent.id,
+      });
+
+      await sendTeamReservationEmail(row, maison, true);
+
+      logger.info(
+        { id: row.id, setupIntentId: setupIntent.id, customer: customer.id },
+        "Reservation created with pending card setup",
+      );
+
+      return NextResponse.json({
+        ok: true,
+        mode: "stripe_setup",
+        requiresCard: true,
+        reservationId: row.id,
+        clientSecret: setupIntent.client_secret,
+        publishableKey: stripePk,
+        montantGarantieCents: montantGarantie,
+      });
+    }
+
+    if (garantie && !isStripeConfigured()) {
+      logger.warn(
+        { id: row.id },
+        "Reservation requires garantie but Stripe not configured — manual CB",
+      );
+    }
+
+    const teamResult = await sendTeamReservationEmail(row, maison, false);
+    if (!teamResult.ok) {
+      return NextResponse.json(
+        { error: "Échec de l'envoi. Veuillez réessayer dans un instant." },
+        { status: 502 },
+      );
+    }
+    await sendClientConfirmationFromRow(row, maison);
+
+    return NextResponse.json({
+      ok: true,
+      mode: "confirmed",
+      requiresCard: false,
+      reservationId: row.id,
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "unknown";
+    logger.error({ err: message }, "Reservation flow failed");
     return NextResponse.json(
-      { error: "Échec de l'envoi. Veuillez réessayer dans un instant." },
-      { status: 502 },
+      { error: "Impossible d'enregistrer la réservation. Réessayez." },
+      { status: 500 },
     );
   }
-
-  const ics = buildReservationIcs({
-    uid: `${data.date.replace(/-/g, "")}-${data.heure.replace(":", "")}-${data.maison}-${data.email}@olea-restaurant.fr`,
-    summary: `Réservation Maison Oléa · ${maison.nom}`,
-    description: `Réservation pour ${data.convives} personne(s).${
-      data.demandesParticulieres ? ` ${data.demandesParticulieres}` : ""
-    }`,
-    location: `${maison.nom}, ${maison.adresse}, ${maison.codePostal} ${maison.ville}`,
-    startIso: data.date,
-    heure: data.heure,
-    durationMinutes: RESERVATION_DURATION_MIN,
-    organizerEmail: process.env.CONTACT_EMAIL ?? "contact@olea-restaurant.fr",
-    attendeeEmail: data.email,
-  });
-
-  const cancellationUrl = cancellationToken
-    ? `${APP_BASE_URL}/reserver/cancel/${cancellationToken}`
-    : undefined;
-
-  const clientResult = await sendReservationConfirmation({
-    to: data.email,
-    nom: data.nom,
-    maisonNom: maison.nom,
-    adresse: maison.adresse,
-    ville: maison.ville,
-    telephoneAffichage: maison.telephoneAffichage,
-    date: data.date,
-    heure: data.heure,
-    service: data.service,
-    convives: data.convives,
-    demandesParticulieres: data.demandesParticulieres,
-    attachment: {
-      filename: ics.filename,
-      content: ics.contentBase64,
-      contentType: "text/calendar",
-    },
-    cancellationUrl,
-    requiertGarantie: garantie,
-    montantGarantieCents: montantGarantie,
-  });
-
-  if (!clientResult.ok) {
-    logger.warn(
-      { err: clientResult.error },
-      "Reservation: client confirmation email failed",
-    );
-  }
-
-  return NextResponse.json({
-    ok: true,
-    mode: teamResult.mode,
-    reservationId,
-    requiresCard: garantie,
-  });
 }

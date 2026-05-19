@@ -96,3 +96,68 @@ export async function sumConvivesActifsParService(
     0,
   );
 }
+
+export async function attachStripeIds(
+  reservationId: string,
+  ids: {
+    customerId?: string;
+    setupIntentId?: string;
+    paymentMethodId?: string;
+    paymentIntentId?: string;
+    chargeId?: string;
+  },
+): Promise<void> {
+  const supabase = getSupabaseAdmin();
+  const update: Record<string, string | null> = {};
+  if (ids.customerId !== undefined) update.stripe_customer_id = ids.customerId;
+  if (ids.setupIntentId !== undefined)
+    update.stripe_setup_intent_id = ids.setupIntentId;
+  if (ids.paymentMethodId !== undefined)
+    update.stripe_payment_method_id = ids.paymentMethodId;
+  if (ids.paymentIntentId !== undefined)
+    update.stripe_payment_intent_id = ids.paymentIntentId;
+  if (ids.chargeId !== undefined) update.stripe_charge_id = ids.chargeId;
+  const { error } = await supabase
+    .from("reservations")
+    .update(update)
+    .eq("id", reservationId);
+  if (error) throw new Error(`Attach stripe ids failed: ${error.message}`);
+}
+
+export async function updateStatut(
+  reservationId: string,
+  statut: ReservationStatut,
+): Promise<void> {
+  const supabase = getSupabaseAdmin();
+  const { error } = await supabase
+    .from("reservations")
+    .update({ statut })
+    .eq("id", reservationId);
+  if (error) throw new Error(`Update statut failed: ${error.message}`);
+}
+
+export async function findReservationBySetupIntent(
+  setupIntentId: string,
+): Promise<ReservationRow | null> {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("reservations")
+    .select("*")
+    .eq("stripe_setup_intent_id", setupIntentId)
+    .maybeSingle();
+  if (error) throw new Error(`Find by setup_intent failed: ${error.message}`);
+  return (data as ReservationRow | null) ?? null;
+}
+
+export async function findReservationById(
+  id: string,
+): Promise<ReservationRow | null> {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("reservations")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) throw new Error(`Find by id failed: ${error.message}`);
+  return (data as ReservationRow | null) ?? null;
+}
