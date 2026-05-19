@@ -10,12 +10,15 @@ import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Label } from "@/components/ui/Label";
 import { Select } from "@/components/ui/Select";
+import type { Dictionary } from "@/i18n/dictionaries";
+
+type DevisErrorCode = keyof Dictionary["devisForm"]["errors"];
 
 type Status =
   | { state: "idle" }
   | { state: "submitting" }
   | { state: "success" }
-  | { state: "error"; message: string };
+  | { state: "error"; code: DevisErrorCode };
 
 function todayIso(): string {
   const d = new Date();
@@ -25,9 +28,10 @@ function todayIso(): string {
   return part ?? "";
 }
 
-export function DevisForm() {
+export function DevisForm({ dict }: { dict: Dictionary }) {
   const [status, setStatus] = useState<Status>({ state: "idle" });
   const minDate = todayIso();
+  const f = dict.devisForm;
 
   const {
     register,
@@ -46,27 +50,29 @@ export function DevisForm() {
 
   const onSubmit = handleSubmit(
     async (values) => {
-    setStatus({ state: "submitting" });
-    try {
-      const res = await fetch("/api/devis", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      });
-      if (!res.ok) {
-        const data = (await res.json().catch(() => null)) as
-          | { error?: string }
-          | null;
-        throw new Error(data?.error ?? "Une erreur est survenue.");
+      setStatus({ state: "submitting" });
+      try {
+        const res = await fetch("/api/devis", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(values),
+        });
+        if (!res.ok) {
+          const data = (await res.json().catch(() => null)) as
+            | { error?: string }
+            | null;
+          const code = (data?.error ?? "generic") as DevisErrorCode;
+          const valid = code in f.errors ? code : "generic";
+          throw new Error(valid);
+        }
+        setStatus({ state: "success" });
+        reset();
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "generic";
+        const code = (msg in f.errors ? msg : "generic") as DevisErrorCode;
+        setStatus({ state: "error", code });
       }
-      setStatus({ state: "success" });
-      reset();
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Une erreur est survenue.";
-      setStatus({ state: "error", message });
-    }
-  },
+    },
     (errs) => {
       const first = Object.keys(errs)[0] as keyof DevisInput | undefined;
       if (first) setFocus(first);
@@ -79,20 +85,17 @@ export function DevisForm() {
         <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-brand-gold/15 text-brand-gold mb-6">
           <Check className="h-7 w-7" aria-hidden />
         </span>
-        <p className="eyebrow text-brand-gold mb-4">Merci !</p>
+        <p className="eyebrow text-brand-gold mb-4">{f.successEyebrow}</p>
         <p className="font-serif text-2xl md:text-3xl mb-4">
-          Votre demande nous est bien parvenue.
+          {f.successTitre}
         </p>
-        <p className="text-sm opacity-80 max-w-md mx-auto">
-          Nous revenons vers vous sous 48 heures avec une proposition
-          sur-mesure.
-        </p>
+        <p className="text-sm opacity-80 max-w-md mx-auto">{f.successTexte}</p>
         <button
           type="button"
           onClick={() => setStatus({ state: "idle" })}
           className="mt-8 text-[11px] uppercase tracking-[0.2em] text-brand-gold border-b border-brand-gold pb-1 hover:text-brand-gold-light hover:border-brand-gold-light transition-colors"
         >
-          Envoyer une autre demande
+          {f.successCta}
         </button>
       </div>
     );
@@ -101,12 +104,21 @@ export function DevisForm() {
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-10" noValidate>
       <fieldset className="contents">
-        <legend className="eyebrow text-brand-olive mb-2">Vous</legend>
+        <legend className="eyebrow text-brand-olive mb-2">{f.you}</legend>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <Field label="Nom complet" htmlFor="devis-nom" error={errors.nom?.message}>
-            <Input id="devis-nom" {...register("nom")} autoComplete="name" required />
+          <Field label={f.nom} htmlFor="devis-nom" error={errors.nom?.message}>
+            <Input
+              id="devis-nom"
+              {...register("nom")}
+              autoComplete="name"
+              required
+            />
           </Field>
-          <Field label="Email" htmlFor="devis-email" error={errors.email?.message}>
+          <Field
+            label={f.email}
+            htmlFor="devis-email"
+            error={errors.email?.message}
+          >
             <Input
               id="devis-email"
               type="email"
@@ -116,7 +128,12 @@ export function DevisForm() {
               required
             />
           </Field>
-          <Field label="Téléphone" htmlFor="devis-tel" error={errors.telephone?.message} className="md:col-span-2">
+          <Field
+            label={f.telephone}
+            htmlFor="devis-tel"
+            error={errors.telephone?.message}
+            className="md:col-span-2"
+          >
             <Input
               id="devis-tel"
               type="tel"
@@ -130,9 +147,13 @@ export function DevisForm() {
       </fieldset>
 
       <fieldset className="contents">
-        <legend className="eyebrow text-brand-olive mb-2">Votre événement</legend>
+        <legend className="eyebrow text-brand-olive mb-2">{f.event}</legend>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <Field label="Maison" htmlFor="devis-maison" error={errors.maison?.message}>
+          <Field
+            label={f.maison}
+            htmlFor="devis-maison"
+            error={errors.maison?.message}
+          >
             <Select id="devis-maison" {...register("maison")}>
               {maisons.map((m) => (
                 <option key={m.slug} value={m.slug}>
@@ -142,21 +163,21 @@ export function DevisForm() {
             </Select>
           </Field>
           <Field
-            label="Type d'événement"
+            label={f.typeEvenement}
             htmlFor="devis-type"
             error={errors.typeEvenement?.message}
           >
             <Select id="devis-type" {...register("typeEvenement")}>
-              <option value="anniversaire">Anniversaire</option>
-              <option value="mariage">Mariage</option>
-              <option value="seminaire">Séminaire</option>
-              <option value="repas-affaires">Repas d&apos;affaires</option>
-              <option value="famille">Réunion de famille</option>
-              <option value="autre">Autre</option>
+              <option value="anniversaire">{f.types.anniversaire}</option>
+              <option value="mariage">{f.types.mariage}</option>
+              <option value="seminaire">{f.types.seminaire}</option>
+              <option value="repas-affaires">{f.types.affaires}</option>
+              <option value="famille">{f.types.famille}</option>
+              <option value="autre">{f.types.autre}</option>
             </Select>
           </Field>
           <Field
-            label="Nombre de convives"
+            label={f.convives}
             htmlFor="devis-convives"
             error={errors.convives?.message}
           >
@@ -171,24 +192,30 @@ export function DevisForm() {
             />
           </Field>
           <Field
-            label="Date souhaitée"
+            label={f.date}
             htmlFor="devis-date"
             error={errors.date?.message}
           >
-            <Input id="devis-date" type="date" min={minDate} {...register("date")} required />
+            <Input
+              id="devis-date"
+              type="date"
+              min={minDate}
+              {...register("date")}
+              required
+            />
           </Field>
           <Field
-            label="Précisions"
+            label={f.precisions}
             htmlFor="devis-message"
             error={errors.message?.message}
-            hint="Envies, contraintes, allergies, ambiance souhaitée…"
+            hint={f.precisionsHint}
             className="md:col-span-2"
           >
             <Textarea
               id="devis-message"
               {...register("message")}
               rows={5}
-              placeholder="Parlez-nous de votre projet"
+              placeholder={f.precisionsPlaceholder}
             />
           </Field>
         </div>
@@ -200,25 +227,27 @@ export function DevisForm() {
             role="alert"
             className="flex items-start gap-3 border border-red-300 bg-red-50 text-red-800 px-4 py-3 text-sm"
           >
-            <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" aria-hidden />
-            <p>{status.message}</p>
+            <AlertCircle
+              className="h-5 w-5 flex-shrink-0 mt-0.5"
+              aria-hidden
+            />
+            <p>{f.errors[status.code]}</p>
           </div>
         )}
       </div>
 
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:justify-between border-t border-brand-ink/15 pt-7">
         <p className="text-xs text-brand-text-muted max-w-sm">
-          Réponse personnalisée sous <strong>48 heures</strong>. Vos données ne
-          servent qu&apos;à traiter votre demande.
+          {f.legalBefore}
+          <strong>{f.legalStrong}</strong>
+          {f.legalAfter}
         </p>
         <button
           type="submit"
           disabled={status.state === "submitting"}
           className="inline-flex items-center justify-center bg-brand-ink text-brand-cream px-8 h-12 text-[11px] uppercase tracking-[0.2em] hover:bg-brand-olive active:scale-[0.98] transition-[background-color,transform] disabled:opacity-60 disabled:cursor-not-allowed disabled:active:scale-100 w-full sm:w-auto sm:min-w-[220px]"
         >
-          {status.state === "submitting"
-            ? "Envoi en cours…"
-            : "Envoyer la demande"}
+          {status.state === "submitting" ? f.envoiEnCours : f.envoyer}
         </button>
       </div>
     </form>

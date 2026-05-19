@@ -1,13 +1,19 @@
-import type { Maison } from "@/types/maison";
+type MapsInput = {
+  nom: string;
+  adresse: string;
+  codePostal: string;
+  ville: string;
+  coordonnees: { lat: number; lng: number };
+};
 
-export function googleMapsUrl(maison: Maison): string {
+export function googleMapsUrl(maison: MapsInput): string {
   const q = encodeURIComponent(
     `Maison Oléa ${maison.nom}, ${maison.adresse}, ${maison.codePostal} ${maison.ville}`,
   );
   return `https://www.google.com/maps/search/?api=1&query=${q}`;
 }
 
-export function osmEmbedUrl(maison: Maison): string {
+export function osmEmbedUrl(maison: MapsInput): string {
   const { lat, lng } = maison.coordonnees;
   const dLat = 0.003;
   const dLng = 0.005;

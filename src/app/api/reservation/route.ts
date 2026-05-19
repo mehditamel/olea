@@ -27,6 +27,9 @@ import {
   isStripeConfigured,
   getPublishableKey,
 } from "@/lib/stripe/server";
+import { DEFAULT_LOCALE, isLocale, type Locale } from "@/i18n/config";
+import { parseAcceptLanguage } from "@/i18n/detect";
+import { getDictionary } from "@/i18n/dictionaries";
 
 export const runtime = "nodejs";
 
@@ -41,13 +44,24 @@ function clientIp(request: Request): string {
   return request.headers.get("x-real-ip")?.trim() || "unknown";
 }
 
+function resolveLocale(request: Request): Locale {
+  const cookieHeader = request.headers.get("cookie") ?? "";
+  const match = cookieHeader.match(/(?:^|;\s*)NEXT_LOCALE=([^;]+)/);
+  if (match && match[1]) {
+    const decoded = decodeURIComponent(match[1]);
+    if (isLocale(decoded)) return decoded;
+  }
+  const accept = request.headers.get("accept-language") ?? "";
+  return parseAcceptLanguage(accept, DEFAULT_LOCALE);
+}
+
 export async function POST(request: Request) {
   const ip = clientIp(request);
   const rate = checkRateLimit(`reservation:${ip}`, RATE_LIMIT);
   if (!rate.ok) {
     logger.warn({ ip }, "Reservation rate-limited");
     return NextResponse.json(
-      { error: "Trop de tentatives. Réessayez plus tard." },
+      { error: "rate_limited" },
       {
         status: 429,
         headers: {
@@ -61,16 +75,13 @@ export async function POST(request: Request) {
   try {
     payload = await request.json();
   } catch {
-    return NextResponse.json(
-      { error: "Corps de requête invalide (JSON attendu)." },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "bad_json" }, { status: 400 });
   }
 
   const parsed = reservationSchema.safeParse(payload);
   if (!parsed.success) {
     return NextResponse.json(
-      { error: "Données invalides.", issues: parsed.error.flatten() },
+      { error: "invalid_data", issues: parsed.error.flatten() },
       { status: 400 },
     );
   }
@@ -83,45 +94,35 @@ export async function POST(request: Request) {
 
   const maison = getMaisonBySlug(data.maison);
   if (!maison) {
-    return NextResponse.json({ error: "Maison inconnue." }, { status: 400 });
+    return NextResponse.json({ error: "maison_unknown" }, { status: 400 });
   }
   if (!maison.ouvert) {
     return NextResponse.json(
-      { error: "Cette maison n'accepte pas encore de réservations en ligne." },
+      { error: "maison_closed_online" },
       { status: 400 },
     );
   }
   if (isIsoDateInPastParis(data.date)) {
-    return NextResponse.json(
-      { error: "La date doit être à venir." },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "past_date" }, { status: 400 });
   }
   if (isMaisonClosedOn(maison, data.date)) {
-    return NextResponse.json(
-      { error: "La maison est fermée ce jour-là." },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "closed_on_date" }, { status: 400 });
   }
 
   const expectedService = getServiceForSlot(maison, data.date, data.heure);
   if (!expectedService) {
-    return NextResponse.json(
-      { error: "Créneau indisponible pour cette date." },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "invalid_slot" }, { status: 400 });
   }
   if (expectedService !== data.service) {
-    return NextResponse.json(
-      { error: "Service incohérent avec l'horaire choisi." },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "service_mismatch" }, { status: 400 });
   }
 
   const garantie = requiresGarantie(data.date, data.convives);
   const montantGarantie = garantie ? montantGarantieCents(data.convives) : null;
   const stripeReady = garantie && isStripeConfigured();
   const stripePk = getPublishableKey();
+  const lang = resolveLocale(request);
+  const dict = await getDictionary(lang);
 
   if (!isSupabaseConfigured()) {
     logger.warn(
@@ -138,7 +139,7 @@ export async function POST(request: Request) {
   try {
     if (await isCreneauBloque(data.maison, data.date, data.heure)) {
       return NextResponse.json(
-        { error: "Ce créneau est bloqué. Choisissez un autre horaire." },
+        { error: "creneau_bloque" },
         { status: 409 },
       );
     }
@@ -151,7 +152,8 @@ export async function POST(request: Request) {
     if (!cap.ok) {
       return NextResponse.json(
         {
-          error: `Plus que ${cap.reste} couvert(s) disponibles sur ce service. Réduisez le nombre de convives ou choisissez un autre créneau.`,
+          error: "capacite_pleine",
+          reste: cap.reste,
         },
         { status: 409 },
       );
@@ -180,7 +182,7 @@ export async function POST(request: Request) {
         email: row.email,
         name: row.nom,
         phone: row.telephone,
-        metadata: { reservation_id: row.id, maison: row.maison_slug },
+        metadata: { reservation_id: row.id, maison: row.maison_slug, lang },
       });
       const setupIntent = await stripe.setupIntents.create({
         customer: customer.id,
@@ -193,6 +195,7 @@ export async function POST(request: Request) {
           heure: row.heure,
           convives: String(row.convives),
           montant_garantie_cents: String(montantGarantie ?? 0),
+          lang,
         },
       });
       await attachStripeIds(row.id, {
@@ -227,12 +230,9 @@ export async function POST(request: Request) {
 
     const teamResult = await sendTeamReservationEmail(row, maison, false);
     if (!teamResult.ok) {
-      return NextResponse.json(
-        { error: "Échec de l'envoi. Veuillez réessayer dans un instant." },
-        { status: 502 },
-      );
+      return NextResponse.json({ error: "send_failed" }, { status: 502 });
     }
-    await sendClientConfirmationFromRow(row, maison);
+    await sendClientConfirmationFromRow(row, maison, { lang, dict });
 
     return NextResponse.json({
       ok: true,
@@ -243,9 +243,6 @@ export async function POST(request: Request) {
   } catch (err) {
     const message = err instanceof Error ? err.message : "unknown";
     logger.error({ err: message }, "Reservation flow failed");
-    return NextResponse.json(
-      { error: "Impossible d'enregistrer la réservation. Réessayez." },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "generic" }, { status: 500 });
   }
 }

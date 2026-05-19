@@ -8,6 +8,7 @@ type SlotPickerProps = {
   value: string;
   onSelect: (slot: Slot) => void;
   disabled?: boolean;
+  labels: { dejeuner: string; diner: string };
 };
 
 export function SlotPicker({
@@ -15,6 +16,7 @@ export function SlotPicker({
   value,
   onSelect,
   disabled,
+  labels,
 }: SlotPickerProps) {
   if (slots.length === 0) return null;
 
@@ -24,7 +26,7 @@ export function SlotPicker({
   return (
     <div className="space-y-5">
       {dejeuner.length > 0 && (
-        <Group label="Déjeuner">
+        <Group label={labels.dejeuner}>
           <Grid>
             {dejeuner.map((slot) => (
               <SlotButton
@@ -39,7 +41,7 @@ export function SlotPicker({
         </Group>
       )}
       {diner.length > 0 && (
-        <Group label="Dîner">
+        <Group label={labels.diner}>
           <Grid>
             {diner.map((slot) => (
               <SlotButton

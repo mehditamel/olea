@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports -- admin space is locale-free
 import Link from "next/link";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { maisons } from "@/data/maisons";

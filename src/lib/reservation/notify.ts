@@ -6,6 +6,10 @@ import {
 } from "@/lib/email";
 import { buildReservationIcs } from "@/lib/ics";
 import { logger } from "@/lib/logger";
+import { interpolate } from "@/i18n/format";
+import { getDictionary } from "@/i18n/dictionaries";
+import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
+import type { Dictionary } from "@/i18n/dictionaries";
 import type { ReservationRow } from "./repository";
 
 const APP_BASE_URL =
@@ -35,20 +39,31 @@ function escapeHtml(input: string): string {
 }
 
 /**
- * Envoie au client le mail de confirmation final, avec .ics + lien d'annulation.
- * Appelé soit immédiatement (résa sans garantie) soit depuis le webhook
- * setup_intent.succeeded (résa avec garantie validée).
+ * Envoie au client le mail de confirmation final (localisé), avec .ics +
+ * lien d'annulation. Si lang/dict non fournis (cas webhook Stripe), on
+ * tombe sur le français par défaut.
  */
 export async function sendClientConfirmationFromRow(
   row: ReservationRow,
   maison: Maison,
+  i18n?: { lang: Locale; dict: Dictionary },
 ): Promise<void> {
+  const lang = i18n?.lang ?? DEFAULT_LOCALE;
+  const dict = i18n?.dict ?? (await getDictionary(lang));
+  const t = dict.ics;
+
+  const summary = interpolate(t.summary, { nom: maison.nom });
+  const descriptionBase = interpolate(t.descriptionPersonnes, {
+    n: row.convives,
+  });
+  const description = row.demandes
+    ? `${descriptionBase} ${row.demandes}`
+    : descriptionBase;
+
   const ics = buildReservationIcs({
     uid: `${row.id}@olea-restaurant.fr`,
-    summary: `Réservation Maison Oléa · ${maison.nom}`,
-    description: `Réservation pour ${row.convives} personne(s).${
-      row.demandes ? ` ${row.demandes}` : ""
-    }`,
+    summary,
+    description,
     location: `${maison.nom}, ${maison.adresse}, ${maison.codePostal} ${maison.ville}`,
     startIso: row.date,
     heure: row.heure.slice(0, 5),
@@ -70,6 +85,8 @@ export async function sendClientConfirmationFromRow(
     service: row.service,
     convives: row.convives,
     demandesParticulieres: row.demandes,
+    lang,
+    dict,
     attachment: {
       filename: ics.filename,
       content: ics.contentBase64,
@@ -88,14 +105,14 @@ export async function sendClientConfirmationFromRow(
 }
 
 /**
- * Email à l'équipe quand une nouvelle réservation arrive.
- * Mentionne si une garantie CB est en attente de validation.
+ * Email à l'équipe quand une nouvelle réservation arrive (toujours en FR,
+ * audience interne).
  */
 export async function sendTeamReservationEmail(
   row: ReservationRow,
   maison: Maison,
   awaitingCard: boolean,
-): Promise<{ ok: boolean }> {
+): Promise<{ ok: boolean; mode?: string }> {
   const serviceLabel = row.service === "dejeuner" ? "Déjeuner" : "Dîner";
   const heureLisible = row.heure.slice(0, 5).replace(":", "h");
   const occasionLabel = OCCASION_LABELS[row.occasion] ?? row.occasion;
@@ -128,5 +145,5 @@ export async function sendTeamReservationEmail(
     html,
     replyTo: row.email,
   });
-  return { ok: result.ok };
+  return { ok: result.ok, mode: result.ok ? result.mode : undefined };
 }

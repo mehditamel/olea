@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+// eslint-disable-next-line no-restricted-imports -- admin space is locale-free
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";

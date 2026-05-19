@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+// eslint-disable-next-line no-restricted-imports -- cancel link sent by email is locale-free
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getMaisonBySlug } from "@/data/maisons";
