@@ -15,8 +15,8 @@ export function MenuSection({ section }: { section: MenuSectionType }) {
         <span aria-hidden className="h-px flex-1 bg-brand-ink/15" />
       </div>
       <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
-        {section.plats.map((dish) => (
-          <DishItem key={dish.nom} dish={dish} />
+        {section.plats.map((dish, idx) => (
+          <DishItem key={dish.nom} dish={dish} index={idx} />
         ))}
       </ul>
     </section>

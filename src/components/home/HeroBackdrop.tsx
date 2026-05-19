@@ -44,17 +44,23 @@ export function HeroBackdrop() {
     <>
       <div
         ref={sunRef}
-        className="absolute start-[10%] top-[22%] w-[260px] h-[260px] md:w-[320px] md:h-[320px] rounded-full opacity-40 blur-[3px] will-change-transform"
-        style={{
-          background:
-            "radial-gradient(circle, #E8D5A8 0%, #8B6F3A 60%, #3D2F18 100%)",
-        }}
-      />
+        className="absolute start-[10%] top-[22%] w-[260px] h-[260px] md:w-[320px] md:h-[320px] will-change-transform"
+      >
+        <div
+          className="olea-breathe w-full h-full rounded-full blur-[3px]"
+          style={{
+            background:
+              "radial-gradient(circle, #E8D5A8 0%, #8B6F3A 60%, #3D2F18 100%)",
+          }}
+        />
+      </div>
       <div
         ref={branchRef}
         className="absolute end-[4%] bottom-[18%] md:bottom-[12%] will-change-transform"
       >
-        <OliveBranch className="w-[160px] md:w-[240px] h-auto text-brand-cream opacity-25" />
+        <div className="olea-drift">
+          <OliveBranch className="w-[160px] md:w-[240px] h-auto text-brand-cream opacity-25" />
+        </div>
       </div>
     </>
   );

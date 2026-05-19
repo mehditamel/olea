@@ -32,6 +32,7 @@ export function EspritSection({ lang, dict }: { lang: Locale; dict: Dictionary }
         </Reveal>
         <Reveal
           delay={120}
+          dir="scale"
           className="relative h-[280px] md:h-[420px] overflow-hidden order-first md:order-none"
           style={{
             background:
@@ -46,10 +47,12 @@ export function EspritSection({ lang, dict }: { lang: Locale; dict: Dictionary }
                 "radial-gradient(circle at 35% 40%, rgba(244,236,221,0.35) 0%, transparent 35%)",
             }}
           />
-          <OliveBranch
-            className="absolute end-4 top-4 w-28 h-36 md:w-32 md:h-40 text-brand-olive-deep opacity-25"
-            variant="left"
-          />
+          <div className="olea-drift absolute end-4 top-4">
+            <OliveBranch
+              className="w-28 h-36 md:w-32 md:h-40 text-brand-olive-deep opacity-25"
+              variant="left"
+            />
+          </div>
           <p className="absolute bottom-5 start-5 md:bottom-6 md:start-6 font-serif italic text-xs text-brand-ink opacity-70">
             {dict.esprit.caption}
           </p>

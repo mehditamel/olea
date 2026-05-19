@@ -27,16 +27,24 @@ export function MobileCtaBar({ dict }: Props) {
 
   return (
     <div
-      className="md:hidden fixed inset-x-0 bottom-0 z-40 bg-brand-ink/95 backdrop-blur-md border-t border-brand-cream/10"
+      className="olea-slide-up md:hidden fixed inset-x-0 bottom-0 z-40 bg-brand-ink/95 backdrop-blur-md border-t border-brand-cream/10"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       aria-label={dict.cta.ariaActions}
     >
       <div className="flex items-stretch divide-x divide-brand-cream/12">
         <a
           href={`tel:${target.telephone}`}
-          className="flex-1 flex items-center justify-center gap-2 py-4 text-brand-cream active:bg-brand-olive/40 transition-colors min-h-[56px]"
+          className="group/cta flex-1 flex items-center justify-center gap-2 py-4 text-brand-cream active:bg-brand-olive/40 transition-colors min-h-[56px]"
         >
-          <Phone className="h-4 w-4 text-brand-gold" aria-hidden />
+          <Phone
+            className="h-4 w-4 text-brand-gold transition-transform duration-300 group-active/cta:scale-90"
+            style={{
+              animation:
+                "olea-pop 1.6s ease-in-out 3",
+              animationDelay: "1.2s",
+            }}
+            aria-hidden
+          />
           <span className="text-[11px] uppercase tracking-[0.18em] font-medium">
             {dict.cta.reserver}
           </span>

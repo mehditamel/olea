@@ -57,9 +57,17 @@ function MaisonCard({
               alt={interpolate(dict.maisons.altMaison, { nom: m.nom })}
               fill
               sizes="(max-width: 768px) 100vw, 33vw"
-              className="object-cover transition-transform duration-700 group-hover:scale-105"
+              className="olea-kenburns object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.08]"
             />
             <div className="absolute inset-0" style={PHOTO_OVERLAY} />
+            <div
+              aria-hidden
+              className="absolute inset-0 pointer-events-none opacity-0 -translate-x-full transition-[opacity,transform] duration-[900ms] ease-out group-hover:opacity-100 group-hover:translate-x-full"
+              style={{
+                background:
+                  "linear-gradient(110deg, transparent 40%, rgba(212,175,110,0.22) 50%, transparent 60%)",
+              }}
+            />
           </>
         ) : (
           <div
@@ -70,7 +78,7 @@ function MaisonCard({
         )}
         <div className="absolute top-5 end-5 flex flex-col items-end gap-2">
           {featured && (
-            <span className="bg-brand-gold text-brand-ink text-[10px] tracking-[0.18em] uppercase px-3 py-1.5 font-semibold">
+            <span className="olea-shimmer-gold text-brand-ink text-[10px] tracking-[0.18em] uppercase px-3 py-1.5 font-semibold">
               {m.badgeOuverture}
             </span>
           )}

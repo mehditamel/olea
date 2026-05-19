@@ -34,15 +34,20 @@ const buttonVariants = cva(
 export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
+    shine?: boolean;
   };
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, shine = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
     return (
       <Comp
         ref={ref}
-        className={cn(buttonVariants({ variant, size }), className)}
+        className={cn(
+          buttonVariants({ variant, size }),
+          shine && "olea-shine-host",
+          className,
+        )}
         {...props}
       />
     );

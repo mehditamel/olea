@@ -11,7 +11,7 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
     <select
       ref={ref}
       className={cn(
-        "flex h-12 w-full border border-brand-ink/20 bg-white ps-4 pe-10 py-2 text-[15px] md:text-sm font-sans text-brand-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-olive focus-visible:ring-offset-2 focus-visible:ring-offset-brand-cream disabled:cursor-not-allowed disabled:opacity-50 appearance-none bg-no-repeat bg-[right_1rem_center] hover:border-brand-ink/35 transition-colors",
+        "olea-focus-glow flex h-12 w-full border border-brand-ink/20 bg-white ps-4 pe-10 py-2 text-[15px] md:text-sm font-sans text-brand-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-olive focus-visible:ring-offset-2 focus-visible:ring-offset-brand-cream disabled:cursor-not-allowed disabled:opacity-50 appearance-none bg-no-repeat bg-[right_1rem_center] hover:border-brand-ink/35 transition-[border-color,box-shadow] duration-200 focus-visible:border-brand-olive",
         className,
       )}
       style={{ backgroundImage: CHEVRON, ...(props.style ?? {}) }}

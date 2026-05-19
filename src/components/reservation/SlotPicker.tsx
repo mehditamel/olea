@@ -105,11 +105,12 @@ function SlotButton({
       aria-checked={selected}
       disabled={disabled}
       onClick={() => onSelect(slot)}
+      data-selected={selected ? "true" : undefined}
       className={cn(
-        "border px-2 py-2.5 text-[13px] font-medium tabular-nums transition-colors",
+        "border px-2 py-2.5 text-[13px] font-medium tabular-nums transition-[background-color,color,border-color,transform] duration-200 ease-out active:scale-[0.97]",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-olive focus-visible:ring-offset-2 focus-visible:ring-offset-brand-cream",
         selected
-          ? "bg-brand-ink text-brand-cream border-brand-ink"
+          ? "bg-brand-ink text-brand-cream border-brand-ink olea-pop"
           : "bg-white text-brand-ink border-brand-ink/20 hover:border-brand-olive hover:bg-brand-cream-soft",
         disabled && "opacity-40 cursor-not-allowed",
       )}

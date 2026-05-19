@@ -47,17 +47,28 @@ export function MaisonStatusPill({
         className,
       )}
     >
-      <Circle
-        className={cn(
-          "h-1.5 w-1.5 flex-shrink-0",
-          status.state === "open"
-            ? status.closingSoon
-              ? "fill-amber-400 text-amber-400"
-              : "fill-emerald-400 text-emerald-400"
-            : "fill-current opacity-60",
+      <span className="relative inline-flex items-center justify-center h-1.5 w-1.5">
+        <Circle
+          className={cn(
+            "h-1.5 w-1.5 flex-shrink-0 relative z-10",
+            status.state === "open"
+              ? status.closingSoon
+                ? "fill-amber-400 text-amber-400"
+                : "fill-emerald-400 text-emerald-400"
+              : "fill-current opacity-60",
+          )}
+          aria-hidden
+        />
+        {status.state === "open" && !status.closingSoon && (
+          <span
+            aria-hidden
+            className={cn(
+              "olea-pulse-dot absolute inset-0 rounded-full",
+              "bg-emerald-400/70",
+            )}
+          />
         )}
-        aria-hidden
-      />
+      </span>
       {label}
     </span>
   );

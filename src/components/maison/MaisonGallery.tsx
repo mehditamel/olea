@@ -74,7 +74,11 @@ export function MaisonGallery({
                   fill
                   loading="lazy"
                   sizes="(max-width: 768px) 50vw, 33vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="object-cover transition-transform duration-[1000ms] ease-out group-hover:scale-[1.08]"
+                />
+                <span
+                  aria-hidden
+                  className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-brand-ink/40 via-transparent to-transparent"
                 />
               </button>
             </Reveal>
@@ -87,9 +91,9 @@ export function MaisonGallery({
         onOpenChange={(o) => !o && setOpenIndex(null)}
       >
         <DialogPrimitive.Portal>
-          <DialogPrimitive.Overlay className="fixed inset-0 z-40 bg-brand-ink/95 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0" />
+          <DialogPrimitive.Overlay className="fixed inset-0 z-40 bg-brand-ink/95 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 duration-300" />
           <DialogPrimitive.Content
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-12 focus:outline-none"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-12 focus:outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95 data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 duration-300"
             onClick={() => setOpenIndex(null)}
           >
             <DialogPrimitive.Title className="sr-only">
@@ -114,7 +118,7 @@ export function MaisonGallery({
                   fill
                   priority
                   sizes="100vw"
-                  className="object-contain"
+                  className="object-contain animate-in fade-in-0 duration-300"
                 />
               </div>
             )}

@@ -10,9 +10,12 @@ import {
 } from "react";
 import { cn } from "@/lib/utils";
 
+type RevealDir = "up" | "left" | "right" | "scale";
+
 type RevealProps = HTMLAttributes<HTMLElement> & {
   as?: ElementType;
   delay?: number;
+  dir?: RevealDir;
   className?: string;
   children: ReactNode;
 };
@@ -20,6 +23,7 @@ type RevealProps = HTMLAttributes<HTMLElement> & {
 export function Reveal({
   as,
   delay = 0,
+  dir = "up",
   className,
   children,
   style,
@@ -65,12 +69,17 @@ export function Reveal({
     transitionDelay: `${delay}ms`,
   };
 
+  const baseTransform =
+    dir === "up" ? "translate-y-3" : ""; // other dirs handled via [data-reveal-dir] CSS
+
   return (
     <Tag
       ref={ref}
       data-reveal=""
+      data-reveal-dir={dir}
       className={cn(
-        "opacity-0 translate-y-3 transition-[opacity,transform] duration-700 ease-out will-change-transform",
+        "opacity-0 transition-[opacity,transform] duration-700 ease-out will-change-transform",
+        baseTransform,
         "data-[revealed]:opacity-100 data-[revealed]:translate-y-0",
         className,
       )}
