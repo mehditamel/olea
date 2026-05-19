@@ -6,40 +6,34 @@ import {
   isMaisonClosedOn,
 } from "@/lib/reservation-slots";
 import { isIsoDateInPastParis } from "@/lib/date-paris";
-import {
-  sendContactEmail,
-  sendReservationConfirmation,
-} from "@/lib/email";
-import { buildReservationIcs } from "@/lib/ics";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { logger } from "@/lib/logger";
+import { isSupabaseConfigured } from "@/lib/supabase/admin";
+import {
+  insertReservation,
+  attachStripeIds,
+} from "@/lib/reservation/repository";
+import { checkCapacite, isCreneauBloque } from "@/lib/reservation/capacity";
+import {
+  requiresGarantie,
+  montantGarantieCents,
+} from "@/lib/reservation/garantie";
+import {
+  sendClientConfirmationFromRow,
+  sendTeamReservationEmail,
+} from "@/lib/reservation/notify";
+import {
+  getStripe,
+  isStripeConfigured,
+  getPublishableKey,
+} from "@/lib/stripe/server";
 import { DEFAULT_LOCALE, isLocale, type Locale } from "@/i18n/config";
 import { parseAcceptLanguage } from "@/i18n/detect";
 import { getDictionary } from "@/i18n/dictionaries";
-import { interpolate } from "@/i18n/format";
 
 export const runtime = "nodejs";
 
 const RATE_LIMIT = { limit: 5, windowMs: 60 * 60 * 1000 };
-const RESERVATION_DURATION_MIN = 90;
-
-function escapeHtml(input: string): string {
-  return input
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
-const OCCASION_LABELS: Record<string, string> = {
-  aucune: "—",
-  anniversaire: "Anniversaire",
-  romantique: "Romantique",
-  famille: "Famille",
-  professionnel: "Repas professionnel",
-  autre: "Autre",
-};
 
 function clientIp(request: Request): string {
   const xff = request.headers.get("x-forwarded-for");
@@ -108,7 +102,6 @@ export async function POST(request: Request) {
       { status: 400 },
     );
   }
-
   if (isIsoDateInPastParis(data.date)) {
     return NextResponse.json({ error: "past_date" }, { status: 400 });
   }
@@ -124,104 +117,132 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "service_mismatch" }, { status: 400 });
   }
 
-  logger.info(
-    {
-      maison: data.maison,
+  const garantie = requiresGarantie(data.date, data.convives);
+  const montantGarantie = garantie ? montantGarantieCents(data.convives) : null;
+  const stripeReady = garantie && isStripeConfigured();
+  const stripePk = getPublishableKey();
+  const lang = resolveLocale(request);
+  const dict = await getDictionary(lang);
+
+  if (!isSupabaseConfigured()) {
+    logger.warn(
+      { maison: data.maison, date: data.date, heure: data.heure },
+      "Reservation: Supabase not configured, log-only mode",
+    );
+    return NextResponse.json({
+      ok: true,
+      mode: "log",
+      requiresCard: false,
+    });
+  }
+
+  try {
+    if (await isCreneauBloque(data.maison, data.date, data.heure)) {
+      return NextResponse.json(
+        { error: "creneau_bloque" },
+        { status: 409 },
+      );
+    }
+    const cap = await checkCapacite(
+      data.maison,
+      data.date,
+      data.service,
+      data.convives,
+    );
+    if (!cap.ok) {
+      return NextResponse.json(
+        {
+          error: "capacite_pleine",
+          reste: cap.reste,
+        },
+        { status: 409 },
+      );
+    }
+
+    const row = await insertReservation({
+      maison_slug: data.maison,
       date: data.date,
       heure: data.heure,
       service: data.service,
       convives: data.convives,
-    },
-    "Reservation received",
-  );
+      nom: data.nom,
+      email: data.email.toLowerCase(),
+      telephone: data.telephone,
+      occasion: data.occasion,
+      demandes: data.demandesParticulieres,
+      statut: stripeReady ? "pending_card" : "confirmed",
+      requiert_garantie: garantie,
+      montant_garantie_cents: montantGarantie,
+      source: "web",
+    });
 
-  const lang = resolveLocale(request);
-  const dict = await getDictionary(lang);
+    if (stripeReady) {
+      const stripe = getStripe();
+      const customer = await stripe.customers.create({
+        email: row.email,
+        name: row.nom,
+        phone: row.telephone,
+        metadata: { reservation_id: row.id, maison: row.maison_slug, lang },
+      });
+      const setupIntent = await stripe.setupIntents.create({
+        customer: customer.id,
+        payment_method_types: ["card"],
+        usage: "off_session",
+        metadata: {
+          reservation_id: row.id,
+          maison: row.maison_slug,
+          date: row.date,
+          heure: row.heure,
+          convives: String(row.convives),
+          montant_garantie_cents: String(montantGarantie ?? 0),
+          lang,
+        },
+      });
+      await attachStripeIds(row.id, {
+        customerId: customer.id,
+        setupIntentId: setupIntent.id,
+      });
 
-  const occasionLabel = OCCASION_LABELS[data.occasion] ?? data.occasion;
-  const serviceLabelFr = data.service === "dejeuner" ? "Déjeuner" : "Dîner";
-  const heureLisible = data.heure.replace(":", "h");
+      await sendTeamReservationEmail(row, maison, true);
 
-  // Email équipe : reste en FR (audience interne).
-  const teamHtml = `
-    <h2>Nouvelle réservation · ${escapeHtml(maison.nom)}</h2>
-    <ul>
-      <li><strong>Nom :</strong> ${escapeHtml(data.nom)}</li>
-      <li><strong>Email :</strong> ${escapeHtml(data.email)}</li>
-      <li><strong>Téléphone :</strong> ${escapeHtml(data.telephone)}</li>
-      <li><strong>Maison :</strong> ${escapeHtml(maison.nom)}</li>
-      <li><strong>Date :</strong> ${escapeHtml(data.date)}</li>
-      <li><strong>Heure :</strong> ${escapeHtml(heureLisible)} (${escapeHtml(serviceLabelFr)})</li>
-      <li><strong>Convives :</strong> ${data.convives}</li>
-      <li><strong>Occasion :</strong> ${escapeHtml(occasionLabel)}</li>
-      <li><strong>Langue client :</strong> ${escapeHtml(lang)}</li>
-    </ul>
-    ${
-      data.demandesParticulieres
-        ? `<p><strong>Demandes particulières :</strong><br>${escapeHtml(
-            data.demandesParticulieres,
-          ).replace(/\n/g, "<br>")}</p>`
-        : ""
+      logger.info(
+        { id: row.id, setupIntentId: setupIntent.id, customer: customer.id },
+        "Reservation created with pending card setup",
+      );
+
+      return NextResponse.json({
+        ok: true,
+        mode: "stripe_setup",
+        requiresCard: true,
+        reservationId: row.id,
+        clientSecret: setupIntent.client_secret,
+        publishableKey: stripePk,
+        montantGarantieCents: montantGarantie,
+      });
     }
-  `;
 
-  const teamResult = await sendContactEmail({
-    subject: `Réservation — ${maison.nom} · ${data.date} ${heureLisible} · ${data.convives} pers.`,
-    html: teamHtml,
-    replyTo: data.email,
-  });
+    if (garantie && !isStripeConfigured()) {
+      logger.warn(
+        { id: row.id },
+        "Reservation requires garantie but Stripe not configured — manual CB",
+      );
+    }
 
-  if (!teamResult.ok) {
-    return NextResponse.json({ error: "send_failed" }, { status: 502 });
+    const teamResult = await sendTeamReservationEmail(row, maison, false);
+    if (!teamResult.ok) {
+      return NextResponse.json({ error: "send_failed" }, { status: 502 });
+    }
+    await sendClientConfirmationFromRow(row, maison, { lang, dict });
+
+    return NextResponse.json({
+      ok: true,
+      mode: "confirmed",
+      requiresCard: false,
+      reservationId: row.id,
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "unknown";
+    logger.error({ err: message }, "Reservation flow failed");
+    return NextResponse.json({ error: "generic" }, { status: 500 });
   }
-
-  const icsSummary = interpolate(dict.ics.summary, { nom: maison.nom });
-  const icsDescriptionBase = interpolate(dict.ics.descriptionPersonnes, {
-    n: data.convives,
-  });
-  const icsDescription = data.demandesParticulieres
-    ? `${icsDescriptionBase} ${data.demandesParticulieres}`
-    : icsDescriptionBase;
-
-  const ics = buildReservationIcs({
-    uid: `${data.date.replace(/-/g, "")}-${data.heure.replace(":", "")}-${data.maison}-${data.email}@olea-restaurant.fr`,
-    summary: icsSummary,
-    description: icsDescription,
-    location: `${maison.nom}, ${maison.adresse}, ${maison.codePostal} ${maison.ville}`,
-    startIso: data.date,
-    heure: data.heure,
-    durationMinutes: RESERVATION_DURATION_MIN,
-    organizerEmail: process.env.CONTACT_EMAIL ?? "contact@olea-restaurant.fr",
-    attendeeEmail: data.email,
-  });
-
-  const clientResult = await sendReservationConfirmation({
-    to: data.email,
-    nom: data.nom,
-    maisonNom: maison.nom,
-    adresse: maison.adresse,
-    ville: maison.ville,
-    telephoneAffichage: maison.telephoneAffichage,
-    date: data.date,
-    heure: data.heure,
-    service: data.service,
-    convives: data.convives,
-    demandesParticulieres: data.demandesParticulieres,
-    lang,
-    dict,
-    attachment: {
-      filename: ics.filename,
-      content: ics.contentBase64,
-      contentType: "text/calendar",
-    },
-  });
-
-  if (!clientResult.ok) {
-    logger.warn(
-      { err: clientResult.error },
-      "Reservation: client confirmation email failed",
-    );
-  }
-
-  return NextResponse.json({ ok: true, mode: teamResult.mode });
 }

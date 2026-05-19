@@ -94,6 +94,9 @@ type ReservationConfirmationInput = {
   attachment: EmailAttachment;
   lang: Locale;
   dict: Dictionary;
+  cancellationUrl?: string;
+  requiertGarantie?: boolean;
+  montantGarantieCents?: number | null;
 };
 
 /**
@@ -145,6 +148,23 @@ export function sendReservationConfirmation(
       <p style="margin:0 0 14px;font-family:Inter,system-ui,sans-serif;font-size:14px">
         ${pieceJointeHtml}
       </p>
+      ${
+        input.cancellationUrl
+          ? `<p style="margin:0 0 14px;font-family:Inter,system-ui,sans-serif;font-size:13px">
+              Besoin d'annuler ? <a href="${escapeHtml(input.cancellationUrl)}" style="color:#4a5530;text-decoration:underline">Annuler ma réservation</a>
+              (annulation gratuite jusqu'à 24h avant le service).
+            </p>`
+          : ""
+      }
+      ${
+        input.requiertGarantie && input.montantGarantieCents
+          ? `<div style="margin:18px 0;padding:14px 16px;border:1px solid #c49960;background:#fdf8ee;font-family:Inter,system-ui,sans-serif;font-size:13px">
+              <strong>Garantie de réservation</strong> · Une empreinte de carte bancaire de
+              ${(input.montantGarantieCents / 100).toFixed(0)} € pour cette table sera demandée pour confirmer.
+              Elle n'est débitée qu'en cas d'absence non signalée (no-show).
+            </div>`
+          : ""
+      }
       <p style="margin:24px 0 0;font-style:italic;color:#6b5d4a">
         ${escapeHtml(t.signature)}<br>${escapeHtml(t.signatureLigne2)}
       </p>
@@ -166,4 +186,57 @@ function escapeHtml(input: string): string {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
+}
+
+type ReservationCancelInput = {
+  to: string;
+  nom: string;
+  maisonNom: string;
+  telephoneAffichage: string;
+  date: string;
+  heure: string;
+  byStaff: boolean;
+  reason?: string;
+};
+
+/**
+ * Email envoyé au client lorsqu'une réservation est annulée (par lui ou par
+ * l'équipe). Mentionne, le cas échéant, le motif laissé par l'équipe.
+ */
+export function sendReservationCancellation(
+  input: ReservationCancelInput,
+): Promise<SendEmailResult> {
+  const heureLisible = input.heure.replace(":", "h");
+  const intro = input.byStaff
+    ? `Notre équipe a dû annuler votre réservation du ${escapeHtml(input.date)} à ${escapeHtml(heureLisible)} à la ${escapeHtml(input.maisonNom)}. Nous en sommes sincèrement désolés.`
+    : `Votre réservation du ${escapeHtml(input.date)} à ${escapeHtml(heureLisible)} à la ${escapeHtml(input.maisonNom)} a bien été annulée.`;
+  const reasonBlock =
+    input.byStaff && input.reason
+      ? `<p style="margin:0 0 14px;font-family:Inter,system-ui,sans-serif;font-size:14px"><strong>Motif :</strong> ${escapeHtml(input.reason)}</p>`
+      : "";
+  const html = `
+    <div style="font-family:Georgia,'Cormorant Garamond',serif;color:#1f2218;line-height:1.6;max-width:560px">
+      <p style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#4a5530;margin:0 0 12px">
+        Maison Oléa · ${escapeHtml(input.maisonNom)}
+      </p>
+      <h1 style="font-size:24px;font-weight:normal;margin:0 0 16px">
+        Bonjour ${escapeHtml(input.nom)},
+      </h1>
+      <p style="margin:0 0 14px;font-family:Inter,system-ui,sans-serif;font-size:14px">${intro}</p>
+      ${reasonBlock}
+      <p style="margin:0 0 14px;font-family:Inter,system-ui,sans-serif;font-size:14px">
+        Aucune somme ne vous sera prélevée. Pour reprogrammer ou pour toute
+        question, joignez-nous au
+        <a href="tel:${escapeHtml(input.telephoneAffichage.replace(/\s/g, ""))}" style="color:#4a5530">${escapeHtml(input.telephoneAffichage)}</a>.
+      </p>
+      <p style="margin:24px 0 0;font-style:italic;color:#6b5d4a">
+        Au plaisir de vous accueillir bientôt,<br>L'équipe Oléa
+      </p>
+    </div>
+  `;
+  return sendContactEmail({
+    subject: `Annulation · Maison Oléa · ${input.date} ${heureLisible}`,
+    html,
+    to: input.to,
+  });
 }

@@ -22,6 +22,7 @@ import { Label } from "@/components/ui/Label";
 import { Select } from "@/components/ui/Select";
 import { StepIndicator } from "./StepIndicator";
 import { SlotPicker } from "./SlotPicker";
+import { CardConfirmationStep } from "./CardConfirmationStep";
 import { LocaleLink } from "@/i18n/LocaleLink";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
@@ -32,6 +33,13 @@ type ReservationErrorCode = keyof Dictionary["reservationForm"]["errors"];
 type Status =
   | { state: "idle" }
   | { state: "submitting" }
+  | {
+      state: "card";
+      clientSecret: string;
+      publishableKey: string;
+      reservationId: string;
+      montantGarantieCents: number;
+    }
   | { state: "success" }
   | { state: "error"; code: ReservationErrorCode };
 
@@ -114,6 +122,25 @@ export function ReservationForm({
     if (ok) setStep(2);
   };
 
+  const resetForm = () => {
+    reset({
+      maison: initialMaison,
+      convives: 2,
+      occasion: "aucune",
+      date: "",
+      heure: "",
+      service: "diner",
+      demandesParticulieres: "",
+      nom: "",
+      email: "",
+      telephone: "",
+      siteWeb: "",
+      consentement: false,
+    });
+    setStep(1);
+    setStatus({ state: "idle" });
+  };
+
   const onSubmit = handleSubmit(async (values) => {
     const maison = getMaisonBySlug(values.maison);
     if (!maison) {
@@ -133,36 +160,56 @@ export function ReservationForm({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...values, service }),
       });
+      const data = (await res.json().catch(() => null)) as
+        | {
+            error?: string;
+            requiresCard?: boolean;
+            clientSecret?: string;
+            publishableKey?: string;
+            reservationId?: string;
+            montantGarantieCents?: number;
+          }
+        | null;
       if (!res.ok) {
-        const data = (await res.json().catch(() => null)) as
-          | { error?: string }
-          | null;
         const raw = (data?.error ?? "generic") as string;
         const code = (raw in f.errors ? raw : "generic") as ReservationErrorCode;
         throw new Error(code);
       }
+      if (
+        data?.requiresCard &&
+        data.clientSecret &&
+        data.publishableKey &&
+        data.reservationId
+      ) {
+        setStatus({
+          state: "card",
+          clientSecret: data.clientSecret,
+          publishableKey: data.publishableKey,
+          reservationId: data.reservationId,
+          montantGarantieCents: data.montantGarantieCents ?? 0,
+        });
+        return;
+      }
       setStatus({ state: "success" });
-      reset({
-        maison: initialMaison,
-        convives: 2,
-        occasion: "aucune",
-        date: "",
-        heure: "",
-        service: "diner",
-        demandesParticulieres: "",
-        nom: "",
-        email: "",
-        telephone: "",
-        siteWeb: "",
-        consentement: false,
-      });
-      setStep(1);
+      resetForm();
     } catch (err) {
       const msg = err instanceof Error ? err.message : "generic";
       const code = (msg in f.errors ? msg : "generic") as ReservationErrorCode;
       setStatus({ state: "error", code });
     }
   });
+
+  if (status.state === "card") {
+    return (
+      <CardConfirmationStep
+        clientSecret={status.clientSecret}
+        publishableKey={status.publishableKey}
+        montantGarantieCents={status.montantGarantieCents}
+        onSuccess={() => setStatus({ state: "success" })}
+        onBack={resetForm}
+      />
+    );
+  }
 
   if (status.state === "success") {
     return (
