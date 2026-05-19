@@ -6,6 +6,7 @@ type Props = {
   title: ReactNode;
   baseline?: string;
   breadcrumbs: readonly BreadcrumbItem[];
+  breadcrumbsAriaLabel: string;
   badge?: string;
   illustration: ReactNode;
 };
@@ -20,6 +21,7 @@ export function CarteHero({
   title,
   baseline,
   breadcrumbs,
+  breadcrumbsAriaLabel,
   badge,
   illustration,
 }: Props) {
@@ -39,7 +41,12 @@ export function CarteHero({
         }}
       />
       <div className="relative mx-auto max-w-7xl px-6 md:px-12 pt-32 pb-14 md:pt-40 md:pb-20">
-        <Breadcrumbs variant="light" className="mb-6" items={breadcrumbs} />
+        <Breadcrumbs
+          variant="light"
+          className="mb-6"
+          items={breadcrumbs}
+          ariaLabel={breadcrumbsAriaLabel}
+        />
         <div className="flex items-center gap-3 mb-5">
           <p className="eyebrow text-brand-gold">{eyebrow}</p>
           {badge ? (

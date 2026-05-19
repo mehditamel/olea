@@ -20,26 +20,20 @@ export async function POST(request: Request) {
   try {
     payload = await request.json();
   } catch {
-    return NextResponse.json(
-      { error: "Corps de requête invalide (JSON attendu)." },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "bad_json" }, { status: 400 });
   }
 
   const parsed = devisSchema.safeParse(payload);
   if (!parsed.success) {
     return NextResponse.json(
-      { error: "Données invalides.", issues: parsed.error.flatten() },
+      { error: "invalid_data", issues: parsed.error.flatten() },
       { status: 400 },
     );
   }
   const data = parsed.data;
   const maison = getMaisonBySlug(data.maison);
   if (!maison) {
-    return NextResponse.json(
-      { error: "Maison inconnue." },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "maison_unknown" }, { status: 400 });
   }
 
   logger.info(
@@ -77,10 +71,7 @@ export async function POST(request: Request) {
   });
 
   if (!result.ok) {
-    return NextResponse.json(
-      { error: "Échec de l'envoi. Veuillez réessayer dans un instant." },
-      { status: 502 },
-    );
+    return NextResponse.json({ error: "send_failed" }, { status: 502 });
   }
 
   return NextResponse.json({ ok: true, mode: result.mode });

@@ -1,5 +1,8 @@
 import type { Maison, Horaire, Jour } from "@/types/maison";
 import { absoluteUrl } from "@/lib/utils";
+import { type Locale, localeHtmlLang } from "@/i18n/config";
+import { withLocale } from "@/i18n/locale-href";
+import { localizeMaison } from "@/i18n/localized-maison";
 
 const JOUR_SCHEMA: Record<Jour, string> = {
   lundi: "Monday",
@@ -29,7 +32,14 @@ function specForService(
   };
 }
 
-export function RestaurantJsonLd({ maison }: { maison: Maison }) {
+export function RestaurantJsonLd({
+  maison,
+  lang,
+}: {
+  maison: Maison;
+  lang: Locale;
+}) {
+  const m = localizeMaison(maison, lang);
   const openingHoursSpecification = maison.horaires.flatMap((h) => {
     const items: Record<string, string>[] = [];
     const lunch = specForService(h, "dejeuner");
@@ -39,32 +49,36 @@ export function RestaurantJsonLd({ maison }: { maison: Maison }) {
     return items;
   });
 
-  const sameAs = maison.instagram?.url ? [maison.instagram.url] : undefined;
+  const sameAs = m.instagram?.url ? [m.instagram.url] : undefined;
+  const urlLocalized = absoluteUrl(withLocale(lang, `/maisons/${m.slug}`));
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Restaurant",
-    "@id": absoluteUrl(`/maisons/${maison.slug}#restaurant`),
-    name: `Maison Oléa ${maison.nom}`,
-    description: maison.description,
-    url: absoluteUrl(`/maisons/${maison.slug}`),
-    telephone: maison.telephone,
-    ...(maison.photoHero ? { image: [absoluteUrl(maison.photoHero)] } : {}),
-    priceRange: maison.fourchettePrix,
-    servesCuisine: maison.cuisines,
+    "@id": `${urlLocalized}#restaurant`,
+    name: `Maison Oléa ${m.nom}`,
+    description: m.description,
+    inLanguage: localeHtmlLang(lang),
+    url: urlLocalized,
+    telephone: m.telephone,
+    ...(m.photoHero ? { image: [absoluteUrl(m.photoHero)] } : {}),
+    priceRange: m.fourchettePrix,
+    servesCuisine: m.cuisines,
     address: {
       "@type": "PostalAddress",
-      streetAddress: maison.adresse,
-      postalCode: maison.codePostal,
-      addressLocality: maison.ville,
-      addressCountry: maison.pays,
+      streetAddress: m.adresse,
+      postalCode: m.codePostal,
+      addressLocality: m.ville,
+      addressCountry: m.pays,
     },
     geo: {
       "@type": "GeoCoordinates",
-      latitude: maison.coordonnees.lat,
-      longitude: maison.coordonnees.lng,
+      latitude: m.coordonnees.lat,
+      longitude: m.coordonnees.lng,
     },
-    ...(openingHoursSpecification.length > 0 ? { openingHoursSpecification } : {}),
+    ...(openingHoursSpecification.length > 0
+      ? { openingHoursSpecification }
+      : {}),
     ...(sameAs ? { sameAs } : {}),
   };
 

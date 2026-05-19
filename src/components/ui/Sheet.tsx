@@ -43,14 +43,14 @@ export const SheetContent = React.forwardRef<
       className={cn(
         "fixed z-50 h-full w-3/4 max-w-sm bg-brand-ink text-brand-cream p-8 shadow-lg transition ease-in-out data-[state=open]:duration-300 data-[state=closed]:duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out",
         side === "right"
-          ? "right-0 top-0 data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right"
-          : "left-0 top-0 data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left",
+          ? "end-0 top-0 data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right"
+          : "start-0 top-0 data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left",
         className,
       )}
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute right-6 top-6 text-brand-cream opacity-80 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-brand-gold">
+      <DialogPrimitive.Close className="absolute end-6 top-6 text-brand-cream opacity-80 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-brand-gold">
         <X className="h-5 w-5" aria-hidden />
         <span className="sr-only">Fermer</span>
       </DialogPrimitive.Close>

@@ -13,6 +13,10 @@ import {
 import { buildReservationIcs } from "@/lib/ics";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { logger } from "@/lib/logger";
+import { DEFAULT_LOCALE, isLocale, type Locale } from "@/i18n/config";
+import { parseAcceptLanguage } from "@/i18n/detect";
+import { getDictionary } from "@/i18n/dictionaries";
+import { interpolate } from "@/i18n/format";
 
 export const runtime = "nodejs";
 
@@ -46,13 +50,24 @@ function clientIp(request: Request): string {
   return request.headers.get("x-real-ip")?.trim() || "unknown";
 }
 
+function resolveLocale(request: Request): Locale {
+  const cookieHeader = request.headers.get("cookie") ?? "";
+  const match = cookieHeader.match(/(?:^|;\s*)NEXT_LOCALE=([^;]+)/);
+  if (match && match[1]) {
+    const decoded = decodeURIComponent(match[1]);
+    if (isLocale(decoded)) return decoded;
+  }
+  const accept = request.headers.get("accept-language") ?? "";
+  return parseAcceptLanguage(accept, DEFAULT_LOCALE);
+}
+
 export async function POST(request: Request) {
   const ip = clientIp(request);
   const rate = checkRateLimit(`reservation:${ip}`, RATE_LIMIT);
   if (!rate.ok) {
     logger.warn({ ip }, "Reservation rate-limited");
     return NextResponse.json(
-      { error: "Trop de tentatives. Réessayez plus tard." },
+      { error: "rate_limited" },
       {
         status: 429,
         headers: {
@@ -66,23 +81,18 @@ export async function POST(request: Request) {
   try {
     payload = await request.json();
   } catch {
-    return NextResponse.json(
-      { error: "Corps de requête invalide (JSON attendu)." },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "bad_json" }, { status: 400 });
   }
 
   const parsed = reservationSchema.safeParse(payload);
   if (!parsed.success) {
     return NextResponse.json(
-      { error: "Données invalides.", issues: parsed.error.flatten() },
+      { error: "invalid_data", issues: parsed.error.flatten() },
       { status: 400 },
     );
   }
   const data = parsed.data;
 
-  // Honeypot : un bot a rempli le champ caché. On répond OK sans rien faire
-  // pour ne pas signaler la détection.
   if (data.siteWeb && data.siteWeb.length > 0) {
     logger.warn({ ip }, "Reservation honeypot triggered");
     return NextResponse.json({ ok: true, mode: "log" });
@@ -90,40 +100,28 @@ export async function POST(request: Request) {
 
   const maison = getMaisonBySlug(data.maison);
   if (!maison) {
-    return NextResponse.json({ error: "Maison inconnue." }, { status: 400 });
+    return NextResponse.json({ error: "maison_unknown" }, { status: 400 });
   }
   if (!maison.ouvert) {
     return NextResponse.json(
-      { error: "Cette maison n'accepte pas encore de réservations en ligne." },
+      { error: "maison_closed_online" },
       { status: 400 },
     );
   }
 
   if (isIsoDateInPastParis(data.date)) {
-    return NextResponse.json(
-      { error: "La date doit être à venir." },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "past_date" }, { status: 400 });
   }
   if (isMaisonClosedOn(maison, data.date)) {
-    return NextResponse.json(
-      { error: "La maison est fermée ce jour-là." },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "closed_on_date" }, { status: 400 });
   }
 
   const expectedService = getServiceForSlot(maison, data.date, data.heure);
   if (!expectedService) {
-    return NextResponse.json(
-      { error: "Créneau indisponible pour cette date." },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "invalid_slot" }, { status: 400 });
   }
   if (expectedService !== data.service) {
-    return NextResponse.json(
-      { error: "Service incohérent avec l'horaire choisi." },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "service_mismatch" }, { status: 400 });
   }
 
   logger.info(
@@ -137,10 +135,14 @@ export async function POST(request: Request) {
     "Reservation received",
   );
 
+  const lang = resolveLocale(request);
+  const dict = await getDictionary(lang);
+
   const occasionLabel = OCCASION_LABELS[data.occasion] ?? data.occasion;
-  const serviceLabel = data.service === "dejeuner" ? "Déjeuner" : "Dîner";
+  const serviceLabelFr = data.service === "dejeuner" ? "Déjeuner" : "Dîner";
   const heureLisible = data.heure.replace(":", "h");
 
+  // Email équipe : reste en FR (audience interne).
   const teamHtml = `
     <h2>Nouvelle réservation · ${escapeHtml(maison.nom)}</h2>
     <ul>
@@ -149,9 +151,10 @@ export async function POST(request: Request) {
       <li><strong>Téléphone :</strong> ${escapeHtml(data.telephone)}</li>
       <li><strong>Maison :</strong> ${escapeHtml(maison.nom)}</li>
       <li><strong>Date :</strong> ${escapeHtml(data.date)}</li>
-      <li><strong>Heure :</strong> ${escapeHtml(heureLisible)} (${escapeHtml(serviceLabel)})</li>
+      <li><strong>Heure :</strong> ${escapeHtml(heureLisible)} (${escapeHtml(serviceLabelFr)})</li>
       <li><strong>Convives :</strong> ${data.convives}</li>
       <li><strong>Occasion :</strong> ${escapeHtml(occasionLabel)}</li>
+      <li><strong>Langue client :</strong> ${escapeHtml(lang)}</li>
     </ul>
     ${
       data.demandesParticulieres
@@ -169,18 +172,21 @@ export async function POST(request: Request) {
   });
 
   if (!teamResult.ok) {
-    return NextResponse.json(
-      { error: "Échec de l'envoi. Veuillez réessayer dans un instant." },
-      { status: 502 },
-    );
+    return NextResponse.json({ error: "send_failed" }, { status: 502 });
   }
+
+  const icsSummary = interpolate(dict.ics.summary, { nom: maison.nom });
+  const icsDescriptionBase = interpolate(dict.ics.descriptionPersonnes, {
+    n: data.convives,
+  });
+  const icsDescription = data.demandesParticulieres
+    ? `${icsDescriptionBase} ${data.demandesParticulieres}`
+    : icsDescriptionBase;
 
   const ics = buildReservationIcs({
     uid: `${data.date.replace(/-/g, "")}-${data.heure.replace(":", "")}-${data.maison}-${data.email}@olea-restaurant.fr`,
-    summary: `Réservation Maison Oléa · ${maison.nom}`,
-    description: `Réservation pour ${data.convives} personne(s).${
-      data.demandesParticulieres ? ` ${data.demandesParticulieres}` : ""
-    }`,
+    summary: icsSummary,
+    description: icsDescription,
     location: `${maison.nom}, ${maison.adresse}, ${maison.codePostal} ${maison.ville}`,
     startIso: data.date,
     heure: data.heure,
@@ -201,6 +207,8 @@ export async function POST(request: Request) {
     service: data.service,
     convives: data.convives,
     demandesParticulieres: data.demandesParticulieres,
+    lang,
+    dict,
     attachment: {
       filename: ics.filename,
       content: ics.contentBase64,
@@ -209,8 +217,6 @@ export async function POST(request: Request) {
   });
 
   if (!clientResult.ok) {
-    // L'équipe a bien reçu la demande : on ne fait pas échouer toute la
-    // requête, on log et on signale juste un succès partiel.
     logger.warn(
       { err: clientResult.error },
       "Reservation: client confirmation email failed",

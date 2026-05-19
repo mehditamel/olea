@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Download, Share, X } from "lucide-react";
+import type { Dictionary } from "@/i18n/dictionaries";
 
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -38,7 +39,7 @@ function incrementVisitCount(): number {
   }
 }
 
-export function InstallPrompt() {
+export function InstallPrompt({ dict }: { dict: Dictionary["pwa"] }) {
   const [variant, setVariant] = useState<"android" | "ios" | null>(null);
   const deferredRef = useRef<BeforeInstallPromptEvent | null>(null);
 
@@ -49,7 +50,6 @@ export function InstallPrompt() {
     try {
       dismissed = localStorage.getItem(DISMISSED_KEY) === "1";
     } catch {
-      // Si localStorage est inaccessible (mode privé), on n'affiche rien — choix prudent.
       return;
     }
     if (dismissed) return;
@@ -64,8 +64,6 @@ export function InstallPrompt() {
 
     window.addEventListener("beforeinstallprompt", onBefore);
 
-    // iOS : pas d'event natif → on déclenche le hint manuellement.
-    // queueMicrotask évite l'erreur "setState synchronously within an effect" (React 19).
     if (isIOS() && visits >= MIN_VISITS_IOS) {
       queueMicrotask(() => setVariant("ios"));
     }
@@ -108,8 +106,8 @@ export function InstallPrompt() {
   return (
     <div
       role="dialog"
-      aria-label="Installer l'application Maison Oléa"
-      className="md:hidden fixed left-3 right-3 z-50 bg-brand-ink/95 text-brand-cream backdrop-blur-md border border-brand-cream/15 shadow-2xl"
+      aria-label={dict.ariaInstall}
+      className="md:hidden fixed start-3 end-3 z-50 bg-brand-ink/95 text-brand-cream backdrop-blur-md border border-brand-cream/15 shadow-2xl"
       style={{ top: "calc(env(safe-area-inset-top) + 12px)" }}
     >
       <div className="flex items-start gap-3 px-4 py-3.5">
@@ -122,17 +120,20 @@ export function InstallPrompt() {
         </span>
         <div className="flex-1 min-w-0">
           <p className="font-serif text-[17px] leading-tight mb-0.5">
-            Installer Oléa
+            {dict.installerOlea}
           </p>
           {variant === "android" ? (
             <p className="text-[12px] text-brand-text-soft leading-snug">
-              Ajoutez l&apos;app à votre écran d&apos;accueil pour un accès direct.
+              {dict.androidTexte}
             </p>
           ) : (
             <p className="text-[12px] text-brand-text-soft leading-snug">
-              Appuyez sur{" "}
-              <Share className="inline h-3 w-3 mx-0.5 align-text-bottom" aria-hidden />{" "}
-              puis « Sur l&apos;écran d&apos;accueil ».
+              {dict.iosBefore}
+              <Share
+                className="inline h-3 w-3 mx-0.5 align-text-bottom"
+                aria-hidden
+              />
+              {dict.iosAfter}
             </p>
           )}
         </div>
@@ -142,13 +143,13 @@ export function InstallPrompt() {
             onClick={install}
             className="text-[11px] uppercase tracking-[0.18em] bg-brand-cream text-brand-ink px-3.5 h-9 hover:bg-brand-gold-light transition-colors flex-shrink-0"
           >
-            Installer
+            {dict.androidCta}
           </button>
         )}
         <button
           type="button"
           onClick={dismiss}
-          aria-label="Ne plus afficher"
+          aria-label={dict.dismiss}
           className="text-brand-cream/60 hover:text-brand-cream p-1 flex-shrink-0"
         >
           <X className="h-4 w-4" aria-hidden />

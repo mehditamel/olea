@@ -2,10 +2,18 @@ import Image from "next/image";
 import { Reveal } from "@/components/ui/Reveal";
 import { InstagramIcon } from "@/components/brand/InstagramIcon";
 import type { Maison } from "@/types/maison";
+import type { Dictionary } from "@/i18n/dictionaries";
+import { interpolate } from "@/i18n/format";
 
 const PREVIEW_COUNT = 6;
 
-export function MaisonInstagram({ maison }: { maison: Maison }) {
+export function MaisonInstagram({
+  maison,
+  dict,
+}: {
+  maison: Maison;
+  dict: Dictionary;
+}) {
   const ig = maison.instagram;
   if (!ig) return null;
 
@@ -22,13 +30,15 @@ export function MaisonInstagram({ maison }: { maison: Maison }) {
               <p className="eyebrow text-brand-olive mb-3">Instagram</p>
               <h2 className="font-serif text-3xl md:text-4xl text-brand-ink">
                 {isComingSoon
-                  ? "Bientôt sur Instagram"
-                  : `Suivez Maison Oléa ${maison.nom}`}
+                  ? dict.maisonInstagram.bientotEntete
+                  : interpolate(dict.maisonInstagram.suivreEntete, {
+                      nom: maison.nom,
+                    })}
               </h2>
               <p className="mt-3 font-serif italic text-lg text-brand-text-muted max-w-xl">
                 {isComingSoon
-                  ? "Notre compte Instagram ouvrira ses portes avec la maison."
-                  : "Coulisses, plats du jour, instants de service — la maison se raconte au quotidien."}
+                  ? dict.maisonInstagram.bientotItalic
+                  : dict.maisonInstagram.actifItalic}
               </p>
             </div>
             {ig.url ? (
@@ -37,7 +47,9 @@ export function MaisonInstagram({ maison }: { maison: Maison }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 self-start md:self-auto bg-brand-ink text-brand-cream px-6 py-3.5 text-[11px] uppercase tracking-[0.2em] font-medium hover:bg-brand-olive transition-colors"
-                aria-label={`Ouvrir Instagram @${ig.handle} dans un nouvel onglet`}
+                aria-label={interpolate(dict.maisonInstagram.ariaOuvrir, {
+                  handle: ig.handle,
+                })}
               >
                 <InstagramIcon className="h-4 w-4" />
                 @{ig.handle}
@@ -45,7 +57,9 @@ export function MaisonInstagram({ maison }: { maison: Maison }) {
             ) : (
               <span className="inline-flex items-center gap-2 self-start md:self-auto border border-brand-olive/40 text-brand-olive px-6 py-3.5 text-[11px] uppercase tracking-[0.2em] font-medium">
                 <InstagramIcon className="h-4 w-4" />
-                @{ig.handle} · bientôt
+                {interpolate(dict.maisonInstagram.bientotChip, {
+                  handle: ig.handle,
+                })}
               </span>
             )}
           </div>
@@ -56,7 +70,9 @@ export function MaisonInstagram({ maison }: { maison: Maison }) {
             href={ig.url}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={`Voir toutes les publications de @${ig.handle} sur Instagram`}
+            aria-label={interpolate(dict.maisonInstagram.ariaVoirTout, {
+              handle: ig.handle,
+            })}
             className="block group focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-olive"
           >
             <ul className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
@@ -68,7 +84,10 @@ export function MaisonInstagram({ maison }: { maison: Maison }) {
                 >
                   <Image
                     src={path}
-                    alt={`Instagram Maison Oléa ${maison.nom} — aperçu ${idx + 1}`}
+                    alt={interpolate(dict.maisonInstagram.aperçuAlt, {
+                      nom: maison.nom,
+                      n: idx + 1,
+                    })}
                     fill
                     loading="lazy"
                     sizes="(max-width: 768px) 50vw, 33vw"
@@ -80,7 +99,7 @@ export function MaisonInstagram({ maison }: { maison: Maison }) {
             </ul>
             <p className="mt-6 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-brand-olive border-b border-brand-olive pb-1 group-hover:text-brand-olive-deep transition-colors">
               <InstagramIcon className="h-3.5 w-3.5" />
-              Voir plus sur Instagram
+              {dict.maisonInstagram.voirPlus}
             </p>
           </a>
         )}

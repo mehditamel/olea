@@ -2,17 +2,28 @@
 
 import { useEffect, useState } from "react";
 import { Circle } from "lucide-react";
-import { getMaisonStatus, JOUR_LABEL, type MaisonStatus } from "@/lib/horaires";
+import { getMaisonStatus, type MaisonStatus } from "@/lib/horaires";
 import { cn } from "@/lib/utils";
 import type { Maison } from "@/types/maison";
+import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@/i18n/dictionaries";
+import { formatJour, interpolate } from "@/i18n/format";
 
 type Props = {
   maison: Maison;
   variant?: "light" | "dark";
   className?: string;
+  lang: Locale;
+  dict: Dictionary;
 };
 
-export function MaisonStatusPill({ maison, variant = "dark", className }: Props) {
+export function MaisonStatusPill({
+  maison,
+  variant = "dark",
+  className,
+  lang,
+  dict,
+}: Props) {
   const [status, setStatus] = useState<MaisonStatus | null>(null);
 
   useEffect(() => {
@@ -25,7 +36,7 @@ export function MaisonStatusPill({ maison, variant = "dark", className }: Props)
   if (!status) return null;
   if (status.state === "unknown") return null;
 
-  const label = formatLabel(status);
+  const label = formatLabel(status, lang, dict);
   const tone = toneClasses(status, variant);
 
   return (
@@ -52,16 +63,30 @@ export function MaisonStatusPill({ maison, variant = "dark", className }: Props)
   );
 }
 
-function formatLabel(status: MaisonStatus): string {
+function formatLabel(
+  status: MaisonStatus,
+  lang: Locale,
+  dict: Dictionary,
+): string {
   if (status.state === "open") {
-    if (status.closingSoon) return `Ferme à ${status.closesAt}`;
-    return `Ouvert · ferme à ${status.closesAt}`;
+    if (status.closingSoon)
+      return interpolate(dict.maisonStatus.fermeAHeure, {
+        heure: status.closesAt,
+      });
+    return interpolate(dict.maisonStatus.ouvertFerme, {
+      heure: status.closesAt,
+    });
   }
   if (status.state === "closed") {
-    if (!status.nextOpen) return "Fermé";
+    if (!status.nextOpen) return dict.maisonStatus.ferme;
     if (status.nextOpen.isTomorrow)
-      return `Fermé · demain à ${status.nextOpen.opens}`;
-    return `Fermé · ${JOUR_LABEL[status.nextOpen.jour].toLowerCase()} à ${status.nextOpen.opens}`;
+      return interpolate(dict.maisonStatus.fermeDemain, {
+        heure: status.nextOpen.opens,
+      });
+    return interpolate(dict.maisonStatus.fermeLeJour, {
+      jour: formatJour(status.nextOpen.jour, lang).toLowerCase(),
+      heure: status.nextOpen.opens,
+    });
   }
   return "";
 }

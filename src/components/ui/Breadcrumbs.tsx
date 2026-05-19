@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { absoluteUrl, cn } from "@/lib/utils";
 
@@ -11,9 +10,15 @@ type Props = {
   items: readonly BreadcrumbItem[];
   variant?: "light" | "dark";
   className?: string;
+  ariaLabel: string;
 };
 
-export function Breadcrumbs({ items, variant = "dark", className }: Props) {
+export function Breadcrumbs({
+  items,
+  variant = "dark",
+  className,
+  ariaLabel,
+}: Props) {
   if (items.length === 0) return null;
 
   const jsonLd = {
@@ -28,16 +33,14 @@ export function Breadcrumbs({ items, variant = "dark", className }: Props) {
   };
 
   const baseColor =
-    variant === "light"
-      ? "text-brand-cream/85"
-      : "text-brand-ink/70";
+    variant === "light" ? "text-brand-cream/85" : "text-brand-ink/70";
   const hoverColor =
     variant === "light" ? "hover:text-brand-gold" : "hover:text-brand-olive";
 
   return (
     <>
       <nav
-        aria-label="Fil d'Ariane"
+        aria-label={ariaLabel}
         className={cn(
           "text-[10px] md:text-[11px] uppercase tracking-[0.22em]",
           baseColor,
@@ -54,13 +57,16 @@ export function Breadcrumbs({ items, variant = "dark", className }: Props) {
                     {item.label}
                   </span>
                 ) : (
-                  <Link href={item.href} className={cn("transition-colors", hoverColor)}>
+                  <a
+                    href={item.href}
+                    className={cn("transition-colors", hoverColor)}
+                  >
                     {item.label}
-                  </Link>
+                  </a>
                 )}
                 {!last && (
                   <ChevronRight
-                    className="h-3 w-3 opacity-60"
+                    className="h-3 w-3 opacity-60 rtl:rotate-180"
                     aria-hidden
                   />
                 )}

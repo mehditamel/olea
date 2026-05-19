@@ -54,7 +54,7 @@ body {
 /* Skip link (a11y) */
 .skip-link {
   position: absolute;
-  left: 1rem;
+  inset-inline-start: 1rem;
   top: -3rem;
   z-index: 100;
   background: var(--color-brand-ink);
