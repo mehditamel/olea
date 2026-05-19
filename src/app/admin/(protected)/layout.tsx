@@ -37,6 +37,9 @@ export default async function AdminProtectedLayout({
               <Link href="/admin" className="hover:text-brand-gold">
                 Réservations
               </Link>
+              <Link href="/admin/capacites" className="hover:text-brand-gold">
+                Capacités
+              </Link>
             </nav>
           </div>
           <div className="flex items-center gap-4 text-xs">
