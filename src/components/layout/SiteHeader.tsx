@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useScrollDirection } from "@/lib/hooks/useScrollDirection";
@@ -40,6 +40,44 @@ export function SiteHeader({ lang, dict }: Props) {
     { href: "/privatisation", label: dict.nav.privatisation },
   ];
 
+  const navRef = useRef<HTMLElement | null>(null);
+  const linkRefs = useRef<Map<string, HTMLAnchorElement | null>>(new Map());
+  const [indicator, setIndicator] = useState<{ left: number; width: number; visible: boolean }>({
+    left: 0,
+    width: 0,
+    visible: false,
+  });
+
+  const activeHref =
+    NAV.find(
+      (item) => stripped === item.href || stripped.startsWith(`${item.href}/`),
+    )?.href ?? null;
+
+  useLayoutEffect(() => {
+    const computeIndicator = () => {
+      const nav = navRef.current;
+      if (!nav || !activeHref) {
+        setIndicator((s) => ({ ...s, visible: false }));
+        return;
+      }
+      const link = linkRefs.current.get(activeHref);
+      if (!link) {
+        setIndicator((s) => ({ ...s, visible: false }));
+        return;
+      }
+      const navRect = nav.getBoundingClientRect();
+      const linkRect = link.getBoundingClientRect();
+      setIndicator({
+        left: linkRect.left - navRect.left,
+        width: linkRect.width,
+        visible: true,
+      });
+    };
+    computeIndicator();
+    window.addEventListener("resize", computeIndicator);
+    return () => window.removeEventListener("resize", computeIndicator);
+  }, [activeHref, lang]);
+
   return (
     <header
       className={cn(
@@ -77,27 +115,34 @@ export function SiteHeader({ lang, dict }: Props) {
         </LocaleLink>
 
         <nav
+          ref={navRef}
           aria-label={dict.header.ariaNav}
-          className="hidden md:flex items-center gap-8 text-[11px] uppercase tracking-[0.22em]"
+          className="hidden md:flex relative items-center gap-8 text-[11px] uppercase tracking-[0.22em]"
         >
           {NAV.map((item) => {
-            const active =
-              stripped === item.href || stripped.startsWith(`${item.href}/`);
+            const active = activeHref === item.href;
             return (
               <LocaleLink
                 key={item.href}
                 href={item.href}
+                ref={(el) => {
+                  linkRefs.current.set(item.href, el);
+                }}
                 aria-current={active ? "page" : undefined}
-                className={cn(
-                  "relative py-2 hover:opacity-70 transition-opacity",
-                  active &&
-                    "after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-brand-gold",
-                )}
+                className="relative py-2 hover:opacity-70 transition-opacity"
               >
                 {item.label}
               </LocaleLink>
             );
           })}
+          <span
+            aria-hidden
+            className={cn(
+              "pointer-events-none absolute bottom-0 h-px bg-brand-gold transition-[left,width,opacity] duration-300 ease-out",
+              indicator.visible ? "opacity-100" : "opacity-0",
+            )}
+            style={{ left: indicator.left, width: indicator.width }}
+          />
         </nav>
 
         <div className="flex items-center gap-1 md:gap-3">

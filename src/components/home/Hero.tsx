@@ -24,38 +24,57 @@ export function Hero({ lang, dict }: { lang: Locale; dict: Dictionary }) {
       <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(31,34,24,0.30)_0%,transparent_35%,rgba(31,34,24,0.55)_100%)]" />
 
       <div className="relative h-full mx-auto max-w-7xl flex flex-col justify-end px-6 pb-24 md:px-12 md:pb-24 text-brand-cream pt-32">
-        <p className="olea-fade-up text-[11px] md:text-xs uppercase tracking-[0.25em] mb-5 md:mb-6 opacity-90">
-          <span className="inline-block border-b border-brand-gold-light/60 pb-1">
+        <p
+          className="olea-fade-up text-[11px] md:text-xs uppercase tracking-[0.25em] mb-5 md:mb-6 opacity-90"
+          style={{ animationDelay: "0ms" }}
+        >
+          <span className="inline-block relative pb-1">
             {dict.hero.eyebrow}
+            <span
+              aria-hidden
+              className="olea-line-grow absolute inset-x-0 bottom-0 block h-px bg-brand-gold-light/70"
+            />
           </span>
         </p>
-        <h1 className="olea-fade-up font-serif font-normal leading-[1.02] mb-6 md:mb-7 text-[clamp(44px,8vw,92px)] tracking-[-1.5px]">
+        <h1
+          className="olea-fade-up font-serif font-normal leading-[1.02] mb-6 md:mb-7 text-[clamp(44px,8vw,92px)] tracking-[-1.5px]"
+          style={{ animationDelay: "120ms" }}
+        >
           {dict.hero.titre1}
           <br />
           <span className="italic text-brand-gold-light">
             {dict.hero.titre2Italic}
           </span>
         </h1>
-        <p className="olea-fade-up font-serif italic text-lg md:text-xl leading-snug max-w-[520px] opacity-90 mb-8 md:mb-10">
+        <p
+          className="olea-fade-up font-serif italic text-lg md:text-xl leading-snug max-w-[520px] opacity-90 mb-8 md:mb-10"
+          style={{ animationDelay: "280ms" }}
+        >
           {dict.hero.sousTitre}
         </p>
 
-        <div className="olea-fade-up flex flex-col sm:flex-row gap-3 sm:gap-4">
+        <div
+          className="olea-fade-up flex flex-col sm:flex-row gap-3 sm:gap-4"
+          style={{ animationDelay: "440ms" }}
+        >
           <a
             href={withLocale(lang, "/reserver")}
-            className="inline-flex items-center justify-center bg-brand-cream text-brand-ink px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-medium hover:bg-brand-gold active:scale-[0.98] transition-[background-color,transform]"
+            className="olea-shine-host inline-flex items-center justify-center bg-brand-cream text-brand-ink px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-medium hover:bg-brand-gold active:scale-[0.98] transition-[background-color,transform]"
           >
             {dict.hero.ctaReserver}
           </a>
           <a
             href={withLocale(lang, "/maisons")}
-            className="inline-flex items-center justify-center border border-brand-cream/70 text-brand-cream px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-medium hover:bg-brand-cream hover:text-brand-ink active:scale-[0.98] transition-[background-color,color,transform]"
+            className="olea-shine-host inline-flex items-center justify-center border border-brand-cream/70 text-brand-cream px-7 py-3.5 text-[11px] uppercase tracking-[0.22em] font-medium hover:bg-brand-cream hover:text-brand-ink active:scale-[0.98] transition-[background-color,color,transform]"
           >
             {dict.hero.ctaDecouvrir}
           </a>
         </div>
 
-        <p className="mt-10 md:mt-0 md:absolute md:bottom-6 md:end-12 text-[10px] md:text-[11px] tracking-[0.25em] uppercase text-brand-cream/70">
+        <p
+          className="olea-fade-up mt-10 md:mt-0 md:absolute md:bottom-6 md:end-12 text-[10px] md:text-[11px] tracking-[0.25em] uppercase text-brand-cream/70"
+          style={{ animationDelay: "600ms" }}
+        >
           {dict.hero.villes}
         </p>
       </div>

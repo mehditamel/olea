@@ -20,8 +20,8 @@ export function StepIndicator({ current, labels, ariaLabel }: StepIndicatorProps
           <li key={label} className="flex items-center gap-3">
             <span
               className={cn(
-                "inline-flex h-7 w-7 items-center justify-center rounded-full border text-[12px] font-medium",
-                active && "bg-brand-ink text-brand-cream border-brand-ink",
+                "inline-flex h-7 w-7 items-center justify-center rounded-full border text-[12px] font-medium transition-[background-color,color,border-color,transform] duration-300 ease-out",
+                active && "bg-brand-ink text-brand-cream border-brand-ink scale-110",
                 done && "bg-brand-olive text-brand-cream border-brand-olive",
                 !active && !done && "border-brand-ink/30 text-brand-ink/50",
               )}
@@ -31,6 +31,7 @@ export function StepIndicator({ current, labels, ariaLabel }: StepIndicatorProps
             </span>
             <span
               className={cn(
+                "transition-colors duration-300",
                 active ? "text-brand-ink" : "text-brand-ink/50",
               )}
             >
@@ -39,11 +40,13 @@ export function StepIndicator({ current, labels, ariaLabel }: StepIndicatorProps
             {idx === 0 && (
               <span
                 aria-hidden
-                className={cn(
-                  "ms-1 h-px w-8 md:w-12",
-                  done ? "bg-brand-olive" : "bg-brand-ink/20",
-                )}
-              />
+                className="ms-1 relative h-px w-8 md:w-12 bg-brand-ink/20 overflow-hidden"
+              >
+                <span
+                  className="absolute inset-y-0 left-0 bg-brand-olive transition-[width] duration-500 ease-out"
+                  style={{ width: done ? "100%" : "0%" }}
+                />
+              </span>
             )}
           </li>
         );

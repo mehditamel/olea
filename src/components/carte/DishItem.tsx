@@ -1,8 +1,10 @@
 import type { Dish } from "@/data/menu";
+import { Reveal } from "@/components/ui/Reveal";
 
-export function DishItem({ dish }: { dish: Dish }) {
+export function DishItem({ dish, index = 0 }: { dish: Dish; index?: number }) {
+  const delay = Math.min(index * 60, 480);
   return (
-    <li className="border-b border-brand-ink/10 pb-5">
+    <Reveal as="li" delay={delay} className="border-b border-brand-ink/10 pb-5">
       <div className="flex items-baseline justify-between gap-4">
         <h3 className="font-serif text-xl md:text-[22px] text-brand-ink leading-snug">
           {dish.nom}
@@ -18,6 +20,6 @@ export function DishItem({ dish }: { dish: Dish }) {
           {dish.description}
         </p>
       ) : null}
-    </li>
+    </Reveal>
   );
 }

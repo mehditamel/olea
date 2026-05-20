@@ -37,16 +37,21 @@ export function Pillars({ dict }: { dict: Dictionary }) {
             key={title}
             delay={idx * 120}
             className={
-              idx === 1
+              (idx === 1
                 ? "py-8 md:py-0 md:px-9 border-y md:border-y-0 border-brand-ink/10 text-center"
-                : "py-2 md:py-0 md:px-9 text-center"
+                : "py-2 md:py-0 md:px-9 text-center") +
+              " group/pillar"
             }
           >
             <span
-              className="inline-flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-brand-olive/10 text-brand-olive"
+              className="inline-flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-brand-olive/10 text-brand-olive scale-90 opacity-0 transition-[transform,opacity,background-color,color] duration-500 ease-out group-data-[revealed]/pillar:scale-100 group-data-[revealed]/pillar:opacity-100 group-hover/pillar:bg-brand-olive/15 group-hover/pillar:text-brand-olive-deep"
+              style={{ transitionDelay: `${idx * 120 + 200}ms` }}
               aria-hidden
             >
-              <Icon className="w-6 h-6" strokeWidth={1.4} />
+              <Icon
+                className="w-6 h-6 transition-transform duration-300 ease-out group-hover/pillar:-rotate-[4deg]"
+                strokeWidth={1.4}
+              />
             </span>
             <h2 className="font-serif text-xl md:text-[22px] mb-2 text-brand-ink">
               {title}
