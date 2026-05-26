@@ -41,6 +41,22 @@ export default function manifest(): MetadataRoute.Manifest {
         purpose: "any",
       },
     ],
+    screenshots: [
+      {
+        src: "/icons/screenshot-narrow.png",
+        sizes: "1080x1920",
+        type: "image/png",
+        form_factor: "narrow",
+        label: "Maison Oléa — cuisine méditerranéenne",
+      },
+      {
+        src: "/icons/screenshot-wide.png",
+        sizes: "1920x1080",
+        type: "image/png",
+        form_factor: "wide",
+        label: "Maison Oléa — cuisine méditerranéenne",
+      },
+    ],
     shortcuts: [
       {
         name: "Réserver une table",
