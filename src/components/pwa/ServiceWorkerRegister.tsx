@@ -8,9 +8,35 @@ export function ServiceWorkerRegister() {
     if (typeof window === "undefined") return;
     if (!("serviceWorker" in navigator)) return;
 
+    let refreshing = false;
+    const onControllerChange = () => {
+      if (refreshing) return;
+      refreshing = true;
+      window.location.reload();
+    };
+    navigator.serviceWorker.addEventListener(
+      "controllerchange",
+      onControllerChange,
+    );
+
     const register = () => {
       navigator.serviceWorker
         .register("/sw.js", { scope: "/" })
+        .then((registration) => {
+          // Nouveau worker détecté → l'activer dès qu'il est installé (update only).
+          registration.addEventListener("updatefound", () => {
+            const installing = registration.installing;
+            if (!installing) return;
+            installing.addEventListener("statechange", () => {
+              if (
+                installing.state === "installed" &&
+                navigator.serviceWorker.controller
+              ) {
+                registration.waiting?.postMessage({ type: "SKIP_WAITING" });
+              }
+            });
+          });
+        })
         .catch(() => {
           // Silencieux : un échec d'enregistrement ne doit jamais casser l'UX.
         });
@@ -20,8 +46,15 @@ export function ServiceWorkerRegister() {
       register();
     } else {
       window.addEventListener("load", register, { once: true });
-      return () => window.removeEventListener("load", register);
     }
+
+    return () => {
+      navigator.serviceWorker.removeEventListener(
+        "controllerchange",
+        onControllerChange,
+      );
+      window.removeEventListener("load", register);
+    };
   }, []);
 
   return null;

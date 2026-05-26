@@ -40,6 +40,7 @@ export const SheetContent = React.forwardRef<
     <SheetOverlay />
     <DialogPrimitive.Content
       ref={ref}
+      style={{ paddingTop: "max(2rem, env(safe-area-inset-top))" }}
       className={cn(
         "fixed z-50 h-full w-3/4 max-w-sm bg-brand-ink text-brand-cream p-8 shadow-lg transition ease-in-out data-[state=open]:duration-300 data-[state=closed]:duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out",
         side === "right"
@@ -50,7 +51,10 @@ export const SheetContent = React.forwardRef<
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute end-6 top-6 text-brand-cream opacity-80 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-brand-gold">
+      <DialogPrimitive.Close
+        style={{ top: "max(0.75rem, env(safe-area-inset-top))" }}
+        className="absolute end-3 p-2.5 rounded-full text-brand-cream opacity-80 hover:opacity-100 hover:bg-brand-cream/10 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-gold"
+      >
         <X className="h-5 w-5" aria-hidden />
         <span className="sr-only">Fermer</span>
       </DialogPrimitive.Close>

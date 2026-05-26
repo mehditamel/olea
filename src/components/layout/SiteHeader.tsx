@@ -87,6 +87,7 @@ export function SiteHeader({ lang, dict }: Props) {
           : "bg-brand-cream/95 backdrop-blur-md text-brand-ink border-b border-brand-ink/8 shadow-[0_1px_0_rgba(31,34,24,0.04)]",
         hidden ? "-translate-y-full md:translate-y-0" : "translate-y-0",
       )}
+      style={{ paddingTop: "env(safe-area-inset-top)" }}
     >
       {transparent && (
         <div

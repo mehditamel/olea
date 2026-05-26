@@ -154,10 +154,6 @@ body {
     animation: olea-drift 9s ease-in-out infinite;
     will-change: transform;
   }
-  .olea-kenburns {
-    animation: olea-kenburns 18s ease-in-out infinite alternate;
-    will-change: transform;
-  }
   .olea-shimmer-gold {
     background-image: linear-gradient(110deg, #d4af6e 30%, #e8d5a8 50%, #d4af6e 70%);
     background-size: 200% 100%;
@@ -165,6 +161,15 @@ body {
   }
   .olea-pulse-dot {
     animation: olea-pulse-dot 2.4s ease-out infinite;
+  }
+}
+
+/* Ken Burns : réservé aux écrans larges — sur mobile l'image reste statique
+   (économie GPU/batterie). */
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .olea-kenburns {
+    animation: olea-kenburns 18s ease-in-out infinite alternate;
+    will-change: transform;
   }
 }
 

@@ -150,7 +150,7 @@ export function InstallPrompt({ dict }: { dict: Dictionary["pwa"] }) {
           type="button"
           onClick={dismiss}
           aria-label={dict.dismiss}
-          className="text-brand-cream/60 hover:text-brand-cream p-1 flex-shrink-0"
+          className="-me-1.5 -mt-1 text-brand-cream/60 hover:text-brand-cream p-3 flex-shrink-0"
         >
           <X className="h-4 w-4" aria-hidden />
         </button>

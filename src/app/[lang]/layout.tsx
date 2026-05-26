@@ -6,6 +6,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { MobileCtaBar } from "@/components/layout/MobileCtaBar";
 import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
 import { InstallPrompt } from "@/components/pwa/InstallPrompt";
+import { AppleSplashLinks } from "@/components/pwa/AppleSplashLinks";
 import { absoluteUrl, SITE_URL } from "@/lib/utils";
 import {
   LOCALES,
@@ -129,6 +130,7 @@ export default async function RootLayout({
           <MobileCtaBar lang={lang as Locale} dict={dict} />
           <InstallPrompt dict={dict.pwa} />
           <ServiceWorkerRegister />
+          <AppleSplashLinks />
         </LocaleProvider>
       </body>
     </html>
