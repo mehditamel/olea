@@ -48,7 +48,7 @@ export default async function CapacitesPage() {
     <div className="space-y-12">
       <div>
         <p className="eyebrow text-brand-olive mb-2">Capacités & blocages</p>
-        <h1 className="font-serif text-3xl text-brand-ink">
+        <h1 className="font-sans text-3xl text-brand-ink">
           Couverts par service
         </h1>
         <p className="text-sm text-brand-text-muted mt-1">

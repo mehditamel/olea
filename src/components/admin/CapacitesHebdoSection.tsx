@@ -46,7 +46,7 @@ export function CapacitesHebdoSection({
 
   return (
     <section className="space-y-5">
-      <h2 className="font-serif text-xl text-brand-ink">
+      <h2 className="font-sans text-xl text-brand-ink">
         Capacités hebdomadaires
       </h2>
       <p className="text-xs text-brand-text-muted">
@@ -55,7 +55,7 @@ export function CapacitesHebdoSection({
       </p>
       {maisons.map((m) => (
         <div key={m.slug} className="bg-white border border-brand-ink/10 p-5">
-          <h3 className="font-serif text-lg text-brand-ink mb-4">{m.nom}</h3>
+          <h3 className="font-sans text-lg text-brand-ink mb-4">{m.nom}</h3>
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left text-[11px] uppercase tracking-[0.15em] text-brand-text-muted">

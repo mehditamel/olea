@@ -14,9 +14,9 @@ export default function NotFound() {
       />
       <div className="relative mx-auto max-w-3xl">
         <p className="eyebrow text-brand-gold mb-5">{dict.notFound.eyebrow}</p>
-        <h1 className="font-serif font-normal text-[clamp(44px,7vw,80px)] leading-[1.02] tracking-[-1px] mb-6">
+        <h1 className="font-sans font-medium text-[clamp(44px,7vw,80px)] leading-[1.02] tracking-[-1px] mb-6">
           {dict.notFound.titre}{" "}
-          <span className="italic text-brand-gold-light">
+          <span className="font-serif italic text-brand-gold-light">
             {dict.notFound.titreItalic}
           </span>
         </h1>

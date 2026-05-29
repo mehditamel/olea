@@ -68,7 +68,7 @@ export function MobileNav({ transparent, lang, dict }: MobileNavProps) {
                   href={item.href}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "font-serif text-[26px] leading-tight py-3 border-b border-brand-cream/10 transition-colors",
+                    "font-sans text-[26px] leading-tight py-3 border-b border-brand-cream/10 transition-colors",
                     active
                       ? "text-brand-gold"
                       : "text-brand-cream hover:text-brand-gold",
@@ -109,7 +109,7 @@ export function MobileNav({ transparent, lang, dict }: MobileNavProps) {
                       className="flex items-center justify-between gap-3 text-brand-cream hover:text-brand-gold transition-colors"
                       onClick={() => setOpen(false)}
                     >
-                      <span className="font-serif text-lg">{m.nom}</span>
+                      <span className="font-sans text-lg">{m.nom}</span>
                       <span className="inline-flex items-center gap-2 text-[12px] tracking-[0.14em] uppercase text-brand-text-soft">
                         <Phone className="h-3.5 w-3.5" aria-hidden />
                         <bdi dir="ltr">{m.telephoneAffichage}</bdi>
@@ -117,7 +117,7 @@ export function MobileNav({ transparent, lang, dict }: MobileNavProps) {
                     </a>
                   ) : (
                     <div className="flex items-center justify-between gap-3 text-brand-cream/60">
-                      <span className="font-serif text-lg">{m.nom}</span>
+                      <span className="font-sans text-lg">{m.nom}</span>
                       <span className="text-[11px] tracking-[0.18em] uppercase text-brand-gold">
                         {dict.common.bientot}
                       </span>

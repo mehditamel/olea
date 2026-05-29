@@ -35,7 +35,7 @@ export function ReservationActions({
 
   return (
     <section className="space-y-4">
-      <h2 className="font-serif text-xl text-brand-ink">Actions</h2>
+      <h2 className="font-sans text-xl text-brand-ink">Actions</h2>
       <div className="flex flex-wrap gap-3">
         {r.statut === "confirmed" && (
           <ConfirmFormButton

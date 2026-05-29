@@ -95,7 +95,7 @@ export function MaisonInfos({
               dict={dict}
             />
           </div>
-          <h2 className="font-serif text-3xl md:text-4xl mb-6 text-brand-ink">
+          <h2 className="font-sans text-3xl md:text-4xl mb-6 text-brand-ink">
             {m.label}
           </h2>
           <address className="not-italic text-brand-ink text-[15px] leading-[1.85] mb-6">
@@ -119,7 +119,7 @@ export function MaisonInfos({
               </p>
               <a
                 href={`tel:${m.telephone}`}
-                className="inline-block font-serif text-2xl md:text-[28px] text-brand-ink border-b border-brand-olive pb-1 hover:text-brand-olive transition-colors"
+                className="inline-block font-sans text-2xl md:text-[28px] text-brand-ink border-b border-brand-olive pb-1 hover:text-brand-olive transition-colors"
               >
                 <bdi dir="ltr">{m.telephoneAffichage}</bdi>
               </a>

@@ -71,9 +71,9 @@ export default async function MentionsLegalesPage({
             ]}
           />
           <p className="eyebrow text-brand-gold mb-5">{m.eyebrow}</p>
-          <h1 className="font-serif font-normal text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[-1px] max-w-3xl">
+          <h1 className="font-sans font-medium text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[-1px] max-w-3xl">
             {m.titre}{" "}
-            <span className="italic text-brand-gold">{m.titreItalic}</span>
+            <span className="font-serif italic text-brand-gold">{m.titreItalic}</span>
           </h1>
           <p className="mt-6 max-w-2xl text-brand-text-soft text-base md:text-lg leading-relaxed">
             {m.sousTitre}
@@ -149,7 +149,7 @@ function Section({
 }) {
   return (
     <section>
-      <h2 className="font-serif text-2xl md:text-3xl text-brand-ink mb-4">
+      <h2 className="font-sans text-2xl md:text-3xl text-brand-ink mb-4">
         {title}
       </h2>
       <div className="text-[15px] leading-[1.85] text-brand-ink/90 space-y-1">

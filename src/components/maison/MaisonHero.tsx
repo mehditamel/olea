@@ -60,7 +60,7 @@ export function MaisonHero({
             dict={dict}
           />
         </div>
-        <h1 className="olea-fade-up font-serif font-normal text-[clamp(40px,6.5vw,72px)] leading-[1.02] tracking-[-1px] mb-5">
+        <h1 className="olea-fade-up font-sans font-medium text-[clamp(40px,6.5vw,72px)] leading-[1.02] tracking-[-1px] mb-5">
           {m.nom}
         </h1>
         <p className="olea-fade-up font-serif italic text-lg md:text-xl max-w-[560px] opacity-90 leading-snug mb-7">

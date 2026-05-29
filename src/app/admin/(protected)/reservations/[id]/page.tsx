@@ -87,7 +87,7 @@ function renderPage(r: ReservationRow) {
           >
             ← Toutes les réservations
           </Link>
-          <h1 className="font-serif text-3xl text-brand-ink mt-2">
+          <h1 className="font-sans text-3xl text-brand-ink mt-2">
             Réservation {r.nom}
           </h1>
           <p className="text-sm text-brand-text-muted">
@@ -164,7 +164,7 @@ function renderPage(r: ReservationRow) {
       />
 
       <section className="space-y-3">
-        <h2 className="font-serif text-xl text-brand-ink">Notes équipe</h2>
+        <h2 className="font-sans text-xl text-brand-ink">Notes équipe</h2>
         <p className="text-xs text-brand-text-muted">
           Visibles uniquement par l&apos;équipe. Pas envoyées au client.
         </p>

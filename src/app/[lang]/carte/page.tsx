@@ -87,9 +87,9 @@ export default async function CartePage({
             ]}
           />
           <p className="eyebrow text-brand-gold mb-5">{dict.carte.eyebrow}</p>
-          <h1 className="font-serif font-normal text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[-1px] max-w-3xl">
+          <h1 className="font-sans font-medium text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[-1px] max-w-3xl">
             {dict.carte.titre}{" "}
-            <span className="italic text-brand-gold-light">
+            <span className="font-serif italic text-brand-gold-light">
               {dict.carte.titreItalic}
             </span>{" "}
             {dict.carte.titreSuite}
@@ -126,7 +126,7 @@ export default async function CartePage({
                       <p className="eyebrow text-brand-gold-deep mb-2">
                         {maison.label}
                       </p>
-                      <h2 className="font-serif text-2xl md:text-[28px] text-brand-ink mb-3">
+                      <h2 className="font-sans text-2xl md:text-[28px] text-brand-ink mb-3">
                         {maison.nom}
                       </h2>
                       <p className="text-[15px] leading-[1.65] text-brand-text-muted mb-5">

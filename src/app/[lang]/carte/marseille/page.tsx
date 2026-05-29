@@ -70,7 +70,7 @@ export default async function CarteMarseillePage({
         title={
           <>
             {maison.nom},{" "}
-            <span className="italic text-brand-gold-light">
+            <span className="font-serif italic text-brand-gold-light">
               face au port
             </span>
             .

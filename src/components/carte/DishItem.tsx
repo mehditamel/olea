@@ -6,11 +6,11 @@ export function DishItem({ dish, index = 0 }: { dish: Dish; index?: number }) {
   return (
     <Reveal as="li" delay={delay} className="border-b border-brand-ink/10 pb-5">
       <div className="flex items-baseline justify-between gap-4">
-        <h3 className="font-serif text-xl md:text-[22px] text-brand-ink leading-snug">
+        <h3 className="font-sans text-xl md:text-[22px] text-brand-ink leading-snug">
           {dish.nom}
         </h3>
         {dish.prix ? (
-          <span className="font-serif text-base md:text-lg text-brand-gold-deep whitespace-nowrap">
+          <span className="font-sans text-base md:text-lg text-brand-gold-deep whitespace-nowrap">
             {dish.prix}
           </span>
         ) : null}

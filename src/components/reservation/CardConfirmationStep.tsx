@@ -38,7 +38,7 @@ export function CardConfirmationStep(props: Props) {
   return (
     <div className="bg-brand-cream-soft border border-brand-ink/10 px-6 py-8 md:px-10 md:py-10">
       <p className="eyebrow text-brand-olive mb-3">Garantie de réservation</p>
-      <h2 className="font-serif text-2xl md:text-3xl text-brand-ink mb-3">
+      <h2 className="font-sans text-2xl md:text-3xl text-brand-ink mb-3">
         Une empreinte de carte pour confirmer votre table.
       </h2>
       <p className="text-sm text-brand-text-muted mb-6 leading-relaxed">

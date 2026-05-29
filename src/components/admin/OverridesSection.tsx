@@ -32,7 +32,7 @@ export function OverridesSection({
 }: OverridesSectionProps) {
   return (
     <section className="space-y-5">
-      <h2 className="font-serif text-xl text-brand-ink">Exceptions par date</h2>
+      <h2 className="font-sans text-xl text-brand-ink">Exceptions par date</h2>
       <p className="text-xs text-brand-text-muted">
         Override ponctuel : remplace la capacité du jour pour une date donnée.
       </p>

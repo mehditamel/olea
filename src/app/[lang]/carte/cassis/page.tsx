@@ -71,7 +71,7 @@ export default async function CarteCassisPage({
         title={
           <>
             {maison.nom},{" "}
-            <span className="italic text-brand-gold-light">sur le port</span>.
+            <span className="font-serif italic text-brand-gold-light">sur le port</span>.
           </>
         }
         baseline={menu.intro}

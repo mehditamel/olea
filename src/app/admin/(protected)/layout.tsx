@@ -30,7 +30,7 @@ export default async function AdminProtectedLayout({
           <div className="flex items-center gap-8">
             <Link
               href="/admin"
-              className="font-serif text-lg tracking-tight hover:text-brand-gold transition-colors"
+              className="font-sans text-lg tracking-tight hover:text-brand-gold transition-colors"
             >
               Maison Oléa · Équipe
             </Link>

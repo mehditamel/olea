@@ -34,7 +34,7 @@ export default async function AdminLoginPage({ searchParams }: PageProps) {
         <p className="eyebrow text-brand-olive mb-3 text-center">
           Espace équipe
         </p>
-        <h1 className="font-serif text-3xl md:text-4xl text-brand-ink text-center mb-2">
+        <h1 className="font-sans text-3xl md:text-4xl text-brand-ink text-center mb-2">
           Connexion Maison Oléa
         </h1>
         <p className="text-sm text-brand-text-muted text-center mb-10">
@@ -43,7 +43,7 @@ export default async function AdminLoginPage({ searchParams }: PageProps) {
 
         {sent ? (
           <div className="bg-brand-cream-soft border border-brand-olive/30 p-6 text-center">
-            <p className="font-serif text-xl text-brand-ink mb-2">
+            <p className="font-sans text-xl text-brand-ink mb-2">
               Lien envoyé.
             </p>
             <p className="text-sm text-brand-text-muted">

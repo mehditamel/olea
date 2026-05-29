@@ -43,7 +43,7 @@ export function MaisonReservation({
             nom: maison.nom,
           })}
         </p>
-        <h2 className="font-serif text-3xl md:text-4xl mb-3 text-brand-ink">
+        <h2 className="font-sans text-3xl md:text-4xl mb-3 text-brand-ink">
           {dict.maisonReservation.ouverteTitre}
         </h2>
         <p className="font-serif italic text-lg text-brand-text-muted mb-8 max-w-md mx-auto">

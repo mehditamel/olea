@@ -53,7 +53,7 @@ export function Pillars({ dict }: { dict: Dictionary }) {
                 strokeWidth={1.4}
               />
             </span>
-            <h2 className="font-serif text-xl md:text-[22px] mb-2 text-brand-ink">
+            <h2 className="font-sans text-xl md:text-[22px] mb-2 text-brand-ink">
               {title}
             </h2>
             <p className="text-sm leading-relaxed text-brand-text-muted max-w-[280px] mx-auto">

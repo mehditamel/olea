@@ -28,7 +28,7 @@ export function MaisonInstagram({
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
             <div>
               <p className="eyebrow text-brand-olive mb-3">Instagram</p>
-              <h2 className="font-serif text-3xl md:text-4xl text-brand-ink">
+              <h2 className="font-sans text-3xl md:text-4xl text-brand-ink">
                 {isComingSoon
                   ? dict.maisonInstagram.bientotEntete
                   : interpolate(dict.maisonInstagram.suivreEntete, {

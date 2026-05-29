@@ -42,7 +42,7 @@ export function SiteFooter({ lang, dict }: Props) {
               sizes="(max-width: 768px) 56px, 72px"
               className="h-14 md:h-16 w-auto mb-5"
             />
-            <p className="text-sm leading-relaxed text-brand-text-soft max-w-[280px] mb-6 italic">
+            <p className="text-sm leading-relaxed text-brand-text-soft max-w-[280px] mb-6 font-serif italic">
               {dict.footer.tagline}
             </p>
             <div className="h-px w-12 bg-brand-gold-deep/60 mb-5" aria-hidden />

@@ -17,9 +17,9 @@ export function EspritSection({ lang, dict }: { lang: Locale; dict: Dictionary }
       <div className="relative mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-[1fr_1.1fr] gap-10 md:gap-16 items-center">
         <Reveal>
           <p className="eyebrow text-brand-olive mb-5">{dict.esprit.eyebrow}</p>
-          <h2 className="font-serif font-normal text-[clamp(32px,4.5vw,52px)] leading-[1.05] tracking-[-0.8px] mb-6 md:mb-7 text-brand-ink">
+          <h2 className="font-sans font-medium text-[clamp(32px,4.5vw,52px)] leading-[1.05] tracking-[-0.8px] mb-6 md:mb-7 text-brand-ink">
             {dict.esprit.titre}{" "}
-            <span className="italic">{dict.esprit.titreItalic}</span>{" "}
+            <span className="font-serif italic">{dict.esprit.titreItalic}</span>{" "}
             {dict.esprit.titreSuite}
           </h2>
           <p className="text-[15px] leading-[1.85] text-[#4A4232] mb-5">

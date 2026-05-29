@@ -17,7 +17,7 @@ export function MaisonMap({ maison, dict }: Props) {
         <div className="flex items-end justify-between gap-4 mb-5">
           <div>
             <p className="eyebrow text-brand-olive mb-2">{m.eyebrow}</p>
-            <h2 className="font-serif text-2xl md:text-3xl text-brand-ink">
+            <h2 className="font-sans text-2xl md:text-3xl text-brand-ink">
               {m.titre}
             </h2>
           </div>

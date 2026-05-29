@@ -93,7 +93,7 @@ function MaisonCard({
           <p className="text-[11px] tracking-[0.25em] uppercase text-brand-gold mb-2">
             {m.label}
           </p>
-          <h3 className="font-serif font-normal text-[30px] md:text-[34px] leading-[1.05] tracking-[-0.3px] text-brand-cream">
+          <h3 className="font-sans font-medium text-[30px] md:text-[34px] leading-[1.05] tracking-[-0.3px] text-brand-cream">
             {m.nom}
           </h3>
         </div>
@@ -160,9 +160,9 @@ export function MaisonsGrid({
         className="text-center max-w-2xl mx-auto mb-12 md:mb-16"
       >
         <p className="eyebrow text-brand-gold mb-5">{dict.maisons.eyebrow}</p>
-        <h2 className="font-serif font-normal text-[clamp(34px,4.5vw,52px)] leading-[1.1] tracking-[-0.5px]">
+        <h2 className="font-sans font-medium text-[clamp(34px,4.5vw,52px)] leading-[1.1] tracking-[-0.5px]">
           {dict.maisons.titre}{" "}
-          <span className="italic text-brand-gold-light">
+          <span className="font-serif italic text-brand-gold-light">
             {dict.maisons.titreItalic}
           </span>
         </h2>

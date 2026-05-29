@@ -16,7 +16,7 @@ export function WineList({ vins }: { vins: readonly WineGroup[] }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
         {vins.map((group) => (
           <div key={group.couleur}>
-            <h3 className="font-serif text-xl md:text-2xl text-brand-olive mb-3">
+            <h3 className="font-sans text-xl md:text-2xl text-brand-olive mb-3">
               {group.couleur}
             </h3>
             <ul className="space-y-1.5">

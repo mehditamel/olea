@@ -37,12 +37,12 @@ export function Hero({ lang, dict }: { lang: Locale; dict: Dictionary }) {
           </span>
         </p>
         <h1
-          className="olea-fade-up font-serif font-normal leading-[1.02] mb-6 md:mb-7 text-[clamp(44px,8vw,92px)] tracking-[-1.5px]"
+          className="olea-fade-up font-sans font-medium leading-[1.02] mb-6 md:mb-7 text-[clamp(44px,8vw,92px)] tracking-[-1.5px]"
           style={{ animationDelay: "120ms" }}
         >
           {dict.hero.titre1}
           <br />
-          <span className="italic text-brand-gold-light">
+          <span className="font-serif italic text-brand-gold-light">
             {dict.hero.titre2Italic}
           </span>
         </h1>
