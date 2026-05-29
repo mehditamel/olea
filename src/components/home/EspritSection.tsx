@@ -36,7 +36,7 @@ export function EspritSection({ lang, dict }: { lang: Locale; dict: Dictionary }
           className="relative h-[280px] md:h-[420px] overflow-hidden order-first md:order-none"
           style={{
             background:
-              "radial-gradient(ellipse at 50% 50%, #E8D5A8 0%, #C49960 40%, #8B6F3A 100%)",
+              "radial-gradient(ellipse at 50% 50%, #F4DCA9 0%, #C49960 40%, #B07D2E 100%)",
           }}
           aria-hidden
         >

@@ -19,12 +19,12 @@ export function VilleneuveCoastIllustration({ className }: Props) {
     >
       <defs>
         <linearGradient id="vlb-sky" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stopColor="#f4ecdd" />
-          <stop offset="100%" stopColor="#e8d5a8" stopOpacity="0.55" />
+          <stop offset="0%" stopColor="#FEFFEB" />
+          <stop offset="100%" stopColor="#F4DCA9" stopOpacity="0.55" />
         </linearGradient>
         <linearGradient id="vlb-sea" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stopColor="#4a5530" stopOpacity="0.18" />
-          <stop offset="100%" stopColor="#4a5530" stopOpacity="0.32" />
+          <stop offset="0%" stopColor="#75774A" stopOpacity="0.18" />
+          <stop offset="100%" stopColor="#75774A" stopOpacity="0.32" />
         </linearGradient>
       </defs>
 
@@ -32,18 +32,18 @@ export function VilleneuveCoastIllustration({ className }: Props) {
       <rect width="800" height="240" fill="url(#vlb-sky)" />
 
       {/* Soleil */}
-      <circle cx="560" cy="118" r="44" fill="#d4af6e" opacity="0.45" />
-      <circle cx="560" cy="118" r="28" fill="#d4af6e" opacity="0.85" />
+      <circle cx="560" cy="118" r="44" fill="#ECBB6E" opacity="0.45" />
+      <circle cx="560" cy="118" r="28" fill="#ECBB6E" opacity="0.85" />
 
       {/* Collines arrière-pays */}
       <path
         d="M0 230 Q120 180 240 220 Q360 245 480 200 Q600 175 800 210 L800 260 L0 260 Z"
-        fill="#4a5530"
+        fill="#75774A"
         opacity="0.22"
       />
       <path
         d="M0 254 Q140 220 280 248 Q420 270 560 234 Q680 218 800 244 L800 290 L0 290 Z"
-        fill="#4a5530"
+        fill="#75774A"
         opacity="0.35"
       />
 
@@ -63,9 +63,9 @@ export function VilleneuveCoastIllustration({ className }: Props) {
       </g>
 
       {/* Voilier minuscule sur l'horizon */}
-      <g stroke="#1f2218" strokeWidth="1" fill="#f4ecdd">
+      <g stroke="#1f2218" strokeWidth="1" fill="#FEFFEB">
         <line x1="420" y1="298" x2="420" y2="282" />
-        <path d="M420 286 L432 296 L420 296 Z" fill="#d4af6e" fillOpacity="0.7" />
+        <path d="M420 286 L432 296 L420 296 Z" fill="#ECBB6E" fillOpacity="0.7" />
       </g>
 
       {/* Plage / galets — bande sableuse */}
@@ -73,7 +73,7 @@ export function VilleneuveCoastIllustration({ className }: Props) {
         d="M0 370 Q200 360 400 372 Q600 384 800 368 L800 410 L0 410 Z"
         fill="#efe5d2"
       />
-      <g fill="#8b6f3a" opacity="0.45">
+      <g fill="#B07D2E" opacity="0.45">
         <circle cx="120" cy="392" r="3" />
         <circle cx="160" cy="400" r="2" />
         <circle cx="220" cy="394" r="2.5" />
@@ -95,7 +95,7 @@ export function VilleneuveCoastIllustration({ className }: Props) {
           fill="none"
         />
         {/* Feuillage 1 */}
-        <g fill="#4a5530" fillOpacity="0.55">
+        <g fill="#75774A" fillOpacity="0.55">
           <ellipse cx="100" cy="316" rx="38" ry="20" />
           <ellipse cx="80" cy="300" rx="22" ry="14" transform="rotate(-15 80 300)" />
           <ellipse cx="124" cy="298" rx="22" ry="14" transform="rotate(12 124 298)" />
@@ -117,7 +117,7 @@ export function VilleneuveCoastIllustration({ className }: Props) {
           strokeWidth="2.2"
           fill="none"
         />
-        <g fill="#4a5530" fillOpacity="0.55">
+        <g fill="#75774A" fillOpacity="0.55">
           <ellipse cx="700" cy="316" rx="42" ry="22" />
           <ellipse cx="676" cy="298" rx="22" ry="14" transform="rotate(-12 676 298)" />
           <ellipse cx="724" cy="302" rx="24" ry="14" transform="rotate(15 724 302)" />
@@ -131,7 +131,7 @@ export function VilleneuveCoastIllustration({ className }: Props) {
       </g>
 
       {/* Petites herbes au sol */}
-      <g stroke="#4a5530" strokeWidth="1" opacity="0.55">
+      <g stroke="#75774A" strokeWidth="1" opacity="0.55">
         <path d="M240 410 l-3 -10" />
         <path d="M244 410 l2 -8" />
         <path d="M320 410 l-2 -8" />

@@ -32,7 +32,8 @@ Référentiel non-négociable pour toute contribution au site `olea-restaurant.f
 ## Style / Tailwind
 
 - **Mobile-first** : commencer par les classes sans breakpoint, puis ajouter `md:` / `lg:`.
-- Tokens de couleurs dans `globals.css` via `@theme` — utiliser `bg-brand-cream`, `text-brand-ink`, `text-brand-gold`, `text-brand-olive`, etc.
+- Tokens de couleurs dans `globals.css` via `@theme` — utiliser `bg-brand-cream`, `text-brand-ink`, `text-brand-gold`, `text-brand-olive`, `text-brand-sage`, etc.
+- **Palette = charte Oléa Group 2026** : vert olive `#75774A` (signature/ADN), vert sauge `#E2E3BC` (équilibre → `brand-sage`), blanc cassé `#FEFFEB` (respiration → `brand-cream`), sable clair `#ECBB6E` (complémentaire chaude → `brand-gold`). Vert profond `#344824` pour fonds/overlays.
 - Pas de CSS module sauf cas exceptionnel.
 - Préfixer les classes longues complexes via un helper `cn()` (déjà disponible dans `src/lib/utils.ts`).
 
@@ -73,6 +74,6 @@ Référentiel non-négociable pour toute contribution au site `olea-restaurant.f
 ## Brand
 
 - **Marque commerciale** : « Maison Oléa ». Signature courte : « Oléa ».
-- **Palette dominante** : vert olive (`--olive`, `#4A5530`) cohérent avec le BAT signalétique de Villeneuve-Loubet. Or et crème en accents chaleureux.
-- **Typo** : Cormorant Garamond (serif, italiques en accent) + Inter (sans, par défaut).
+- **Palette dominante** : vert olive signature `#75774A` (ADN Oléa : Méditerranée, olivier, authenticité). Vert sauge `#E2E3BC` en équilibre, sable clair `#ECBB6E` et blanc cassé `#FEFFEB` en accents/respiration. Conforme à la charte graphique Oléa Group 2026 (« Les couleurs du Sud »).
+- **Typo** : Jost (substitut libre de **Coco Gothic** de la charte — sans géométrique, pour titres / corps / structure, via `--font-sans`) + **Libre Baskerville** (serif éditorial, en italique pour sous-titres et accents, via `--font-serif`). Coco Gothic étant commerciale (Zetafonts), Jost la remplace ; fournir les fichiers .woff2 pour passer à Coco Gothic via `next/font/local` si licence acquise.
 - **Tone of voice** : chaleureux, méditerranéen, « Maison » évoquant la famille et le partage. Ne pas inventer d'avis, étoiles, récompenses, ou récits sur le chef sans contenu validé.

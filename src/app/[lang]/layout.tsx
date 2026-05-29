@@ -1,5 +1,5 @@
 import type { Viewport } from "next";
-import { Cormorant_Garamond, Inter } from "next/font/google";
+import { Jost, Libre_Baskerville } from "next/font/google";
 import { notFound } from "next/navigation";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
@@ -20,23 +20,24 @@ import { LocaleProvider } from "@/i18n/LocaleProvider";
 import { withLocale } from "@/i18n/locale-href";
 import "../globals.css";
 
-const cormorant = Cormorant_Garamond({
-  variable: "--font-cormorant",
+// Jost = substitut libre de Coco Gothic (géométrique, dérivé de Futura).
+// Police variable → toute la plage de graisses, titres + corps + UI.
+const jost = Jost({
+  variable: "--font-jost",
   subsets: ["latin"],
-  weight: ["400", "500"],
+  display: "swap",
+});
+
+// Libre Baskerville (charte) — sous-titres & éléments éditoriaux en italique.
+const baskerville = Libre_Baskerville({
+  variable: "--font-baskerville",
+  subsets: ["latin"],
   style: ["normal", "italic"],
   display: "swap",
 });
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  display: "swap",
-});
-
 export const viewport: Viewport = {
-  themeColor: "#f4ecdd",
+  themeColor: "#feffeb",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -112,7 +113,7 @@ export default async function RootLayout({
     <html
       lang={localeHtmlLang(lang as Locale)}
       dir={isRtl(lang as Locale) ? "rtl" : "ltr"}
-      className={`${cormorant.variable} ${inter.variable} h-full antialiased`}
+      className={`${baskerville.variable} ${jost.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-brand-cream text-brand-ink pb-[68px] md:pb-0">
         <LocaleProvider lang={lang as Locale} dict={dict}>

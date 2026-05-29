@@ -50,7 +50,7 @@ export function HeroBackdrop() {
           className="olea-breathe w-full h-full rounded-full blur-[3px]"
           style={{
             background:
-              "radial-gradient(circle, #E8D5A8 0%, #8B6F3A 60%, #3D2F18 100%)",
+              "radial-gradient(circle, #F4DCA9 0%, #B07D2E 60%, #3D2F18 100%)",
           }}
         />
       </div>

@@ -7,7 +7,7 @@ export default function RootNotFound() {
         style={{
           margin: 0,
           fontFamily: "system-ui, sans-serif",
-          background: "#f4ecdd",
+          background: "#FEFFEB",
           color: "#1f2218",
           minHeight: "100vh",
           display: "flex",
@@ -21,7 +21,7 @@ export default function RootNotFound() {
         <h1 style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>404</h1>
         <p style={{ marginBottom: "1.5rem" }}>Page not found.</p>
         {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-        <a href="/" style={{ color: "#4a5530", textDecoration: "underline" }}>
+        <a href="/" style={{ color: "#75774A", textDecoration: "underline" }}>
           Return home
         </a>
       </body>

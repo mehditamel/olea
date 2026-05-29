@@ -23,11 +23,11 @@ export function SiteFooter({ lang, dict }: Props) {
   return (
     <footer className="bg-brand-ink text-brand-cream pt-16 md:pt-20 pb-10 px-6 md:px-12 relative overflow-hidden">
       <OliveBranch
-        className="absolute -bottom-8 -start-10 w-44 h-52 md:w-48 md:h-56 text-brand-olive-soft opacity-15 pointer-events-none"
+        className="absolute -bottom-8 -start-10 w-44 h-52 md:w-48 md:h-56 text-brand-sage opacity-15 pointer-events-none"
         color="currentColor"
       />
       <OliveBranch
-        className="absolute -top-6 -end-12 w-36 h-44 md:w-40 md:h-48 text-brand-olive-soft opacity-10 pointer-events-none rotate-180"
+        className="absolute -top-6 -end-12 w-36 h-44 md:w-40 md:h-48 text-brand-sage opacity-10 pointer-events-none rotate-180"
         color="currentColor"
       />
 
