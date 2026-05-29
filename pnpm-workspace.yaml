@@ -1,3 +1,6 @@
-ignoredBuiltDependencies:
-  - sharp
-  - unrs-resolver
+# sharp et unrs-resolver fournissent leurs binaires via des optionalDependencies
+# préinstallées : on n'exécute pas leurs scripts de build natifs (false), ce qui
+# évite l'invite « approve-builds » qui bloque `pnpm test`/`pnpm build` en CI.
+allowBuilds:
+  sharp: false
+  unrs-resolver: false
