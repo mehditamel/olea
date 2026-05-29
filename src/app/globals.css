@@ -147,6 +147,9 @@ body {
   from { transform: scaleX(0); }
   to   { transform: scaleX(1); }
 }
+@keyframes olea-spin {
+  to { transform: rotate(360deg); }
+}
 
 /* Looped/idle motion — gated explicitly so it stays silent with reduce */
 @media (prefers-reduced-motion: no-preference) {
@@ -165,6 +168,10 @@ body {
   }
   .olea-pulse-dot {
     animation: olea-pulse-dot 2.4s ease-out infinite;
+  }
+  .olea-spin {
+    animation: olea-spin 1.4s linear infinite;
+    will-change: transform;
   }
 }
 

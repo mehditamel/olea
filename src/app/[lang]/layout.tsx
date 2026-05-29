@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { MobileCtaBar } from "@/components/layout/MobileCtaBar";
+import { ScrollToTop } from "@/components/layout/ScrollToTop";
 import { ServiceWorkerRegister } from "@/components/pwa/ServiceWorkerRegister";
 import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 import { AppleSplashLinks } from "@/components/pwa/AppleSplashLinks";
@@ -129,6 +130,7 @@ export default async function RootLayout({
           </main>
           <SiteFooter lang={lang as Locale} dict={dict} />
           <MobileCtaBar lang={lang as Locale} dict={dict} />
+          <ScrollToTop label={dict.common.backToTop} />
           <InstallPrompt dict={dict.pwa} />
           <ServiceWorkerRegister />
           <AppleSplashLinks />

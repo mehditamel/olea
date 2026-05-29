@@ -11,6 +11,7 @@ const pt = {
     ariaSiteName: "Maison Oléa",
     ouvertureProchaine: "Abertura próxima",
     bientot: "Em breve",
+    backToTop: "Voltar ao topo",
   },
   meta: {
     homeTitle:
