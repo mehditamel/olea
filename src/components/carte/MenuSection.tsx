@@ -8,7 +8,7 @@ export function MenuSection({ section }: { section: MenuSectionType }) {
         <span aria-hidden className="h-px flex-1 bg-brand-ink/15" />
         <h2
           id={`section-${section.slug}`}
-          className="eyebrow text-brand-gold-deep text-center"
+          className="eyebrow text-brand-olive text-center"
         >
           {section.titre}
         </h2>

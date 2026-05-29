@@ -7,7 +7,7 @@ export function WineList({ vins }: { vins: readonly WineGroup[] }) {
         <span aria-hidden className="h-px flex-1 bg-brand-ink/15" />
         <h2
           id="section-vins"
-          className="eyebrow text-brand-gold-deep text-center"
+          className="eyebrow text-brand-olive text-center"
         >
           Notre cave
         </h2>

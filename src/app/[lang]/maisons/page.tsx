@@ -176,7 +176,7 @@ export default async function MaisonsIndexPage({
                         {dict.maisons.reserver}
                       </a>
                     ) : (
-                      <span className="text-[11px] uppercase tracking-[0.2em] text-brand-gold-deep">
+                      <span className="text-[11px] uppercase tracking-[0.2em] text-brand-olive">
                         {dict.maisons.bientot}
                       </span>
                     )}

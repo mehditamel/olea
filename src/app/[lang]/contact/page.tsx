@@ -141,7 +141,7 @@ export default async function ContactPage({
                     @{maison.instagram.handle}
                   </a>
                 ) : maison.instagram ? (
-                  <p className="mt-4 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-brand-gold-deep">
+                  <p className="mt-4 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-brand-olive">
                     <InstagramIcon className="h-3.5 w-3.5" />
                     @{maison.instagram.handle} · {dict.contact.bientot}
                   </p>

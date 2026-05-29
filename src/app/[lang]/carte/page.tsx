@@ -123,7 +123,7 @@ export default async function CartePage({
                       ) : null}
                     </div>
                     <div className="p-6 md:p-7">
-                      <p className="eyebrow text-brand-gold-deep mb-2">
+                      <p className="eyebrow text-brand-olive mb-2">
                         {maison.label}
                       </p>
                       <h2 className="font-sans text-2xl md:text-[28px] text-brand-ink mb-3">

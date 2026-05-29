@@ -143,12 +143,12 @@ export function MaisonInfos({
               @{m.instagram.handle}
             </a>
           ) : m.instagram ? (
-            <p className="mt-5 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-brand-gold-deep">
+            <p className="mt-5 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-brand-olive">
               <InstagramIcon className="h-3.5 w-3.5" />
               @{m.instagram.handle} · {dict.contact.bientot}
             </p>
           ) : null}
-          <p className="mt-8 text-xs uppercase tracking-[0.2em] text-brand-gold-deep">
+          <p className="mt-8 text-xs uppercase tracking-[0.2em] text-brand-olive">
             {m.cuisines.join(" · ")} · {m.fourchettePrix}
           </p>
         </Reveal>

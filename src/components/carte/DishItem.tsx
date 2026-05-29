@@ -10,7 +10,7 @@ export function DishItem({ dish, index = 0 }: { dish: Dish; index?: number }) {
           {dish.nom}
         </h3>
         {dish.prix ? (
-          <span className="font-sans text-base md:text-lg text-brand-gold-deep whitespace-nowrap">
+          <span className="font-sans text-base md:text-lg text-brand-olive whitespace-nowrap">
             {dish.prix}
           </span>
         ) : null}
