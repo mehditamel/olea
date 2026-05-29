@@ -5,8 +5,8 @@ import { z } from "zod";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getCurrentStaff } from "@/lib/auth/staff";
 import { getSupabaseAdmin } from "@/lib/supabase/admin";
+import { maisonSlugSchema } from "@/types/maison";
 
-const MAISON_SLUGS = ["marseille", "cassis", "villeneuve-loubet"] as const;
 const SERVICES = ["dejeuner", "diner"] as const;
 const JOURS = [
   "lundi",
@@ -26,7 +26,7 @@ async function requireStaff() {
 }
 
 const baseSchema = z.object({
-  maison_slug: z.enum(MAISON_SLUGS),
+  maison_slug: maisonSlugSchema,
   service: z.enum(SERVICES),
   jour: z.enum(JOURS),
   couverts_max: z.coerce.number().int().min(0).max(500),
@@ -58,7 +58,7 @@ export async function upsertCapaciteAction(
 }
 
 const overrideSchema = z.object({
-  maison_slug: z.enum(MAISON_SLUGS),
+  maison_slug: maisonSlugSchema,
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Date invalide"),
   service: z.enum(SERVICES),
   couverts_max: z.coerce.number().int().min(0).max(500),
@@ -114,7 +114,7 @@ export async function deleteOverrideAction(
 }
 
 const blocageSchema = z.object({
-  maison_slug: z.enum(MAISON_SLUGS),
+  maison_slug: maisonSlugSchema,
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Date invalide"),
   heure_debut: z.string().regex(/^\d{2}:\d{2}$/, "Heure invalide"),
   heure_fin: z.string().regex(/^\d{2}:\d{2}$/, "Heure invalide"),
