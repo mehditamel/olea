@@ -3,7 +3,7 @@ import { Phone, Mail, MapPin } from "lucide-react";
 import { maisons } from "@/data/maisons";
 import { OliveBranch } from "@/components/brand/OliveBranch";
 import { InstagramIcon } from "@/components/brand/InstagramIcon";
-import { BrandWord } from "@/components/brand/BrandWord";
+import { MaisonSignature } from "@/components/brand/MaisonSignature";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { withLocale } from "@/i18n/locale-href";
@@ -67,8 +67,8 @@ export function SiteFooter({ lang, dict }: Props) {
             const maison = localizeMaison(raw, lang);
             return (
               <div key={maison.slug} className="flex flex-col">
-                <p className="text-[11px] uppercase tracking-[0.22em] text-brand-gold mb-2">
-                  <BrandWord /> {maison.nom}
+                <p className="text-[13px] text-brand-gold mb-2">
+                  <MaisonSignature ville={maison.nom} />
                 </p>
                 <div className="h-px w-8 bg-brand-gold-deep/70 mb-4" aria-hidden />
 
