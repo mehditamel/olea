@@ -29,14 +29,18 @@ export function MaisonHero({
       aria-label={interpolate(dict.maisonHero.ariaSection, { nom: m.nom })}
     >
       {hasPhoto && (
-        <Image
-          src={m.photoHero}
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
+        <>
+          <Image
+            src={m.photoHero}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+          {/* Voile chaud sous le dégradé sombre — n'affecte pas le texte. */}
+          <div aria-hidden className="olea-photo-warm absolute inset-0 pointer-events-none" />
+        </>
       )}
       <div
         className="absolute inset-0"

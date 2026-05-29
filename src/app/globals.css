@@ -92,6 +92,20 @@ body {
   }
 }
 
+/* Voile chromatique « lumière du Sud » — réchauffe les photos (olive + sable
+   de la charte) de façon cohérente sans assombrir. À poser en couche
+   `absolute inset-0 pointer-events-none` SOUS les dégradés porteurs de texte
+   (heros) ou AU-DESSUS des vignettes sans texte (galerie). Réglable ici. */
+.olea-photo-warm {
+  background: linear-gradient(
+    135deg,
+    rgb(236 187 110 / 0.1) 0%,
+    rgb(255 255 255 / 0) 45%,
+    rgb(117 119 74 / 0.12) 100%
+  );
+  mix-blend-mode: soft-light;
+}
+
 /* Animation hooks */
 @keyframes olea-fade-up {
   from { opacity: 0; transform: translateY(8px); }
