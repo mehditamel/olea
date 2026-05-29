@@ -43,7 +43,7 @@ export function StepIndicator({ current, labels, ariaLabel }: StepIndicatorProps
                 className="ms-1 relative h-px w-8 md:w-12 bg-brand-ink/20 overflow-hidden"
               >
                 <span
-                  className="absolute inset-y-0 left-0 bg-brand-olive transition-[width] duration-500 ease-out"
+                  className="absolute inset-y-0 start-0 bg-brand-olive transition-[width] duration-500 ease-out"
                   style={{ width: done ? "100%" : "0%" }}
                 />
               </span>

@@ -8,6 +8,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import type { Maison } from "@/types/maison";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { interpolate } from "@/i18n/format";
+import { nextPhotoIndex, prevPhotoIndex } from "@/lib/gallery-navigation";
 
 export function MaisonGallery({
   maison,
@@ -24,12 +25,10 @@ export function MaisonGallery({
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "ArrowRight") {
         e.preventDefault();
-        setOpenIndex((i) => (i === null ? 0 : (i + 1) % photos.length));
+        setOpenIndex((i) => (i === null ? 0 : nextPhotoIndex(i, photos.length)));
       } else if (e.key === "ArrowLeft") {
         e.preventDefault();
-        setOpenIndex((i) =>
-          i === null ? 0 : (i - 1 + photos.length) % photos.length,
-        );
+        setOpenIndex((i) => (i === null ? 0 : prevPhotoIndex(i, photos.length)));
       }
     };
     window.addEventListener("keydown", onKey);
@@ -95,6 +94,7 @@ export function MaisonGallery({
           <DialogPrimitive.Content
             className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-12 focus:outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95 data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 duration-300"
             onClick={() => setOpenIndex(null)}
+            aria-describedby={undefined}
           >
             <DialogPrimitive.Title className="sr-only">
               {interpolate(dict.maisonGallery.galerieSrTitle, {
@@ -129,7 +129,7 @@ export function MaisonGallery({
               onClick={(e) => {
                 e.stopPropagation();
                 setOpenIndex((i) =>
-                  i === null ? 0 : (i - 1 + photos.length) % photos.length,
+                  i === null ? 0 : prevPhotoIndex(i, photos.length),
                 );
               }}
               className="absolute start-2 sm:start-3 md:start-6 top-1/2 -translate-y-1/2 inline-flex items-center justify-center w-11 h-11 rounded-full bg-brand-cream/10 hover:bg-brand-cream/20 text-brand-cream transition-colors"
@@ -142,7 +142,7 @@ export function MaisonGallery({
               onClick={(e) => {
                 e.stopPropagation();
                 setOpenIndex((i) =>
-                  i === null ? 0 : (i + 1) % photos.length,
+                  i === null ? 0 : nextPhotoIndex(i, photos.length),
                 );
               }}
               className="absolute end-2 sm:end-3 md:end-6 top-1/2 -translate-y-1/2 inline-flex items-center justify-center w-11 h-11 rounded-full bg-brand-cream/10 hover:bg-brand-cream/20 text-brand-cream transition-colors"
