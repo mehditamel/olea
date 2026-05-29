@@ -1,5 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 import { OliveBranch } from "@/components/brand/OliveBranch";
+import { EngravingMotif } from "@/components/brand/EngravingMotif";
 import { Reveal } from "@/components/ui/Reveal";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
@@ -7,8 +8,13 @@ import { withLocale } from "@/i18n/locale-href";
 
 export function EspritSection({ lang, dict }: { lang: Locale; dict: Dictionary }) {
   return (
-    <section className="bg-brand-cream px-6 md:px-12 py-16 md:py-28">
-      <div className="mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-[1fr_1.1fr] gap-10 md:gap-16 items-center">
+    <section className="relative overflow-hidden bg-brand-cream px-6 md:px-12 py-16 md:py-28">
+      {/* Olivier gravé — symbole fondateur de la charte, en filigrane */}
+      <EngravingMotif
+        motif="olive"
+        className="pointer-events-none absolute -bottom-6 -start-6 h-48 w-40 text-brand-olive-soft opacity-15 md:h-60 md:w-52"
+      />
+      <div className="relative mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-[1fr_1.1fr] gap-10 md:gap-16 items-center">
         <Reveal>
           <p className="eyebrow text-brand-olive mb-5">{dict.esprit.eyebrow}</p>
           <h2 className="font-serif font-normal text-[clamp(32px,4.5vw,52px)] leading-[1.05] tracking-[-0.8px] mb-6 md:mb-7 text-brand-ink">

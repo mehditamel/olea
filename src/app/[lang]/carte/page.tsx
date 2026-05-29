@@ -6,6 +6,7 @@ import { maisons } from "@/data/maisons";
 import { getMenuBySlug } from "@/data/menu";
 import { absoluteUrl, cn } from "@/lib/utils";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
+import { EngravingMotif } from "@/components/brand/EngravingMotif";
 import { MarseillePortIllustration } from "@/components/brand/illustrations/MarseillePortIllustration";
 import { CassisPortIllustration } from "@/components/brand/illustrations/CassisPortIllustration";
 import { VilleneuveCoastIllustration } from "@/components/brand/illustrations/VilleneuveCoastIllustration";
@@ -69,8 +70,13 @@ export default async function CartePage({
 
   return (
     <>
-      <section className="bg-brand-ink text-brand-cream px-6 md:px-12 pt-32 pb-12 md:pt-40 md:pb-16">
-        <div className="mx-auto max-w-7xl">
+      <section className="relative overflow-hidden bg-brand-ink text-brand-cream px-6 md:px-12 pt-32 pb-12 md:pt-40 md:pb-16">
+        {/* Poulpe gravé — signature culinaire de la charte */}
+        <EngravingMotif
+          motif="octopus"
+          className="pointer-events-none absolute -end-8 bottom-0 h-40 w-56 text-brand-sage opacity-[0.12] md:h-52 md:w-72"
+        />
+        <div className="relative mx-auto max-w-7xl">
           <Breadcrumbs
             variant="light"
             className="mb-6"
