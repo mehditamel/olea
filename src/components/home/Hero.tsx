@@ -7,7 +7,7 @@ import { withLocale } from "@/i18n/locale-href";
 export function Hero({ lang, dict }: { lang: Locale; dict: Dictionary }) {
   return (
     <section className="relative min-h-[100svh] md:min-h-[680px] md:h-[92vh] overflow-hidden">
-      <div className="absolute inset-0 bg-[linear-gradient(135deg,#5C4828_0%,#2E3A1E_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(135deg,#5C4828_0%,#344824_100%)]" />
 
       <div
         className="absolute inset-0"
@@ -37,12 +37,12 @@ export function Hero({ lang, dict }: { lang: Locale; dict: Dictionary }) {
           </span>
         </p>
         <h1
-          className="olea-fade-up font-serif font-normal leading-[1.02] mb-6 md:mb-7 text-[clamp(44px,8vw,92px)] tracking-[-1.5px]"
+          className="olea-fade-up font-sans font-medium leading-[1.02] mb-6 md:mb-7 text-[clamp(44px,8vw,92px)] tracking-[-1.5px]"
           style={{ animationDelay: "120ms" }}
         >
           {dict.hero.titre1}
           <br />
-          <span className="italic text-brand-gold-light">
+          <span className="font-serif italic text-brand-gold-light">
             {dict.hero.titre2Italic}
           </span>
         </h1>

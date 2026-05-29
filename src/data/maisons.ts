@@ -64,7 +64,7 @@ export const maisons: readonly Maison[] = [
       "/images/maisons/marseille/plat-2.jpg",
       "/images/maisons/marseille/detail.jpg",
     ],
-    accent: "#4A5530",
+    accent: "#75774A",
     reservationUrl: "",
     instagram: {
       handle: "olea.marseille",

@@ -23,9 +23,9 @@ export function PrivatReservSection({
           <p className="eyebrow text-brand-olive mb-5">
             {dict.privatReserv.eyebrowPrivat}
           </p>
-          <h2 className="font-serif font-normal text-[clamp(32px,4vw,44px)] leading-[1.1] tracking-[-0.5px] mb-6 text-brand-ink">
+          <h2 className="font-sans font-medium text-[clamp(32px,4vw,44px)] leading-[1.1] tracking-[-0.5px] mb-6 text-brand-ink">
             {dict.privatReserv.titrePrivat}{" "}
-            <span className="italic">
+            <span className="font-serif italic">
               {dict.privatReserv.titrePrivatItalic}
             </span>
           </h2>
@@ -48,7 +48,7 @@ export function PrivatReservSection({
           <p className="eyebrow text-brand-gold mb-2">
             {dict.privatReserv.eyebrowReserver}
           </p>
-          <p className="font-serif text-[22px] leading-snug mt-3 mb-6 max-w-[280px]">
+          <p className="font-sans text-[22px] leading-snug mt-3 mb-6 max-w-[280px]">
             {dict.privatReserv.sousReserver}
           </p>
           <a
@@ -67,7 +67,7 @@ export function PrivatReservSection({
               const inner = (
                 <>
                   <div className="flex flex-col">
-                    <span className="font-serif text-[22px] leading-tight">
+                    <span className="font-sans text-[22px] leading-tight">
                       {maison.nom}
                     </span>
                     <span className="text-[11px] tracking-[0.2em] uppercase text-brand-text-soft mt-1">

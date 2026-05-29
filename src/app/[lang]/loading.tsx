@@ -1,4 +1,4 @@
-import { OliveBranch } from "@/components/brand/OliveBranch";
+import { OleaSymbol } from "@/components/brand/OleaSymbol";
 
 export default function Loading() {
   return (
@@ -7,10 +7,7 @@ export default function Loading() {
       aria-live="polite"
       className="bg-brand-cream min-h-[60svh] flex flex-col items-center justify-center px-6 py-24 text-brand-ink"
     >
-      <OliveBranch
-        className="w-20 h-24 text-brand-olive olea-scroll-hint mb-5"
-        color="currentColor"
-      />
+      <OleaSymbol className="w-12 h-12 text-brand-olive olea-spin mb-5" />
       <p className="font-serif italic text-xl text-brand-text-muted">
         Oléa
       </p>

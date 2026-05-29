@@ -78,7 +78,7 @@ export default async function AdminDashboardPage({
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
         <div>
           <p className="eyebrow text-brand-olive mb-2">Tableau de bord</p>
-          <h1 className="font-serif text-3xl text-brand-ink">
+          <h1 className="font-sans text-3xl text-brand-ink">
             Réservations à venir
           </h1>
         </div>

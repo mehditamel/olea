@@ -67,9 +67,9 @@ export default async function ReserverPage({
       <section className="bg-brand-ink text-brand-cream px-6 md:px-12 pt-40 pb-16 md:pt-48 md:pb-20">
         <div className="mx-auto max-w-7xl">
           <p className="eyebrow text-brand-gold mb-5">{dict.reserver.eyebrow}</p>
-          <h1 className="font-serif font-normal text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[-1px] max-w-3xl">
+          <h1 className="font-sans font-medium text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[-1px] max-w-3xl">
             {dict.reserver.titre}{" "}
-            <span className="italic text-brand-gold-light">
+            <span className="font-serif italic text-brand-gold-light">
               {dict.reserver.titreItalic}
             </span>
           </h1>
@@ -84,7 +84,7 @@ export default async function ReserverPage({
           <p className="eyebrow text-brand-olive mb-4">
             {dict.reserver.formEyebrow}
           </p>
-          <h2 className="font-serif text-3xl md:text-4xl mb-10 text-brand-ink">
+          <h2 className="font-sans text-3xl md:text-4xl mb-10 text-brand-ink">
             {dict.reserver.formTitre}
           </h2>
           <ReservationForm
@@ -103,7 +103,7 @@ export default async function ReserverPage({
           <ul className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
             {maisonsOuvertes.map((maison) => (
               <li key={maison.slug} className="text-center">
-                <p className="font-serif text-2xl text-brand-ink mb-2">
+                <p className="font-sans text-2xl text-brand-ink mb-2">
                   {maison.nom}
                 </p>
                 <p className="text-sm text-brand-text-muted mb-3">
@@ -111,7 +111,7 @@ export default async function ReserverPage({
                 </p>
                 <a
                   href={`tel:${maison.telephone}`}
-                  className="font-serif text-xl text-brand-ink border-b border-brand-olive pb-1 hover:text-brand-olive transition-colors"
+                  className="font-sans text-xl text-brand-ink border-b border-brand-olive pb-1 hover:text-brand-olive transition-colors"
                 >
                   <bdi dir="ltr">{maison.telephoneAffichage}</bdi>
                 </a>

@@ -76,9 +76,9 @@ export default async function MaisonsIndexPage({
           <p className="eyebrow text-brand-gold mb-5">
             {dict.maisonsIndex.eyebrow}
           </p>
-          <h1 className="font-serif font-normal text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[-1px] max-w-3xl">
+          <h1 className="font-sans font-medium text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[-1px] max-w-3xl">
             {dict.maisonsIndex.titre}{" "}
-            <span className="italic text-brand-gold-light">
+            <span className="font-serif italic text-brand-gold-light">
               {dict.maisonsIndex.titreItalic}
             </span>
           </h1>
@@ -153,7 +153,7 @@ export default async function MaisonsIndexPage({
                     <p className="text-[11px] tracking-[0.25em] uppercase text-brand-gold mb-2">
                       {maison.label}
                     </p>
-                    <h2 className="font-serif text-3xl text-brand-cream leading-tight">
+                    <h2 className="font-sans text-3xl text-brand-cream leading-tight">
                       {maison.nom}
                     </h2>
                   </div>
@@ -176,7 +176,7 @@ export default async function MaisonsIndexPage({
                         {dict.maisons.reserver}
                       </a>
                     ) : (
-                      <span className="text-[11px] uppercase tracking-[0.2em] text-brand-gold-deep">
+                      <span className="text-[11px] uppercase tracking-[0.2em] text-brand-olive">
                         {dict.maisons.bientot}
                       </span>
                     )}

@@ -1,6 +1,7 @@
 "use client";
 
 import { OliveBranch } from "@/components/brand/OliveBranch";
+import { EngravingMotif } from "@/components/brand/EngravingMotif";
 import { useI18n } from "@/i18n/LocaleProvider";
 import { LocaleLink } from "@/i18n/LocaleLink";
 
@@ -12,11 +13,16 @@ export default function NotFound() {
         className="absolute -end-10 -bottom-10 w-72 h-80 md:w-96 md:h-[28rem] text-brand-olive-soft opacity-20 pointer-events-none"
         color="currentColor"
       />
+      {/* Soleil gravé — lumière du Sud (charte) */}
+      <EngravingMotif
+        motif="sun"
+        className="pointer-events-none absolute -start-6 top-20 h-36 w-40 text-brand-olive-soft opacity-[0.12] md:h-48 md:w-56"
+      />
       <div className="relative mx-auto max-w-3xl">
         <p className="eyebrow text-brand-gold mb-5">{dict.notFound.eyebrow}</p>
-        <h1 className="font-serif font-normal text-[clamp(44px,7vw,80px)] leading-[1.02] tracking-[-1px] mb-6">
+        <h1 className="font-sans font-medium text-[clamp(44px,7vw,80px)] leading-[1.02] tracking-[-1px] mb-6">
           {dict.notFound.titre}{" "}
-          <span className="italic text-brand-gold-light">
+          <span className="font-serif italic text-brand-gold-light">
             {dict.notFound.titreItalic}
           </span>
         </h1>

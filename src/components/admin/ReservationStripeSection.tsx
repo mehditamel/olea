@@ -21,7 +21,7 @@ export function ReservationStripeSection({
 
   return (
     <section className="bg-brand-cream-soft border border-brand-olive/30 p-6 text-sm">
-      <h2 className="font-serif text-xl text-brand-ink mb-3">Garantie Stripe</h2>
+      <h2 className="font-sans text-xl text-brand-ink mb-3">Garantie Stripe</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <ReservationDetailField
           label="Montant"

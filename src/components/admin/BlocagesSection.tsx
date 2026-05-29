@@ -33,7 +33,7 @@ export function BlocagesSection({
 }: BlocagesSectionProps) {
   return (
     <section className="space-y-5">
-      <h2 className="font-serif text-xl text-brand-ink">Créneaux bloqués</h2>
+      <h2 className="font-sans text-xl text-brand-ink">Créneaux bloqués</h2>
       <p className="text-xs text-brand-text-muted">
         Empêche les réservations sur un intervalle horaire précis
         (privatisation, fermeture exceptionnelle).

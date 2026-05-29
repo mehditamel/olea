@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { Phone, MapPin } from "lucide-react";
 import { OliveBranch } from "@/components/brand/OliveBranch";
+import { EngravingMotif } from "@/components/brand/EngravingMotif";
+import { MaisonSignature } from "@/components/brand/MaisonSignature";
 import { MaisonStatusPill } from "./MaisonStatusPill";
 import { googleMapsUrl } from "@/lib/maps";
 import type { Maison } from "@/types/maison";
@@ -27,14 +29,18 @@ export function MaisonHero({
       aria-label={interpolate(dict.maisonHero.ariaSection, { nom: m.nom })}
     >
       {hasPhoto && (
-        <Image
-          src={m.photoHero}
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
+        <>
+          <Image
+            src={m.photoHero}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+          {/* Voile chaud sous le dégradé sombre — n'affecte pas le texte. */}
+          <div aria-hidden className="olea-photo-warm absolute inset-0 pointer-events-none" />
+        </>
       )}
       <div
         className="absolute inset-0"
@@ -48,6 +54,11 @@ export function MaisonHero({
         }}
       />
       <OliveBranch className="absolute end-[4%] bottom-[8%] w-[140px] md:w-[220px] h-auto text-brand-cream opacity-20" />
+      {/* Soleil gravé — lumière du Sud (charte) */}
+      <EngravingMotif
+        motif="sun"
+        className="pointer-events-none absolute start-[5%] top-[16%] h-32 w-36 text-brand-cream opacity-[0.08] md:h-44 md:w-52"
+      />
       <div className="relative h-full mx-auto max-w-7xl flex flex-col justify-end px-6 pb-10 md:px-12 md:pb-16 text-brand-cream pt-28 md:pt-32">
         <div className="olea-fade-up flex items-center gap-3 mb-4">
           <p className="text-[11px] tracking-[0.25em] uppercase text-brand-gold">
@@ -60,8 +71,8 @@ export function MaisonHero({
             dict={dict}
           />
         </div>
-        <h1 className="olea-fade-up font-serif font-normal text-[clamp(40px,6.5vw,72px)] leading-[1.02] tracking-[-1px] mb-5">
-          {m.nom}
+        <h1 className="olea-fade-up font-sans font-medium text-[clamp(40px,6.5vw,72px)] leading-[1.02] tracking-[-1px] mb-5">
+          <MaisonSignature ville={m.nom} />
         </h1>
         <p className="olea-fade-up font-serif italic text-lg md:text-xl max-w-[560px] opacity-90 leading-snug mb-7">
           {m.description}

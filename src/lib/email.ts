@@ -117,22 +117,22 @@ export function sendReservationConfirmation(
     heure: heureLisible,
   });
   const phoneClean = input.telephoneAffichage.replace(/\s/g, "");
-  const phoneLink = `<a href="tel:${escapeHtml(phoneClean)}" style="color:#4a5530"><bdi dir="ltr">${escapeHtml(input.telephoneAffichage)}</bdi></a>`;
+  const phoneLink = `<a href="tel:${escapeHtml(phoneClean)}" style="color:#75774A"><bdi dir="ltr">${escapeHtml(input.telephoneAffichage)}</bdi></a>`;
   const pieceJointeParts = t.pieceJointe.split("{telephone}");
   const pieceJointeHtml = pieceJointeParts
     .map((p) => escapeHtml(p))
     .join(phoneLink);
 
   const html = `
-    <div dir="${dir}" style="font-family:Georgia,'Cormorant Garamond',serif;color:#1f2218;line-height:1.6;max-width:560px">
-      <p style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#4a5530;margin:0 0 12px">
+    <div dir="${dir}" style="font-family:Georgia,'Libre Baskerville',serif;color:#1f2218;line-height:1.6;max-width:560px">
+      <p style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#75774A;margin:0 0 12px">
         ${escapeHtml(interpolate(t.eyebrow, { nom: input.maisonNom }))}
       </p>
       <h1 style="font-size:28px;font-weight:normal;margin:0 0 16px">
         ${escapeHtml(interpolate(t.bonjour, { nom: input.nom }))}
       </h1>
       <p style="margin:0 0 14px">${escapeHtml(t.corpus)}</p>
-      <ul style="list-style:none;padding:14px 16px;margin:18px 0;background:#f4ecdd;font-family:Inter,system-ui,sans-serif;font-size:14px">
+      <ul style="list-style:none;padding:14px 16px;margin:18px 0;background:#FEFFEB;font-family:Jost,system-ui,sans-serif;font-size:14px">
         <li><strong>${escapeHtml(t.labels.maison)} :</strong> ${escapeHtml(input.maisonNom)} — <bdi>${escapeHtml(input.adresse)}, ${escapeHtml(input.ville)}</bdi></li>
         <li><strong>${escapeHtml(t.labels.date)} :</strong> ${escapeHtml(dateLisible)}</li>
         <li><strong>${escapeHtml(t.labels.heure)} :</strong> <bdi dir="ltr">${escapeHtml(heureLisible)}</bdi> (${escapeHtml(serviceLabel)})</li>
@@ -145,20 +145,20 @@ export function sendReservationConfirmation(
             : ""
         }
       </ul>
-      <p style="margin:0 0 14px;font-family:Inter,system-ui,sans-serif;font-size:14px">
+      <p style="margin:0 0 14px;font-family:Jost,system-ui,sans-serif;font-size:14px">
         ${pieceJointeHtml}
       </p>
       ${
         input.cancellationUrl
-          ? `<p style="margin:0 0 14px;font-family:Inter,system-ui,sans-serif;font-size:13px">
-              Besoin d'annuler ? <a href="${escapeHtml(input.cancellationUrl)}" style="color:#4a5530;text-decoration:underline">Annuler ma réservation</a>
+          ? `<p style="margin:0 0 14px;font-family:Jost,system-ui,sans-serif;font-size:13px">
+              Besoin d'annuler ? <a href="${escapeHtml(input.cancellationUrl)}" style="color:#75774A;text-decoration:underline">Annuler ma réservation</a>
               (annulation gratuite jusqu'à 24h avant le service).
             </p>`
           : ""
       }
       ${
         input.requiertGarantie && input.montantGarantieCents
-          ? `<div style="margin:18px 0;padding:14px 16px;border:1px solid #c49960;background:#fdf8ee;font-family:Inter,system-ui,sans-serif;font-size:13px">
+          ? `<div style="margin:18px 0;padding:14px 16px;border:1px solid #c49960;background:#fdf8ee;font-family:Jost,system-ui,sans-serif;font-size:13px">
               <strong>Garantie de réservation</strong> · Une empreinte de carte bancaire de
               ${(input.montantGarantieCents / 100).toFixed(0)} € pour cette table sera demandée pour confirmer.
               Elle n'est débitée qu'en cas d'absence non signalée (no-show).
@@ -212,22 +212,22 @@ export function sendReservationCancellation(
     : `Votre réservation du ${escapeHtml(input.date)} à ${escapeHtml(heureLisible)} à la ${escapeHtml(input.maisonNom)} a bien été annulée.`;
   const reasonBlock =
     input.byStaff && input.reason
-      ? `<p style="margin:0 0 14px;font-family:Inter,system-ui,sans-serif;font-size:14px"><strong>Motif :</strong> ${escapeHtml(input.reason)}</p>`
+      ? `<p style="margin:0 0 14px;font-family:Jost,system-ui,sans-serif;font-size:14px"><strong>Motif :</strong> ${escapeHtml(input.reason)}</p>`
       : "";
   const html = `
-    <div style="font-family:Georgia,'Cormorant Garamond',serif;color:#1f2218;line-height:1.6;max-width:560px">
-      <p style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#4a5530;margin:0 0 12px">
+    <div style="font-family:Georgia,'Libre Baskerville',serif;color:#1f2218;line-height:1.6;max-width:560px">
+      <p style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#75774A;margin:0 0 12px">
         Maison Oléa · ${escapeHtml(input.maisonNom)}
       </p>
       <h1 style="font-size:24px;font-weight:normal;margin:0 0 16px">
         Bonjour ${escapeHtml(input.nom)},
       </h1>
-      <p style="margin:0 0 14px;font-family:Inter,system-ui,sans-serif;font-size:14px">${intro}</p>
+      <p style="margin:0 0 14px;font-family:Jost,system-ui,sans-serif;font-size:14px">${intro}</p>
       ${reasonBlock}
-      <p style="margin:0 0 14px;font-family:Inter,system-ui,sans-serif;font-size:14px">
+      <p style="margin:0 0 14px;font-family:Jost,system-ui,sans-serif;font-size:14px">
         Aucune somme ne vous sera prélevée. Pour reprogrammer ou pour toute
         question, joignez-nous au
-        <a href="tel:${escapeHtml(input.telephoneAffichage.replace(/\s/g, ""))}" style="color:#4a5530">${escapeHtml(input.telephoneAffichage)}</a>.
+        <a href="tel:${escapeHtml(input.telephoneAffichage.replace(/\s/g, ""))}" style="color:#75774A">${escapeHtml(input.telephoneAffichage)}</a>.
       </p>
       <p style="margin:24px 0 0;font-style:italic;color:#6b5d4a">
         Au plaisir de vous accueillir bientôt,<br>L'équipe Oléa

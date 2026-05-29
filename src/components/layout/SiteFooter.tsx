@@ -3,7 +3,7 @@ import { Phone, Mail, MapPin } from "lucide-react";
 import { maisons } from "@/data/maisons";
 import { OliveBranch } from "@/components/brand/OliveBranch";
 import { InstagramIcon } from "@/components/brand/InstagramIcon";
-import { BrandWord } from "@/components/brand/BrandWord";
+import { MaisonSignature } from "@/components/brand/MaisonSignature";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { withLocale } from "@/i18n/locale-href";
@@ -23,11 +23,11 @@ export function SiteFooter({ lang, dict }: Props) {
   return (
     <footer className="bg-brand-ink text-brand-cream pt-16 md:pt-20 pb-10 px-6 md:px-12 relative overflow-hidden">
       <OliveBranch
-        className="absolute -bottom-8 -start-10 w-44 h-52 md:w-48 md:h-56 text-brand-olive-soft opacity-15 pointer-events-none"
+        className="absolute -bottom-8 -start-10 w-44 h-52 md:w-48 md:h-56 text-brand-sage opacity-15 pointer-events-none"
         color="currentColor"
       />
       <OliveBranch
-        className="absolute -top-6 -end-12 w-36 h-44 md:w-40 md:h-48 text-brand-olive-soft opacity-10 pointer-events-none rotate-180"
+        className="absolute -top-6 -end-12 w-36 h-44 md:w-40 md:h-48 text-brand-sage opacity-10 pointer-events-none rotate-180"
         color="currentColor"
       />
 
@@ -42,7 +42,7 @@ export function SiteFooter({ lang, dict }: Props) {
               sizes="(max-width: 768px) 56px, 72px"
               className="h-14 md:h-16 w-auto mb-5"
             />
-            <p className="text-sm leading-relaxed text-brand-text-soft max-w-[280px] mb-6 italic">
+            <p className="text-sm leading-relaxed text-brand-text-soft max-w-[280px] mb-6 font-serif italic">
               {dict.footer.tagline}
             </p>
             <div className="h-px w-12 bg-brand-gold-deep/60 mb-5" aria-hidden />
@@ -67,8 +67,8 @@ export function SiteFooter({ lang, dict }: Props) {
             const maison = localizeMaison(raw, lang);
             return (
               <div key={maison.slug} className="flex flex-col">
-                <p className="text-[11px] uppercase tracking-[0.22em] text-brand-gold mb-2">
-                  <BrandWord /> {maison.nom}
+                <p className="text-[13px] text-brand-gold mb-2">
+                  <MaisonSignature ville={maison.nom} />
                 </p>
                 <div className="h-px w-8 bg-brand-gold-deep/70 mb-4" aria-hidden />
 

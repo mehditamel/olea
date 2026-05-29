@@ -65,7 +65,7 @@ export default async function CarteVilleneuveLoubetPage({
         title={
           <>
             {maison.nom},{" "}
-            <span className="italic text-brand-gold-light">
+            <span className="font-serif italic text-brand-gold-light">
               {dict.maisons.bientot.toLowerCase()}
             </span>
             .
@@ -87,7 +87,7 @@ export default async function CarteVilleneuveLoubetPage({
           <p className="eyebrow text-brand-olive mb-6">
             {dict.maisonReservation.fermeeEyebrow}
           </p>
-          <h2 className="font-serif text-3xl md:text-4xl text-brand-ink mb-6">
+          <h2 className="font-sans text-3xl md:text-4xl text-brand-ink mb-6">
             {dict.maisonReservation.fermeeTitre}
           </h2>
           <p

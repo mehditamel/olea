@@ -70,11 +70,11 @@ export default async function CguPage({
             Conditions d&apos;utilisation
           </p>
           <h1
-            className="font-serif font-normal text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[-1px] max-w-3xl"
+            className="font-sans font-medium text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[-1px] max-w-3xl"
             lang="fr"
           >
             Conditions générales{" "}
-            <span className="italic text-brand-gold-light">
+            <span className="font-serif italic text-brand-gold-light">
               d&apos;utilisation.
             </span>
           </h1>
@@ -89,7 +89,7 @@ export default async function CguPage({
         lang="fr"
       >
         <article className="mx-auto max-w-3xl text-brand-ink text-[15px] md:text-base leading-[1.75]">
-          <h2 className="font-serif text-2xl md:text-3xl text-brand-ink mt-0 mb-4">
+          <h2 className="font-sans text-2xl md:text-3xl text-brand-ink mt-0 mb-4">
             1. Objet
           </h2>
           <p className="mb-6">
@@ -103,7 +103,7 @@ export default async function CguPage({
             une privatisation.
           </p>
 
-          <h2 className="font-serif text-2xl md:text-3xl text-brand-ink mt-10 mb-4">
+          <h2 className="font-sans text-2xl md:text-3xl text-brand-ink mt-10 mb-4">
             2. Acceptation des CGU
           </h2>
           <p className="mb-4">
@@ -118,7 +118,7 @@ export default async function CguPage({
             son utilisation par l&apos;Utilisateur.
           </p>
 
-          <h2 className="font-serif text-2xl md:text-3xl text-brand-ink mt-10 mb-4">
+          <h2 className="font-sans text-2xl md:text-3xl text-brand-ink mt-10 mb-4">
             3. Services proposés
           </h2>
           <p className="mb-4">Le Site propose les services suivants&nbsp;:</p>
@@ -150,7 +150,7 @@ export default async function CguPage({
             <li>Coordonnées de contact direct (e-mail et téléphone).</li>
           </ul>
 
-          <h3 className="font-serif text-xl md:text-2xl text-brand-ink mt-6 mb-3">
+          <h3 className="font-sans text-xl md:text-2xl text-brand-ink mt-6 mb-3">
             3.1 Statut des demandes de réservation
           </h3>
           <p className="mb-4">
@@ -171,7 +171,7 @@ export default async function CguPage({
             paiement n&apos;est demandé ni prélevé.
           </p>
 
-          <h3 className="font-serif text-xl md:text-2xl text-brand-ink mt-6 mb-3">
+          <h3 className="font-sans text-xl md:text-2xl text-brand-ink mt-6 mb-3">
             3.2 Statut des demandes de devis (privatisation)
           </h3>
           <p className="mb-6">
@@ -186,7 +186,7 @@ export default async function CguPage({
             le devis signé.
           </p>
 
-          <h2 className="font-serif text-2xl md:text-3xl text-brand-ink mt-10 mb-4">
+          <h2 className="font-sans text-2xl md:text-3xl text-brand-ink mt-10 mb-4">
             4. Tarifs
           </h2>
           <p className="mb-6">
@@ -202,7 +202,7 @@ export default async function CguPage({
             signé.
           </p>
 
-          <h2 className="font-serif text-2xl md:text-3xl text-brand-ink mt-10 mb-4">
+          <h2 className="font-sans text-2xl md:text-3xl text-brand-ink mt-10 mb-4">
             5. Propriété intellectuelle
           </h2>
           <p className="mb-6">
@@ -217,7 +217,7 @@ export default async function CguPage({
             .
           </p>
 
-          <h2 className="font-serif text-2xl md:text-3xl text-brand-ink mt-10 mb-4">
+          <h2 className="font-sans text-2xl md:text-3xl text-brand-ink mt-10 mb-4">
             6. Données personnelles
           </h2>
           <p className="mb-6">
@@ -233,7 +233,7 @@ export default async function CguPage({
             .
           </p>
 
-          <h2 className="font-serif text-2xl md:text-3xl text-brand-ink mt-10 mb-4">
+          <h2 className="font-sans text-2xl md:text-3xl text-brand-ink mt-10 mb-4">
             7. Disponibilité du Site
           </h2>
           <p className="mb-6">
@@ -246,7 +246,7 @@ export default async function CguPage({
             être engagée à ce titre.
           </p>
 
-          <h2 className="font-serif text-2xl md:text-3xl text-brand-ink mt-10 mb-4">
+          <h2 className="font-sans text-2xl md:text-3xl text-brand-ink mt-10 mb-4">
             8. Liens externes
           </h2>
           <p className="mb-6">
@@ -257,7 +257,7 @@ export default async function CguPage({
             disponibilité.
           </p>
 
-          <h2 className="font-serif text-2xl md:text-3xl text-brand-ink mt-10 mb-4">
+          <h2 className="font-sans text-2xl md:text-3xl text-brand-ink mt-10 mb-4">
             9. Comportement de l&apos;Utilisateur
           </h2>
           <p className="mb-4">
@@ -284,7 +284,7 @@ export default async function CguPage({
             </li>
           </ul>
 
-          <h2 className="font-serif text-2xl md:text-3xl text-brand-ink mt-10 mb-4">
+          <h2 className="font-sans text-2xl md:text-3xl text-brand-ink mt-10 mb-4">
             10. Loi applicable et juridiction
           </h2>
           <p className="mb-6">
@@ -293,7 +293,7 @@ export default async function CguPage({
             mentions légales), les tribunaux français seront seuls compétents.
           </p>
 
-          <h2 className="font-serif text-2xl md:text-3xl text-brand-ink mt-10 mb-4">
+          <h2 className="font-sans text-2xl md:text-3xl text-brand-ink mt-10 mb-4">
             11. Contact
           </h2>
           <p className="mb-10">

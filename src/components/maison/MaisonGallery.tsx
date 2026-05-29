@@ -75,6 +75,11 @@ export function MaisonGallery({
                   sizes="(max-width: 768px) 50vw, 33vw"
                   className="object-cover transition-transform duration-[1000ms] ease-out group-hover:scale-[1.08]"
                 />
+                {/* Voile chaud « lumière du Sud » — cohérence chromatique. */}
+                <span
+                  aria-hidden
+                  className="olea-photo-warm absolute inset-0 pointer-events-none"
+                />
                 <span
                   aria-hidden
                   className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-brand-ink/40 via-transparent to-transparent"

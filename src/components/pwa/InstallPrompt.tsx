@@ -119,7 +119,7 @@ export function InstallPrompt({ dict }: { dict: Dictionary["pwa"] }) {
           )}
         </span>
         <div className="flex-1 min-w-0">
-          <p className="font-serif text-[17px] leading-tight mb-0.5">
+          <p className="font-sans text-[17px] leading-tight mb-0.5">
             {dict.installerOlea}
           </p>
           {variant === "android" ? (

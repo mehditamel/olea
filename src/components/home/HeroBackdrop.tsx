@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { OliveBranch } from "@/components/brand/OliveBranch";
+import { EngravingMotif } from "@/components/brand/EngravingMotif";
 
 export function HeroBackdrop() {
   const sunRef = useRef<HTMLDivElement | null>(null);
@@ -50,8 +51,13 @@ export function HeroBackdrop() {
           className="olea-breathe w-full h-full rounded-full blur-[3px]"
           style={{
             background:
-              "radial-gradient(circle, #E8D5A8 0%, #8B6F3A 60%, #3D2F18 100%)",
+              "radial-gradient(circle, #F4DCA9 0%, #B07D2E 60%, #3D2F18 100%)",
           }}
+        />
+        {/* Soleil gravé de la charte « gravé » sur l'orbe doré */}
+        <EngravingMotif
+          motif="sun"
+          className="absolute inset-0 h-full w-full text-brand-ink opacity-30 mix-blend-multiply"
         />
       </div>
       <div

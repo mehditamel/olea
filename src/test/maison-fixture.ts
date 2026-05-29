@@ -42,7 +42,7 @@ export function makeMaison(overrides: Partial<Maison> = {}): Maison {
     fermetureHebdo: [],
     photoHero: "/images/test/hero.jpg",
     photos: [],
-    accent: "#4A5530",
+    accent: "#75774A",
     reservationUrl: "",
     ...overrides,
   };

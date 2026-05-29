@@ -72,9 +72,9 @@ export default async function PrivatisationPage({
           <p className="eyebrow text-brand-gold mb-5">
             {dict.privatisation.eyebrow}
           </p>
-          <h1 className="font-serif font-normal text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[-1px] max-w-3xl">
+          <h1 className="font-sans font-medium text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[-1px] max-w-3xl">
             {dict.privatisation.titre}{" "}
-            <span className="italic text-brand-gold-light">
+            <span className="font-serif italic text-brand-gold-light">
               {dict.privatisation.titreItalic}
             </span>
           </h1>
@@ -89,7 +89,7 @@ export default async function PrivatisationPage({
           <p className="eyebrow text-brand-olive mb-4">
             {dict.privatisation.formEyebrow}
           </p>
-          <h2 className="font-serif text-3xl md:text-4xl mb-10 text-brand-ink">
+          <h2 className="font-sans text-3xl md:text-4xl mb-10 text-brand-ink">
             {dict.privatisation.formTitre}
           </h2>
           <DevisForm dict={dict} />

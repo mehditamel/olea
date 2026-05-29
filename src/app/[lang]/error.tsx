@@ -20,9 +20,9 @@ export default function GlobalError({
     <section className="bg-brand-ink text-brand-cream min-h-[80svh] flex items-center px-6 md:px-12 pt-32 pb-20">
       <div className="mx-auto max-w-2xl text-center">
         <p className="eyebrow text-brand-gold mb-5">{dict.errorPage.eyebrow}</p>
-        <h1 className="font-serif font-normal text-[clamp(36px,5vw,56px)] leading-[1.05] tracking-[-0.5px] mb-6">
+        <h1 className="font-sans font-medium text-[clamp(36px,5vw,56px)] leading-[1.05] tracking-[-0.5px] mb-6">
           {dict.errorPage.titre}{" "}
-          <span className="italic text-brand-gold-light">
+          <span className="font-serif italic text-brand-gold-light">
             {dict.errorPage.titreItalic}
           </span>
         </h1>

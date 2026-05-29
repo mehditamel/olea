@@ -10,7 +10,7 @@ export function ReservationSuccess({ f, onDismiss }: ReservationSuccessProps) {
   return (
     <div className="bg-brand-ink text-brand-cream px-8 py-12 text-center">
       <p className="eyebrow text-brand-gold mb-4">{f.successEyebrow}</p>
-      <p className="font-serif text-2xl md:text-3xl mb-4">{f.successTitre}</p>
+      <p className="font-sans text-2xl md:text-3xl mb-4">{f.successTitre}</p>
       <p className="text-sm opacity-80 max-w-md mx-auto">{f.successTexte}</p>
       <button
         type="button"

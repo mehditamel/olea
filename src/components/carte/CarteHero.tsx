@@ -55,7 +55,7 @@ export function CarteHero({
             </span>
           ) : null}
         </div>
-        <h1 className="font-serif font-normal text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[-1px] max-w-3xl">
+        <h1 className="font-sans font-medium text-[clamp(40px,6vw,72px)] leading-[1.05] tracking-[-1px] max-w-3xl">
           {title}
         </h1>
         {baseline ? (

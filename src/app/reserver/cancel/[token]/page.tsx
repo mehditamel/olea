@@ -74,7 +74,7 @@ export default async function CancelReservationPage({
       </Title>
 
       <div className="bg-brand-cream-soft border border-brand-ink/10 p-6 my-8 text-sm">
-        <p className="font-serif text-xl text-brand-ink mb-3">
+        <p className="font-sans text-xl text-brand-ink mb-3">
           {maison?.nom ?? reservation.maison_slug}
         </p>
         <ul className="space-y-1 text-brand-text-muted">
@@ -157,7 +157,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 
 function Title({ children }: { children: React.ReactNode }) {
   return (
-    <h1 className="font-serif font-normal text-3xl md:text-4xl text-brand-ink leading-tight">
+    <h1 className="font-sans font-medium text-3xl md:text-4xl text-brand-ink leading-tight">
       {children}
     </h1>
   );

@@ -1,27 +1,31 @@
 @import "tailwindcss";
 
 @theme {
-  /* Brand palette — inspirée du BAT signalétique (olive dominant) */
-  --color-brand-cream: #f4ecdd;
-  --color-brand-cream-soft: #efe5d2;
-  --color-brand-ink: #1f2218;
+  /* Palette « Les couleurs du Sud » — charte graphique Oléa Group 2026.
+     Vert olive (signature/ADN), vert sauge (équilibre), blanc cassé
+     (respiration) et sable clair (teinte complémentaire chaude). */
+  --color-brand-cream: #feffeb; /* Blanc cassé — couleur de respiration */
+  --color-brand-cream-soft: #f5f4de; /* Variante douce du blanc cassé */
+  --color-brand-ink: #1f2218; /* Encre — texte principal */
   --color-brand-ink-soft: #2a2e20;
-  --color-brand-gold: #d4af6e;
-  --color-brand-gold-deep: #8b6f3a;
-  --color-brand-gold-light: #e8d5a8;
-  --color-brand-olive: #4a5530;
-  --color-brand-olive-deep: #2e3a1e;
-  --color-brand-olive-soft: #6b7a4a;
-  --color-brand-text-muted: #6b5d4a;
-  --color-brand-text-soft: #c8b79a;
+  --color-brand-gold: #ecbb6e; /* Sable clair — teinte complémentaire (chaleur) */
+  --color-brand-gold-deep: #b07d2e; /* Sable profond — accents & contraste */
+  --color-brand-gold-light: #f4dca9; /* Sable lumineux */
+  --color-brand-sage: #e2e3bc; /* Vert sauge — couleur d'équilibre */
+  --color-brand-olive: #75774a; /* Vert olive — couleur signature (ADN) */
+  --color-brand-olive-deep: #344824; /* Vert olive profond — fonds & overlays */
+  --color-brand-olive-soft: #9a9c6b; /* Vert olive clair */
+  --color-brand-text-muted: #6b6a4a; /* Texte secondaire (olive-taupe, AA sur blanc cassé) */
+  --color-brand-text-soft: #c9cba0; /* Texte doux sur fond sombre (sauge clair) */
 
-  /* Typo */
-  --font-serif: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
-  --font-sans: var(--font-inter), "Inter", system-ui, -apple-system, sans-serif;
+  /* Typo — Coco Gothic (titres, corps, structure) → Jost (substitut libre) ;
+     Libre Baskerville (sous-titres & éléments éditoriaux, en italique). */
+  --font-serif: var(--font-baskerville), "Libre Baskerville", Georgia, serif;
+  --font-sans: var(--font-jost), "Jost", system-ui, -apple-system, sans-serif;
 }
 
 :root {
-  --background: #f4ecdd;
+  --background: #feffeb;
   --foreground: #1f2218;
 }
 
@@ -88,6 +92,20 @@ body {
   }
 }
 
+/* Voile chromatique « lumière du Sud » — réchauffe les photos (olive + sable
+   de la charte) de façon cohérente sans assombrir. À poser en couche
+   `absolute inset-0 pointer-events-none` SOUS les dégradés porteurs de texte
+   (heros) ou AU-DESSUS des vignettes sans texte (galerie). Réglable ici. */
+.olea-photo-warm {
+  background: linear-gradient(
+    135deg,
+    rgb(236 187 110 / 0.1) 0%,
+    rgb(255 255 255 / 0) 45%,
+    rgb(117 119 74 / 0.12) 100%
+  );
+  mix-blend-mode: soft-light;
+}
+
 /* Animation hooks */
 @keyframes olea-fade-up {
   from { opacity: 0; transform: translateY(8px); }
@@ -143,6 +161,9 @@ body {
   from { transform: scaleX(0); }
   to   { transform: scaleX(1); }
 }
+@keyframes olea-spin {
+  to { transform: rotate(360deg); }
+}
 
 /* Looped/idle motion — gated explicitly so it stays silent with reduce */
 @media (prefers-reduced-motion: no-preference) {
@@ -155,12 +176,16 @@ body {
     will-change: transform;
   }
   .olea-shimmer-gold {
-    background-image: linear-gradient(110deg, #d4af6e 30%, #e8d5a8 50%, #d4af6e 70%);
+    background-image: linear-gradient(110deg, #ecbb6e 30%, #f4dca9 50%, #ecbb6e 70%);
     background-size: 200% 100%;
     animation: olea-shimmer 2.8s linear infinite;
   }
   .olea-pulse-dot {
     animation: olea-pulse-dot 2.4s ease-out infinite;
+  }
+  .olea-spin {
+    animation: olea-spin 1.4s linear infinite;
+    will-change: transform;
   }
 }
 
@@ -214,7 +239,7 @@ body {
 
 /* Focus glow for form inputs (gold halo over the existing ring) */
 .olea-focus-glow:focus-visible {
-  box-shadow: 0 0 0 4px rgba(212, 175, 110, 0.18);
+  box-shadow: 0 0 0 4px rgba(236, 187, 110, 0.2);
   transition: box-shadow 200ms ease;
 }
 

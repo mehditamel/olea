@@ -19,16 +19,16 @@ export function CassisPortIllustration({ className }: Props) {
     >
       <defs>
         <linearGradient id="cassis-sky" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stopColor="#f4ecdd" />
-          <stop offset="100%" stopColor="#e8d5a8" stopOpacity="0.55" />
+          <stop offset="0%" stopColor="#FEFFEB" />
+          <stop offset="100%" stopColor="#F4DCA9" stopOpacity="0.55" />
         </linearGradient>
         <linearGradient id="cassis-sea" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stopColor="#4a5530" stopOpacity="0.18" />
-          <stop offset="100%" stopColor="#4a5530" stopOpacity="0.35" />
+          <stop offset="0%" stopColor="#75774A" stopOpacity="0.18" />
+          <stop offset="100%" stopColor="#75774A" stopOpacity="0.35" />
         </linearGradient>
         <linearGradient id="cassis-cliff" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stopColor="#d4af6e" stopOpacity="0.85" />
-          <stop offset="100%" stopColor="#8b6f3a" stopOpacity="0.9" />
+          <stop offset="0%" stopColor="#ECBB6E" stopOpacity="0.85" />
+          <stop offset="100%" stopColor="#B07D2E" stopOpacity="0.9" />
         </linearGradient>
       </defs>
 
@@ -36,13 +36,13 @@ export function CassisPortIllustration({ className }: Props) {
       <rect width="800" height="280" fill="url(#cassis-sky)" />
 
       {/* Soleil */}
-      <circle cx="200" cy="120" r="38" fill="#d4af6e" opacity="0.45" />
-      <circle cx="200" cy="120" r="24" fill="#d4af6e" opacity="0.8" />
+      <circle cx="200" cy="120" r="38" fill="#ECBB6E" opacity="0.45" />
+      <circle cx="200" cy="120" r="24" fill="#ECBB6E" opacity="0.8" />
 
       {/* Calanques à gauche (silhouettes basses) */}
       <path
         d="M0 250 L60 210 L120 240 L180 215 L240 235 L300 220 L300 290 L0 290 Z"
-        fill="#4a5530"
+        fill="#75774A"
         opacity="0.25"
       />
 
@@ -88,23 +88,23 @@ export function CassisPortIllustration({ className }: Props) {
       </g>
 
       {/* Voilier au loin */}
-      <g stroke="#1f2218" strokeWidth="1.2" fill="#f4ecdd">
+      <g stroke="#1f2218" strokeWidth="1.2" fill="#FEFFEB">
         <path d="M340 312 L360 312 L356 322 L344 322 Z" />
         <line x1="350" y1="312" x2="350" y2="278" />
-        <path d="M350 282 L368 308 L350 308 Z" fill="#d4af6e" fillOpacity="0.55" />
+        <path d="M350 282 L368 308 L350 308 Z" fill="#ECBB6E" fillOpacity="0.55" />
       </g>
 
       {/* Pointus au premier plan */}
-      <g stroke="#1f2218" strokeWidth="1.4" fill="#f4ecdd">
+      <g stroke="#1f2218" strokeWidth="1.4" fill="#FEFFEB">
         <path d="M80 360 Q140 348 220 360 L208 382 Q150 390 92 382 Z" />
         <line x1="150" y1="360" x2="150" y2="296" />
-        <path d="M150 300 L184 348 L150 348 Z" fill="#4a5530" fillOpacity="0.6" />
-        <path d="M150 300 L120 348 L150 348 Z" fill="#d4af6e" fillOpacity="0.55" />
+        <path d="M150 300 L184 348 L150 348 Z" fill="#75774A" fillOpacity="0.6" />
+        <path d="M150 300 L120 348 L150 348 Z" fill="#ECBB6E" fillOpacity="0.55" />
       </g>
-      <g stroke="#1f2218" strokeWidth="1.4" fill="#f4ecdd">
+      <g stroke="#1f2218" strokeWidth="1.4" fill="#FEFFEB">
         <path d="M260 388 Q320 378 400 388 L388 408 Q330 414 272 408 Z" />
         <line x1="330" y1="388" x2="330" y2="318" />
-        <path d="M330 322 L358 376 L330 376 Z" fill="#4a5530" fillOpacity="0.55" />
+        <path d="M330 322 L358 376 L330 376 Z" fill="#75774A" fillOpacity="0.55" />
       </g>
 
       {/* Oiseaux */}
