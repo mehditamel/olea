@@ -40,14 +40,8 @@ export async function maisonMetadata(
       alternateLocale: LOCALES.filter((l) => l !== lang).map((l) =>
         localeOgCode(l),
       ),
-      images: m.photoHero
-        ? [
-            {
-              url: absoluteUrl(m.photoHero),
-              alt: `Maison Oléa ${m.nom}`,
-            },
-          ]
-        : undefined,
+      // Pas d'`images` ici : la convention `opengraph-image.tsx` de chaque
+      // maison fournit l'image sociale brandée (sinon elle serait supprimée).
     },
   };
 }
