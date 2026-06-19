@@ -144,8 +144,8 @@ export const maisons: readonly Maison[] = [
     codePostal: "06270",
     ville: "Villeneuve-Loubet",
     pays: "FR",
-    telephone: "+33625151333",
-    telephoneAffichage: "06 25 15 13 33",
+    telephone: "+33695318330",
+    telephoneAffichage: "06 95 31 83 30",
     coordonnees: { lat: 43.6358, lng: 7.1422 },
     description: {
       fr: "Notre nouvelle maison azuréenne, entre mer et arrière-pays niçois.",
