@@ -87,8 +87,8 @@ export const maisons: readonly Maison[] = [
     codePostal: "13260",
     ville: "Cassis",
     pays: "FR",
-    telephone: "+33625151333",
-    telephoneAffichage: "06 25 15 13 33",
+    telephone: "+33616456036",
+    telephoneAffichage: "06 16 45 60 36",
     coordonnees: { lat: 43.2147, lng: 5.5391 },
     description: {
       fr: "Face aux pointus et à la falaise des Calanques, les pieds dans la Méditerranée.",
