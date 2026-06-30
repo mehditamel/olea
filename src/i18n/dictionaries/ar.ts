@@ -212,9 +212,16 @@ const ar = {
     maisons: "البيوت",
     metaTitleSuffix: "— مطعم متوسّطي",
   },
+  home: {
+    metaTitle:
+      "Maison Oléa — مطعم متوسّطي في مرسيليا وكاسيس وفيلنوف-لوبيه",
+    metaDescription:
+      "ثلاثة بيوت متوسّطية مستوحاة من الجنوب: مطبخ صادق، وشُرفات غارقة في الشمس، وحفاوة دافئة في مرسيليا وكاسيس وفيلنوف-لوبيه.",
+  },
   maisonHero: {
     ariaSection: "Maison Oléa {nom}",
     itineraire: "الطريق",
+    heroAlt: "بيت Oléa {nom} وأجواؤه المتوسّطية",
   },
   maisonGallery: {
     ambiance: "أجواء",
