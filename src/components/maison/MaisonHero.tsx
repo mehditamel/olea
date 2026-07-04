@@ -32,7 +32,7 @@ export function MaisonHero({
         <>
           <Image
             src={m.photoHero}
-            alt=""
+            alt={interpolate(dict.maisonHero.heroAlt, { nom: m.nom })}
             fill
             priority
             sizes="100vw"

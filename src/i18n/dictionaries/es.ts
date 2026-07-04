@@ -213,9 +213,16 @@ const es = {
     maisons: "Casas",
     metaTitleSuffix: "— Restaurante mediterráneo",
   },
+  home: {
+    metaTitle:
+      "Maison Oléa — Restaurante mediterráneo en Marsella, Cassis y Villeneuve-Loubet",
+    metaDescription:
+      "Tres casas mediterráneas inspiradas en el Sur: una cocina sincera, terrazas soleadas y una acogida cálida en Marsella, Cassis y Villeneuve-Loubet.",
+  },
   maisonHero: {
     ariaSection: "Maison Oléa {nom}",
     itineraire: "Cómo llegar",
+    heroAlt: "La casa Oléa {nom} y su ambiente mediterráneo",
   },
   maisonGallery: {
     ambiance: "Ambiente",

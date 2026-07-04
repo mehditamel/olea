@@ -12,8 +12,10 @@ import { withLocale } from "@/i18n/locale-href";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { getMaisonBySlug } from "@/data/maisons";
 
-const PHONE_TEL = "+33625151333";
+// Numéro de contact générique de l'en-tête : Marseille, la maison-mère.
+const PHONE_TEL = getMaisonBySlug("marseille")?.telephone ?? "";
 
 type Props = { lang: Locale; dict: Dictionary };
 
