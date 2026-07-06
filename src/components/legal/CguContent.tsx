@@ -1,6 +1,7 @@
 import { maisons } from "@/data/maisons";
 import type { Locale } from "@/i18n/config";
 import { withLocale } from "@/i18n/locale-href";
+import { CONTACT_EMAIL, CONTACT_MAILTO } from "@/data/site";
 
 /**
  * Corps statique (FR) des Conditions Générales d'Utilisation.
@@ -222,10 +223,10 @@ export function CguContent({ l }: { l: Locale }) {
           Pour toute question relative aux présentes CGU, vous pouvez nous
           écrire à{" "}
           <a
-            href="mailto:contact@olea-restaurant.fr"
+            href={CONTACT_MAILTO}
             className="underline decoration-brand-olive underline-offset-4 hover:text-brand-olive transition-colors"
           >
-            <bdi dir="ltr">contact@olea-restaurant.fr</bdi>
+            <bdi dir="ltr">{CONTACT_EMAIL}</bdi>
           </a>
           .
         </p>

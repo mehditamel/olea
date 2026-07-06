@@ -78,14 +78,6 @@ export function formatDate(
   }).format(date);
 }
 
-export function formatDateTime(
-  isoDate: string,
-  hhmm: string,
-  locale: Locale,
-): string {
-  return `${formatDate(isoDate, locale, "full")} · ${formatTime(hhmm, locale)}`;
-}
-
 export type PluralForms = {
   zero?: string;
   one?: string;

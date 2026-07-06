@@ -22,8 +22,3 @@ export function stripLocale(pathname: string): string {
 export function replaceLocale(pathname: string, target: Locale): string {
   return withLocale(target, stripLocale(pathname));
 }
-
-export function getLocaleFromPathname(pathname: string): Locale | null {
-  const first = pathname.split("/")[1] ?? "";
-  return isLocale(first) ? first : null;
-}
