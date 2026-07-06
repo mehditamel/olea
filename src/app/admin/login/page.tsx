@@ -19,13 +19,13 @@ const ERROR_MESSAGES: Record<string, string> = {
   send: "Impossible d'envoyer le lien. Vérifiez votre email ou réessayez.",
   forbidden: "Votre compte n'est pas autorisé à accéder à cet espace.",
   expired: "Lien expiré ou invalide. Demandez-en un nouveau.",
+  rate: "Trop de tentatives. Patientez quelques minutes avant de réessayer.",
 };
 
 export default async function AdminLoginPage({ searchParams }: PageProps) {
   const sp = await searchParams;
   const error = typeof sp.error === "string" ? sp.error : undefined;
   const sent = sp.sent === "1";
-  const emailSent = typeof sp.email === "string" ? sp.email : "";
   const next = typeof sp.next === "string" ? sp.next : "/admin";
 
   return (
@@ -47,8 +47,8 @@ export default async function AdminLoginPage({ searchParams }: PageProps) {
               Lien envoyé.
             </p>
             <p className="text-sm text-brand-text-muted">
-              Ouvrez votre boîte <strong>{emailSent}</strong> et cliquez sur le
-              lien pour vous connecter. Pensez à vérifier vos spams.
+              Ouvrez votre boîte email et cliquez sur le lien pour vous
+              connecter. Pensez à vérifier vos spams.
             </p>
           </div>
         ) : (

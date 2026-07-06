@@ -13,7 +13,17 @@ export const logger = pino({
       }
     : {}),
   redact: {
-    paths: ["email", "telephone", "*.email", "*.telephone", "req.headers.cookie"],
+    paths: [
+      "email",
+      "telephone",
+      "nom",
+      "to",
+      "*.email",
+      "*.telephone",
+      "*.nom",
+      "*.to",
+      "req.headers.cookie",
+    ],
     censor: "[REDACTED]",
   },
 });

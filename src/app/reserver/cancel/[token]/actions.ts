@@ -2,11 +2,19 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { z } from "zod";
 import { getSupabaseAdmin, isSupabaseConfigured } from "@/lib/supabase/admin";
 import { findReservationByToken } from "@/lib/reservation/repository";
 import { logger } from "@/lib/logger";
 
+const tokenSchema = z.string().uuid();
+
 export async function cancelReservationAction(token: string): Promise<void> {
+  // L'action est un endpoint POST directement invocable : on revalide le
+  // format du token ici, sans se reposer sur la validation de la page.
+  if (!tokenSchema.safeParse(token).success) {
+    redirect(`/reserver/cancel/${encodeURIComponent(token)}?error=notfound`);
+  }
   if (!isSupabaseConfigured()) {
     redirect(`/reserver/cancel/${token}?error=config`);
   }
