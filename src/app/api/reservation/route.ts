@@ -7,6 +7,7 @@ import {
 } from "@/lib/reservation-slots";
 import { isIsoDateInPastParis } from "@/lib/date-paris";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { clientIp } from "@/lib/client-ip";
 import { logger } from "@/lib/logger";
 import { isSupabaseConfigured } from "@/lib/supabase/admin";
 import {
@@ -34,15 +35,6 @@ import { getDictionary } from "@/i18n/dictionaries";
 export const runtime = "nodejs";
 
 const RATE_LIMIT = { limit: 5, windowMs: 60 * 60 * 1000 };
-
-function clientIp(request: Request): string {
-  const xff = request.headers.get("x-forwarded-for");
-  if (xff) {
-    const first = xff.split(",")[0]?.trim();
-    if (first) return first;
-  }
-  return request.headers.get("x-real-ip")?.trim() || "unknown";
-}
 
 function resolveLocale(request: Request): Locale {
   const cookieHeader = request.headers.get("cookie") ?? "";

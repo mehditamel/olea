@@ -23,6 +23,8 @@ export const devisSchema = z.object({
   convives: z.number().int().min(2).max(500),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Date invalide (YYYY-MM-DD)"),
   message: z.string().trim().max(2000).default(""),
+  // Honeypot : invisible aux humains. La route gère le rejet silencieux si rempli.
+  siteWeb: z.string().max(200).optional(),
 });
 export type DevisInput = z.input<typeof devisSchema>;
 export type DevisOutput = z.output<typeof devisSchema>;

@@ -383,6 +383,7 @@ const en = {
       bad_json: "Invalid request body.",
       maison_unknown: "Unknown house.",
       send_failed: "Sending failed. Please try again in a moment.",
+      rate_limited: "Too many attempts. Please try again later.",
       generic: "An error occurred.",
     },
   },

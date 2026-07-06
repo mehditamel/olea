@@ -45,6 +45,7 @@ export function DevisForm({ dict }: { dict: Dictionary }) {
       maison: "marseille",
       typeEvenement: "anniversaire",
       convives: 8,
+      siteWeb: "",
     },
   });
 
@@ -220,6 +221,18 @@ export function DevisForm({ dict }: { dict: Dictionary }) {
           </Field>
         </div>
       </fieldset>
+
+      <div aria-hidden className="hidden" tabIndex={-1}>
+        <label>
+          Site web
+          <input
+            type="text"
+            autoComplete="off"
+            tabIndex={-1}
+            {...register("siteWeb")}
+          />
+        </label>
+      </div>
 
       <div aria-live="polite" className="contents">
         {status.state === "error" && (

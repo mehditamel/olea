@@ -382,6 +382,7 @@ const it = {
       bad_json: "Corpo della richiesta non valido.",
       maison_unknown: "Casa sconosciuta.",
       send_failed: "Invio fallito. Riprova tra un momento.",
+      rate_limited: "Troppi tentativi. Riprova più tardi.",
       generic: "Si è verificato un errore.",
     },
   },
