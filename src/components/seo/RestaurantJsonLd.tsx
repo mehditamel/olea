@@ -51,6 +51,8 @@ export function RestaurantJsonLd({
 
   const sameAs = m.instagram?.url ? [m.instagram.url] : undefined;
   const urlLocalized = absoluteUrl(withLocale(lang, `/maisons/${m.slug}`));
+  const reserverUrl = absoluteUrl(withLocale(lang, "/reserver"));
+  const carteUrl = absoluteUrl(withLocale(lang, `/carte/${m.slug}`));
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -64,6 +66,8 @@ export function RestaurantJsonLd({
     ...(m.photoHero ? { image: [absoluteUrl(m.photoHero)] } : {}),
     priceRange: m.fourchettePrix,
     servesCuisine: m.cuisines,
+    acceptsReservations: maison.ouvert ? "True" : "False",
+    hasMenu: `${carteUrl}#menu`,
     address: {
       "@type": "PostalAddress",
       streetAddress: m.adresse,
@@ -78,6 +82,26 @@ export function RestaurantJsonLd({
     },
     ...(openingHoursSpecification.length > 0
       ? { openingHoursSpecification }
+      : {}),
+    ...(maison.ouvert
+      ? {
+          potentialAction: {
+            "@type": "ReserveAction",
+            target: {
+              "@type": "EntryPoint",
+              urlTemplate: reserverUrl,
+              inLanguage: localeHtmlLang(lang),
+              actionPlatform: [
+                "http://schema.org/DesktopWebPlatform",
+                "http://schema.org/MobileWebPlatform",
+              ],
+            },
+            result: {
+              "@type": "Reservation",
+              name: `Réservation ${m.nom}`,
+            },
+          },
+        }
       : {}),
     ...(sameAs ? { sameAs } : {}),
   };

@@ -23,9 +23,10 @@ import "../globals.css";
 
 // Jost = substitut libre de Coco Gothic (géométrique, dérivé de Futura).
 // Police variable → toute la plage de graisses, titres + corps + UI.
+// cyrillic ajouté pour la locale `ru` (sinon rendu en police système).
 const jost = Jost({
   variable: "--font-jost",
-  subsets: ["latin"],
+  subsets: ["latin", "cyrillic"],
   display: "swap",
 });
 
