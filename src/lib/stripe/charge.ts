@@ -29,20 +29,25 @@ export async function chargeNoShow(input: {
 }): Promise<ChargeResult> {
   const stripe = getStripe();
   try {
-    const intent = await stripe.paymentIntents.create({
-      amount: input.amountCents,
-      currency: "eur",
-      customer: input.customerId,
-      payment_method: input.paymentMethodId,
-      off_session: true,
-      confirm: true,
-      description:
-        input.description ?? `No-show garantie · résa ${input.reservationId}`,
-      metadata: {
-        reservation_id: input.reservationId,
-        type: "noshow_guarantee",
+    const intent = await stripe.paymentIntents.create(
+      {
+        amount: input.amountCents,
+        currency: "eur",
+        customer: input.customerId,
+        payment_method: input.paymentMethodId,
+        off_session: true,
+        confirm: true,
+        description:
+          input.description ?? `No-show garantie · résa ${input.reservationId}`,
+        metadata: {
+          reservation_id: input.reservationId,
+          type: "noshow_guarantee",
+        },
       },
-    });
+      // Une seule garantie prélevable par réservation : un double-clic ou un
+      // retry réutilise le même PaymentIntent au lieu de débiter deux fois.
+      { idempotencyKey: `noshow_${input.reservationId}` },
+    );
     if (intent.status !== "succeeded") {
       return {
         ok: false,

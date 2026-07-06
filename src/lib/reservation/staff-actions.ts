@@ -54,9 +54,16 @@ export async function cancelByStaff(
       cancelled_at: new Date().toISOString(),
     })
     .eq("id", reservationId)
+    .not("statut", "in", `(${TERMINAL.join(",")})`)
     .select("*")
-    .single();
+    .maybeSingle();
   if (e2) return { ok: false, error: e2.message };
+  if (!updated) {
+    return {
+      ok: false,
+      error: "La réservation a changé de statut entre-temps.",
+    };
+  }
 
   await logAudit({
     action: "cancel_by_staff",
@@ -171,9 +178,16 @@ export async function markNoShow(
       ...chargeUpdates,
     })
     .eq("id", reservationId)
+    .eq("statut", "confirmed")
     .select("*")
-    .single();
+    .maybeSingle();
   if (e2) return { ok: false, error: e2.message };
+  if (!updated) {
+    return {
+      ok: false,
+      error: "La réservation a changé de statut entre-temps.",
+    };
+  }
 
   await logAudit({
     action: "noshow_marked",
@@ -210,9 +224,16 @@ export async function markHonored(
     .from("reservations")
     .update({ statut: "honored" })
     .eq("id", reservationId)
+    .eq("statut", "confirmed")
     .select("*")
-    .single();
+    .maybeSingle();
   if (e2) return { ok: false, error: e2.message };
+  if (!updated) {
+    return {
+      ok: false,
+      error: "La réservation a changé de statut entre-temps.",
+    };
+  }
   await logAudit({
     action: "honored_marked",
     reservationId,

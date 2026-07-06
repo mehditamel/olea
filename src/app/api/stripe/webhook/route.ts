@@ -20,7 +20,9 @@ export const dynamic = "force-dynamic";
 
 /**
  * Idempotence : ne traite chaque event_id qu'une fois.
- * Retourne true si déjà traité.
+ * Retourne true si déjà traité. Le marqueur est posé avant traitement
+ * (verrou contre les livraisons concurrentes) et retiré si le handler
+ * échoue, afin que le retry Stripe puisse retraiter l'événement.
  */
 async function markEventProcessed(eventId: string): Promise<boolean> {
   const supabase = getSupabaseAdmin();
@@ -32,6 +34,20 @@ async function markEventProcessed(eventId: string): Promise<boolean> {
     throw new Error(`Mark event failed: ${error.message}`);
   }
   return false;
+}
+
+async function unmarkEvent(eventId: string): Promise<void> {
+  const supabase = getSupabaseAdmin();
+  const { error } = await supabase
+    .from("stripe_events_processed")
+    .delete()
+    .eq("event_id", eventId);
+  if (error) {
+    logger.error(
+      { eventId, err: error.message },
+      "Unmark event failed — le retry Stripe sera ignoré, intervention manuelle requise",
+    );
+  }
 }
 
 export async function POST(request: Request) {
@@ -66,10 +82,7 @@ export async function POST(request: Request) {
   } catch (err) {
     const message = err instanceof Error ? err.message : "unknown";
     logger.warn({ err: message }, "Webhook signature verification failed");
-    return NextResponse.json(
-      { error: `Invalid signature: ${message}` },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "invalid_signature" }, { status: 400 });
   }
 
   try {
@@ -104,6 +117,7 @@ export async function POST(request: Request) {
       { err: message, eventId: event.id, type: event.type },
       "Webhook handler failed",
     );
+    await unmarkEvent(event.id);
     return NextResponse.json({ error: "handler failed" }, { status: 500 });
   }
 
@@ -132,7 +146,16 @@ async function handleSetupIntentSucceeded(
   if (paymentMethodId) {
     await attachStripeIds(reservation.id, { paymentMethodId });
   }
-  await updateStatut(reservation.id, "confirmed");
+  const confirmed = await updateStatut(reservation.id, "confirmed", {
+    ifStatut: "pending_card",
+  });
+  if (!confirmed) {
+    logger.warn(
+      { id: reservation.id },
+      "SetupIntent succeeded mais statut déjà modifié (expiré ?) — confirmation ignorée",
+    );
+    return;
+  }
 
   const maison = getMaisonBySlug(reservation.maison_slug);
   if (maison) {
@@ -150,7 +173,10 @@ async function handleSetupIntentFailed(
   const reservation = await findReservationBySetupIntent(setupIntent.id);
   if (!reservation) return;
   if (reservation.statut !== "pending_card") return;
-  await updateStatut(reservation.id, "expired");
+  const expired = await updateStatut(reservation.id, "expired", {
+    ifStatut: "pending_card",
+  });
+  if (!expired) return;
   logger.warn(
     { id: reservation.id, setupIntentId: setupIntent.id },
     "Reservation expired after SetupIntent failure/cancel",

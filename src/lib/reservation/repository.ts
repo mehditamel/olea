@@ -124,16 +124,24 @@ export async function attachStripeIds(
   if (error) throw new Error(`Attach stripe ids failed: ${error.message}`);
 }
 
+/**
+ * Transition de statut. `ifStatut` rend l'update conditionnel (aucune écriture
+ * si le statut a changé entre-temps) — retourne false dans ce cas.
+ */
 export async function updateStatut(
   reservationId: string,
   statut: ReservationStatut,
-): Promise<void> {
+  options?: { ifStatut?: ReservationStatut },
+): Promise<boolean> {
   const supabase = getSupabaseAdmin();
-  const { error } = await supabase
+  let query = supabase
     .from("reservations")
     .update({ statut })
     .eq("id", reservationId);
+  if (options?.ifStatut) query = query.eq("statut", options.ifStatut);
+  const { data, error } = await query.select("id");
   if (error) throw new Error(`Update statut failed: ${error.message}`);
+  return (data ?? []).length > 0;
 }
 
 export async function findReservationBySetupIntent(
