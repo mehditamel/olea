@@ -64,6 +64,55 @@ export async function insertReservation(
   return row as ReservationRow;
 }
 
+export type ReserverCreneauResult =
+  | { ok: true; row: ReservationRow }
+  | { ok: false; reason: "capacite"; reste: number; max: number }
+  | { ok: false; reason: "rpc_absent" };
+
+/**
+ * Vérifie la capacité et insère la réservation atomiquement, via le RPC
+ * `reserver_creneau` (verrou consultatif par créneau). Élimine la course
+ * TOCTOU du couple checkCapacite()+insertReservation().
+ *
+ * Si la migration SQL n'est pas encore appliquée en base, le RPC est absent
+ * (PGRST202) et l'appelant doit retomber sur le chemin legacy non atomique.
+ */
+export async function reserverCreneauAtomique(
+  data: ReservationInsert,
+): Promise<ReserverCreneauResult> {
+  const supabase = getSupabaseAdmin();
+  const { data: result, error } = await supabase.rpc("reserver_creneau", {
+    p_maison: data.maison_slug,
+    p_date: data.date,
+    p_heure: data.heure,
+    p_service: data.service,
+    p_convives: data.convives,
+    p_nom: data.nom,
+    p_email: data.email,
+    p_telephone: data.telephone,
+    p_occasion: data.occasion,
+    p_demandes: data.demandes,
+    p_statut: data.statut,
+    p_requiert_garantie: data.requiert_garantie,
+    p_montant_garantie_cents: data.montant_garantie_cents,
+    p_source: data.source ?? "web",
+  });
+  if (error) {
+    if (error.code === "PGRST202") return { ok: false, reason: "rpc_absent" };
+    throw new Error(`reserver_creneau failed: ${error.message}`);
+  }
+  const payload = result as
+    | { ok: true; reservation: ReservationRow }
+    | { ok: false; reste: number; max: number };
+  if (payload.ok) return { ok: true, row: payload.reservation };
+  return {
+    ok: false,
+    reason: "capacite",
+    reste: payload.reste,
+    max: payload.max,
+  };
+}
+
 export async function findReservationByToken(
   token: string,
 ): Promise<ReservationRow | null> {
