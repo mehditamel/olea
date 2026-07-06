@@ -8,6 +8,7 @@ import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { withLocale } from "@/i18n/locale-href";
 import { localizeMaison } from "@/i18n/localized-maison";
+import { CONTACT_EMAIL, CONTACT_MAILTO } from "@/data/site";
 
 type Props = { lang: Locale; dict: Dictionary };
 
@@ -140,11 +141,11 @@ export function SiteFooter({ lang, dict }: Props) {
             aria-hidden
           />
           <a
-            href="mailto:contact@olea-restaurant.fr"
+            href={CONTACT_MAILTO}
             className="inline-flex items-center gap-2 hover:text-brand-gold transition-colors"
           >
             <Mail className="h-3.5 w-3.5" aria-hidden />
-            <bdi dir="ltr">contact@olea-restaurant.fr</bdi>
+            <bdi dir="ltr">{CONTACT_EMAIL}</bdi>
           </a>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <a

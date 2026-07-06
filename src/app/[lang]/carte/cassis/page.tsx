@@ -65,7 +65,7 @@ export default async function CarteCassisPage({
 
   return (
     <>
-      <MenuJsonLd maison={rawMaison} menu={menu} />
+      <MenuJsonLd maison={rawMaison} menu={menu} lang={l} />
       <CarteHero
         eyebrow={dict.carte.eyebrow}
         title={

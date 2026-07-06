@@ -383,6 +383,7 @@ const pt = {
       bad_json: "Corpo de pedido inválido.",
       maison_unknown: "Casa desconhecida.",
       send_failed: "Falha ao enviar. Tente novamente daqui a pouco.",
+      rate_limited: "Demasiadas tentativas. Tente mais tarde.",
       generic: "Ocorreu um erro.",
     },
   },

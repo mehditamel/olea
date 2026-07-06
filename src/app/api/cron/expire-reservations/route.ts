@@ -12,7 +12,14 @@ export const dynamic = "force-dynamic";
  */
 export async function GET(request: NextRequest) {
   const secret = process.env.CRON_SECRET;
-  if (secret) {
+  if (!secret) {
+    // Fail-closed en production : sans secret configuré, l'endpoint serait
+    // publiquement déclenchable. En dev on tolère l'absence de secret.
+    if (process.env.NODE_ENV === "production") {
+      logger.error({}, "CRON_SECRET manquant — cron refusé");
+      return NextResponse.json({ error: "not_configured" }, { status: 503 });
+    }
+  } else {
     const auth = request.headers.get("authorization") ?? "";
     if (auth !== `Bearer ${secret}`) {
       return NextResponse.json({ error: "unauthorized" }, { status: 401 });

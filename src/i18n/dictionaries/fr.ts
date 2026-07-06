@@ -388,6 +388,7 @@ const fr = {
       bad_json: "Corps de requête invalide.",
       maison_unknown: "Maison inconnue.",
       send_failed: "Échec de l'envoi. Veuillez réessayer dans un instant.",
+      rate_limited: "Trop de tentatives. Réessayez plus tard.",
       generic: "Une erreur est survenue.",
     },
   },

@@ -10,6 +10,7 @@ import { interpolate } from "@/i18n/format";
 import { getDictionary } from "@/i18n/dictionaries";
 import { DEFAULT_LOCALE, type Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
+import { CONTACT_EMAIL } from "@/data/site";
 import type { ReservationRow } from "./repository";
 
 const APP_BASE_URL =
@@ -68,8 +69,7 @@ export async function sendClientConfirmationFromRow(
     startIso: row.date,
     heure: row.heure.slice(0, 5),
     durationMinutes: RESERVATION_DURATION_MIN,
-    organizerEmail:
-      process.env.CONTACT_EMAIL ?? "contact@olea-restaurant.fr",
+    organizerEmail: process.env.CONTACT_EMAIL ?? CONTACT_EMAIL,
     attendeeEmail: row.email,
   });
 

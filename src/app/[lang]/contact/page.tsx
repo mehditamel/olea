@@ -16,6 +16,7 @@ import { getDictionary, hasLocale } from "@/i18n/dictionaries";
 import { withLocale } from "@/i18n/locale-href";
 import { localizeMaison } from "@/i18n/localized-maison";
 import { interpolate } from "@/i18n/format";
+import { CONTACT_EMAIL, CONTACT_MAILTO } from "@/data/site";
 
 export async function generateMetadata({
   params,
@@ -156,14 +157,14 @@ export default async function ContactPage({
             {dict.contact.question}
           </p>
           <a
-            href="mailto:contact@olea-restaurant.fr"
+            href={CONTACT_MAILTO}
             className="inline-flex items-center gap-3 font-sans text-xl sm:text-2xl md:text-4xl text-brand-ink border-b border-brand-olive pb-2 hover:text-brand-olive transition-colors break-all md:break-normal"
           >
             <Mail
               className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 flex-shrink-0"
               aria-hidden
             />
-            <bdi dir="ltr">contact@olea-restaurant.fr</bdi>
+            <bdi dir="ltr">{CONTACT_EMAIL}</bdi>
           </a>
         </div>
       </section>

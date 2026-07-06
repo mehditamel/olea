@@ -52,7 +52,11 @@ export function MobileNav({ transparent, lang, dict }: MobileNavProps) {
       >
         <Menu className="h-6 w-6" aria-hidden />
       </SheetTrigger>
-      <SheetContent side="right" className="flex flex-col">
+      <SheetContent
+        side="right"
+        className="flex flex-col"
+        closeLabel={dict.common.fermer}
+      >
         <SheetTitle className="font-serif italic text-3xl text-brand-cream mb-10">
           <BrandWord />
         </SheetTitle>

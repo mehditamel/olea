@@ -3,6 +3,7 @@ import { logger } from "./logger";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionaries";
 import { formatDate, formatTime, interpolate } from "@/i18n/format";
+import { CONTACT_EMAIL } from "@/data/site";
 
 export type EmailAttachment = {
   filename: string;
@@ -24,7 +25,7 @@ type SendEmailResult =
 
 const apiKey = process.env.RESEND_API_KEY;
 const from = process.env.RESEND_FROM ?? "Maison Oléa <onboarding@resend.dev>";
-const defaultTo = process.env.CONTACT_EMAIL ?? "contact@olea-restaurant.fr";
+const defaultTo = process.env.CONTACT_EMAIL ?? CONTACT_EMAIL;
 
 let client: Resend | null = null;
 

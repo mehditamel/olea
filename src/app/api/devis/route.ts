@@ -3,8 +3,12 @@ import { devisSchema } from "@/types/devis";
 import { getMaisonBySlug } from "@/data/maisons";
 import { sendContactEmail } from "@/lib/email";
 import { logger } from "@/lib/logger";
+import { checkRateLimit } from "@/lib/rate-limit";
+import { clientIp } from "@/lib/client-ip";
 
 export const runtime = "nodejs";
+
+const RATE_LIMIT = { limit: 5, windowMs: 60 * 60 * 1000 };
 
 function escapeHtml(input: string): string {
   return input
@@ -16,6 +20,21 @@ function escapeHtml(input: string): string {
 }
 
 export async function POST(request: Request) {
+  const ip = clientIp(request);
+  const rate = checkRateLimit(`devis:${ip}`, RATE_LIMIT);
+  if (!rate.ok) {
+    logger.warn({ ip }, "Devis rate-limited");
+    return NextResponse.json(
+      { error: "rate_limited" },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": Math.ceil(rate.retryAfterMs / 1000).toString(),
+        },
+      },
+    );
+  }
+
   let payload: unknown;
   try {
     payload = await request.json();
@@ -31,6 +50,12 @@ export async function POST(request: Request) {
     );
   }
   const data = parsed.data;
+
+  if (data.siteWeb && data.siteWeb.length > 0) {
+    logger.warn({ ip }, "Devis honeypot triggered");
+    return NextResponse.json({ ok: true, mode: "log" });
+  }
+
   const maison = getMaisonBySlug(data.maison);
   if (!maison) {
     return NextResponse.json({ error: "maison_unknown" }, { status: 400 });

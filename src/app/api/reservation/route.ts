@@ -7,11 +7,14 @@ import {
 } from "@/lib/reservation-slots";
 import { isIsoDateInPastParis } from "@/lib/date-paris";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { clientIp } from "@/lib/client-ip";
 import { logger } from "@/lib/logger";
 import { isSupabaseConfigured } from "@/lib/supabase/admin";
 import {
   insertReservation,
+  reserverCreneauAtomique,
   attachStripeIds,
+  type ReservationRow,
 } from "@/lib/reservation/repository";
 import { checkCapacite, isCreneauBloque } from "@/lib/reservation/capacity";
 import {
@@ -34,15 +37,6 @@ import { getDictionary } from "@/i18n/dictionaries";
 export const runtime = "nodejs";
 
 const RATE_LIMIT = { limit: 5, windowMs: 60 * 60 * 1000 };
-
-function clientIp(request: Request): string {
-  const xff = request.headers.get("x-forwarded-for");
-  if (xff) {
-    const first = xff.split(",")[0]?.trim();
-    if (first) return first;
-  }
-  return request.headers.get("x-real-ip")?.trim() || "unknown";
-}
 
 function resolveLocale(request: Request): Locale {
   const cookieHeader = request.headers.get("cookie") ?? "";
@@ -143,23 +137,7 @@ export async function POST(request: Request) {
         { status: 409 },
       );
     }
-    const cap = await checkCapacite(
-      data.maison,
-      data.date,
-      data.service,
-      data.convives,
-    );
-    if (!cap.ok) {
-      return NextResponse.json(
-        {
-          error: "capacite_pleine",
-          reste: cap.reste,
-        },
-        { status: 409 },
-      );
-    }
-
-    const row = await insertReservation({
+    const insert = {
       maison_slug: data.maison,
       date: data.date,
       heure: data.heure,
@@ -170,11 +148,42 @@ export async function POST(request: Request) {
       telephone: data.telephone,
       occasion: data.occasion,
       demandes: data.demandesParticulieres,
-      statut: stripeReady ? "pending_card" : "confirmed",
+      statut: stripeReady ? ("pending_card" as const) : ("confirmed" as const),
       requiert_garantie: garantie,
       montant_garantie_cents: montantGarantie,
       source: "web",
-    });
+    };
+
+    // Chemin atomique (check capacité + insert sous verrou). Repli sur le
+    // couple non atomique si la migration reserver_creneau n'est pas déployée.
+    let row: ReservationRow;
+    const atomic = await reserverCreneauAtomique(insert);
+    if (atomic.ok) {
+      row = atomic.row;
+    } else if (atomic.reason === "capacite") {
+      return NextResponse.json(
+        { error: "capacite_pleine", reste: atomic.reste },
+        { status: 409 },
+      );
+    } else {
+      logger.warn(
+        { maison: data.maison, date: data.date },
+        "RPC reserver_creneau absent — repli non atomique (appliquer la migration)",
+      );
+      const cap = await checkCapacite(
+        data.maison,
+        data.date,
+        data.service,
+        data.convives,
+      );
+      if (!cap.ok) {
+        return NextResponse.json(
+          { error: "capacite_pleine", reste: cap.reste },
+          { status: 409 },
+        );
+      }
+      row = await insertReservation(insert);
+    }
 
     if (stripeReady) {
       const stripe = getStripe();
@@ -228,9 +237,15 @@ export async function POST(request: Request) {
       );
     }
 
+    // La réservation est déjà persistée et comptée : un échec d'email ne doit
+    // pas provoquer un 502 (le client retenterait et réserverait en double).
+    // On loggue une alerte pour traitement interne et on confirme au client.
     const teamResult = await sendTeamReservationEmail(row, maison, false);
     if (!teamResult.ok) {
-      return NextResponse.json({ error: "send_failed" }, { status: 502 });
+      logger.error(
+        { id: row.id },
+        "Reservation confirmée mais email équipe non envoyé — suivi manuel requis",
+      );
     }
     await sendClientConfirmationFromRow(row, maison, { lang, dict });
 

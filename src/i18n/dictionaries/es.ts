@@ -383,6 +383,7 @@ const es = {
       bad_json: "Cuerpo de solicitud inválido.",
       maison_unknown: "Casa desconocida.",
       send_failed: "Error al enviar. Vuelva a intentarlo en un momento.",
+      rate_limited: "Demasiados intentos. Inténtelo más tarde.",
       generic: "Ha ocurrido un error.",
     },
   },
